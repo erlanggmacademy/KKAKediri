@@ -1,0 +1,298 @@
+---
+import { SITE_INFO, DISTRICTS } from "../data/competition";
+
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="footer-kka">
+  <div class="container py-5">
+    <div class="row g-4 g-lg-4 justify-content-between">
+      <!-- Kolom 1: Logo & Deskripsi Singkat -->
+      <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+        <a href="/" class="d-inline-block mb-3" title="KKA 2026 Radar Kediri">
+          <img
+            src="/images/logo-kka.webp"
+            alt="Logo KKA 2026 - Jawa Pos Radar Kediri"
+            height="52"
+            width="auto"
+            loading="lazy"
+          />
+        </a>
+
+        <p class="footer-text text-secondary mb-3 pe-lg-3">
+          Kompetisi Kompetensi Akademik (KKA) 2026 adalah program tahunan yang
+          diselenggarakan oleh Jawa Pos Radar Kediri untuk meningkatkan dan
+          mengukur kesiapan kompetensi siswa di Karesidenan Kediri.
+        </p>
+      </div>
+
+      <!-- Kolom 2: Navigasi Menu -->
+      <div class="col-lg-2 col-md-6 col-6 mb-4 mb-lg-0">
+        <h5 class="footer-title text-white fw-bold mb-0">Navigasi</h5>
+        <div class="footer-title-bar"></div>
+
+        <ul class="list-unstyled footer-nav-list mb-0">
+          <li>
+            <a href="/" class="footer-link">
+              <span class="chevron-symbol">&rsaquo;</span>
+              <span>Beranda</span>
+            </a>
+          </li>
+          <li>
+            <a href="/tentang-kka" class="footer-link">
+              <span class="chevron-symbol">&rsaquo;</span>
+              <span>Tentang KKA</span>
+            </a>
+          </li>
+          <li>
+            <a href="/daftar/mandiri" class="footer-link">
+              <span class="chevron-symbol">&rsaquo;</span>
+              <span>Daftar Mandiri</span>
+            </a>
+          </li>
+          <li>
+            <a href="/daftar/kolektif" class="footer-link">
+              <span class="chevron-symbol">&rsaquo;</span>
+              <span>Daftar Kolektif</span>
+            </a>
+          </li>
+          <li>
+            <a href="/daftar/status" class="footer-link">
+              <span class="chevron-symbol">&rsaquo;</span>
+              <span>Cek Status</span>
+            </a>
+          </li>
+          <li>
+            <a href="/regulasi" class="footer-link">
+              <span class="chevron-symbol">&rsaquo;</span>
+              <span>Regulasi</span>
+            </a>
+          </li>
+          <li>
+            <a href="/galeri" class="footer-link">
+              <span class="chevron-symbol">&rsaquo;</span>
+              <span>Galeri Foto</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Kolom 3: Wilayah Kompetisi (Section Wilayah di Tengah) -->
+      <div class="col-lg-3 col-md-6 col-6 mb-4 mb-lg-0">
+        <h5 class="footer-title text-white fw-bold mb-0">Wilayah Kompetisi</h5>
+        <div class="footer-title-bar"></div>
+
+        <ul class="list-unstyled footer-nav-list mb-0">
+          {
+            DISTRICTS.map((district) => (
+              <li>
+                <a href={`/wilayah/${district.slug}`} class="footer-link">
+                  <span class="chevron-symbol">&rsaquo;</span>
+                  <span>{district.name}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <!-- Kolom 4: Hubungi Kami & WhatsApp Admin -->
+      <div class="col-lg-3 col-md-6">
+        <h5 class="footer-title text-white fw-bold mb-0">Hubungi Kami</h5>
+        <div class="footer-title-bar"></div>
+
+        <p class="footer-text text-secondary mb-3">
+          Ada pertanyaan? Silakan hubungi admin resmi kami via WhatsApp:
+        </p>
+
+        <div class="footer-wa-list">
+          {
+            SITE_INFO.whatsappContacts.map((contact) => (
+              <a
+                href={`https://wa.me/${contact.number}?text=${encodeURIComponent(`Halo ${contact.name}, saya ingin bertanya seputar KKA Radar Kediri 2026.`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="footer-wa-card"
+              >
+                <div class="wa-icon-bubble shrink-0">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    fill="white"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.364 2.76 1.057 3.96L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.016-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.707 1.916.807 2.05c.099.133 1.39 2.123 3.368 2.975.47.203.837.325 1.123.415.472.15.902.13 1.242.078.379-.058 1.17-.478 1.336-.94.166-.462.166-.86.116-.94-.05-.08-.182-.133-.38-.232" />
+                  </svg>
+                </div>
+                <div class="footer-wa-info">
+                  <span class="wa-admin-label">
+                    {contact.adminLabel || contact.name}
+                  </span>
+                  <span class="wa-admin-number">{contact.display}</span>
+                </div>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Line -->
+    <div class="footer-bottom mt-5 pt-4 border-top">
+      <p class="text-secondary small mb-0">
+        &copy; {currentYear}
+        {SITE_INFO.name}. Hak Cipta Dilindungi Undang-Undang.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer-kka {
+    background-color: #0d1520;
+    color: #94a3b8;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    position: relative;
+    z-index: 10;
+  }
+
+  .footer-text {
+    font-size: 0.92rem;
+    line-height: 1.65;
+    color: #94a3b8 !important;
+  }
+
+  .footer-title {
+    font-size: 1.15rem;
+    color: #ffffff;
+    letter-spacing: -0.01em;
+  }
+
+  .footer-title-bar {
+    width: 34px;
+    height: 3px;
+    background-color: #f59e0b;
+    border-radius: 2px;
+    margin-top: 8px;
+    margin-bottom: 22px;
+  }
+
+  /* Nav Links */
+  .footer-nav-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .footer-link {
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 0.92rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition:
+      color 0.15s ease,
+      transform 0.15s ease;
+  }
+
+  .footer-link .chevron-symbol {
+    font-size: 1.15rem;
+    line-height: 1;
+    color: #64748b;
+    transition: color 0.15s ease;
+  }
+
+  .footer-link:hover {
+    color: #ffffff;
+    transform: translateX(3px);
+  }
+
+  .footer-link:hover .chevron-symbol {
+    color: #f59e0b;
+  }
+
+  /* WhatsApp Cards List & Items */
+  .footer-wa-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px; /* Jarak atas-bawah yang jelas antar card */
+  }
+
+  .footer-wa-card {
+    background-color: #121c2a;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .footer-wa-card:hover {
+    background-color: #182538;
+    border-color: rgba(13, 110, 253, 0.5);
+    transform: translateY(-2px);
+  }
+
+  .wa-icon-bubble {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background-color: #0d6efd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition:
+      transform 0.2s ease,
+      background-color 0.2s ease;
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+  }
+
+  .footer-wa-card:hover .wa-icon-bubble {
+    background-color: #0b5ed7;
+    transform: scale(1.05);
+  }
+
+  .footer-wa-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .wa-admin-label {
+    color: #e2e8f0;
+    font-size: 0.82rem;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+
+  .wa-admin-number {
+    color: #38bdf8;
+    font-size: 0.96rem;
+    font-weight: 600;
+    line-height: 1.3;
+    margin-top: 3px;
+    letter-spacing: 0.01em;
+  }
+
+  .footer-wa-card:hover .wa-admin-number {
+    color: #7dd3fc;
+  }
+
+  /* Bottom Line */
+  .footer-bottom {
+    border-color: rgba(255, 255, 255, 0.08) !important;
+  }
+
+  @media (max-width: 768px) {
+    .footer-kka {
+      padding-bottom: 70px; /* Safe space from WhatsApp FAB */
+    }
+  }
+</style>

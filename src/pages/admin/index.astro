@@ -1,0 +1,616 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="Dashboard Administrator" activeMenu="dashboard">
+  <div class="page-dashboard">
+    <!-- DASHBOARD HERO BANNER WITH INTEGRATED KPI GRID -->
+    <div class="dashboard-hero">
+      <div class="dashboard-hero-copy">
+        <span class="dashboard-eyebrow">COMMAND CENTER &bull; KKA 2026</span>
+        <h1>Executive Dashboard</h1>
+        <p>
+          Pantau arus pendaftaran kompetisi akademik, verifikasi pembayaran peserta, dan kuota try out CBT di 7 wilayah se-Karesidenan Kediri secara realtime.
+        </p>
+
+        <div class="d-inline-flex align-items-center gap-2 mt-2 pt-1 flex-wrap">
+          <span class="fs-9 text-muted fw-bold text-uppercase">Status Pendaftaran:</span>
+          <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2.5 py-0.5 fs-9 fw-bold" id="dashHeroMandiriStatus">Mandiri: Buka</span>
+          <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2.5 py-0.5 fs-9 fw-bold" id="dashHeroKolektifStatus">Kolektif: Buka</span>
+          <a href="/admin/pengaturan" class="fs-9 text-primary text-decoration-none fw-semibold ms-1">
+            <i class="bi bi-toggles me-0.5"></i> Ubah Status Saklar &rarr;
+          </a>
+        </div>
+      </div>
+
+      <div class="dashboard-hero-actions">
+        <a href="/admin/pendaftaran" class="btn btn-primary">
+          <i class="bi bi-people"></i>
+          <span>Data Pendaftaran</span>
+        </a>
+        <a href="/daftar/status" target="_blank" class="btn btn-light border">
+          <i class="bi bi-box-arrow-up-right"></i>
+          <span>Cek Status Publik</span>
+        </a>
+      </div>
+
+      <!-- 4 KPI CARDS (TEMPLATE STANDARD) -->
+      <div class="dashboard-kpi-grid">
+        <!-- Card 1: Total Pendaftar -->
+        <div class="dashboard-kpi-card">
+          <div class="dashboard-kpi-icon primary">
+            <i class="bi bi-people"></i>
+          </div>
+          <div class="dashboard-kpi-content">
+            <span>Total Pendaftar (Transaksi)</span>
+            <strong id="statTotalReg">0</strong>
+            <small class="positive">
+              <i class="bi bi-person-check"></i>
+              <span id="statTotalStudents">0 Siswa terdaftar</span>
+            </small>
+          </div>
+        </div>
+
+        <!-- Card 2: Menunggu Verifikasi -->
+        <div class="dashboard-kpi-card">
+          <div class="dashboard-kpi-icon warning">
+            <i class="bi bi-hourglass-split"></i>
+          </div>
+          <div class="dashboard-kpi-content">
+            <span>Menunggu Verifikasi</span>
+            <strong id="statPendingCount" class="text-warning">0</strong>
+            <small class="warning">
+              <a href="/admin/pendaftaran?filter=menunggu" class="text-warning text-decoration-none fw-bold d-inline-flex align-items-center gap-1">
+                <span>Butuh tindakan</span>
+                <i class="bi bi-arrow-right"></i>
+              </a>
+            </small>
+          </div>
+        </div>
+
+        <!-- Card 3: Pembayaran Lunas -->
+        <div class="dashboard-kpi-card">
+          <div class="dashboard-kpi-icon success">
+            <i class="bi bi-check2-circle"></i>
+          </div>
+          <div class="dashboard-kpi-content">
+            <span>Pembayaran Lunas</span>
+            <strong id="statVerifiedCount" class="text-success">0</strong>
+            <small class="positive">
+              <i class="bi bi-patch-check"></i>
+              <span>Siap ikut CBT Neutron</span>
+            </small>
+          </div>
+        </div>
+
+        <!-- Card 4: Estimasi Kas -->
+        <div class="dashboard-kpi-card">
+          <div class="dashboard-kpi-icon info">
+            <i class="bi bi-cash-stack"></i>
+          </div>
+          <div class="dashboard-kpi-content">
+            <span>Estimasi Kas Registrasi</span>
+            <strong id="statTotalRevenue" class="fs-5">Rp 0</strong>
+            <small class="text-muted">
+              <i class="bi bi-info-circle"></i>
+              <span>Akumulasi biaya transaksi</span>
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN WORKBENCH (GRID 2 KOLOM PROPORSIONAL) -->
+    <div class="dashboard-workbench">
+      <!-- SISI KIRI: SEBARAN WILAYAH & TABEL TRANSAKSI TERBARU -->
+      <div class="d-flex flex-column gap-4">
+        <!-- Panel 1: Distribusi 7 Wilayah -->
+        <section class="dashboard-panel" id="wilayah">
+          <div class="dashboard-panel-header">
+            <div>
+              <span class="dashboard-section-kicker">SEBARAN DATA</span>
+              <h2>Distribusi 7 Wilayah Karesidenan Kediri</h2>
+            </div>
+            <span class="badge bg-light text-secondary border px-3 py-1.5 rounded-pill fs-8">
+              Karesidenan Kediri
+            </span>
+          </div>
+
+          <div class="dashboard-panel-body">
+            <div class="d-flex flex-column gap-3.5" id="districtBreakdownList">
+              <div class="text-center py-4 text-muted small">
+                <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
+                <span>Memuat data sebaran wilayah dari Supabase...</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Panel 2: Tabel 10 Pendaftaran Masuk Terkini -->
+        <section class="dashboard-panel">
+          <div class="dashboard-panel-header">
+            <div>
+              <span class="dashboard-section-kicker">TRANSAKSI REALTIME</span>
+              <h2>Pendaftaran Masuk Terkini</h2>
+            </div>
+            <a href="/admin/pendaftaran" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1.5 px-3 py-1.5 rounded-3 fw-semibold fs-8">
+              <span>Lihat Semua</span>
+              <i class="bi bi-arrow-right"></i>
+            </a>
+          </div>
+
+          <div class="table-responsive px-3 pb-3">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light text-uppercase text-secondary fs-9">
+                <tr>
+                  <th class="ps-3 py-3 text-nowrap">Kode Reg</th>
+                  <th class="py-3 text-nowrap">Tipe / Jenjang</th>
+                  <th class="py-3 text-nowrap">Sekolah & Kontak</th>
+                  <th class="py-3 text-nowrap">Wilayah</th>
+                  <th class="py-3 text-nowrap">Biaya</th>
+                  <th class="py-3 text-nowrap">Status</th>
+                  <th class="pe-3 text-end py-3 text-nowrap">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="recentRegistrationsTbody">
+                <tr>
+                  <td colspan="7" class="text-center py-5 text-muted">
+                    <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
+                    <span>Mengambil data transaksi dari Supabase...</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <!-- SISI KANAN: SIDE STACK (JENJANG, JALUR, & PINTASAN AKSI) -->
+      <aside class="dashboard-side-stack">
+        <!-- Side Panel 1: Jenjang Pendidikan -->
+        <section class="dashboard-panel">
+          <div class="dashboard-panel-header">
+            <div>
+              <span class="dashboard-section-kicker">TINGKAT PENDIDIKAN</span>
+              <h2>Komposisi Jenjang</h2>
+            </div>
+          </div>
+
+          <div class="dashboard-panel-body">
+            <div class="d-flex flex-column gap-3.5">
+              <!-- SD/MI -->
+              <div>
+                <div class="d-flex align-items-center justify-content-between mb-1.5 fs-8">
+                  <span class="fw-bold text-dark d-flex align-items-center gap-1.5">
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-1.5 py-0.5 rounded">SD</span>
+                    <span>Jenjang SD / MI</span>
+                  </span>
+                  <span class="font-monospace fw-bold text-primary" id="levelCountSD">0 (0%)</span>
+                </div>
+                <div class="progress" style="height: 7px; border-radius: 4px; background-color: #f1f5f9;">
+                  <div class="progress-bar bg-primary rounded" role="progressbar" id="levelProgressSD" style="width: 0%"></div>
+                </div>
+              </div>
+
+              <!-- SMP/MTs -->
+              <div>
+                <div class="d-flex align-items-center justify-content-between mb-1.5 fs-8">
+                  <span class="fw-bold text-dark d-flex align-items-center gap-1.5">
+                    <span class="badge bg-info-subtle text-info border border-info-subtle px-1.5 py-0.5 rounded">SMP</span>
+                    <span>Jenjang SMP / MTs</span>
+                  </span>
+                  <span class="font-monospace fw-bold text-info" id="levelCountSMP">0 (0%)</span>
+                </div>
+                <div class="progress" style="height: 7px; border-radius: 4px; background-color: #f1f5f9;">
+                  <div class="progress-bar bg-info rounded" role="progressbar" id="levelProgressSMP" style="width: 0%"></div>
+                </div>
+              </div>
+
+              <!-- SMA/MA/SMK -->
+              <div>
+                <div class="d-flex align-items-center justify-content-between mb-1.5 fs-8">
+                  <span class="fw-bold text-dark d-flex align-items-center gap-1.5">
+                    <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-1.5 py-0.5 rounded">SMA</span>
+                    <span>Jenjang SMA / SMK</span>
+                  </span>
+                  <span class="font-monospace fw-bold text-warning" id="levelCountSMA">0 (0%)</span>
+                </div>
+                <div class="progress" style="height: 7px; border-radius: 4px; background-color: #f1f5f9;">
+                  <div class="progress-bar bg-warning rounded" role="progressbar" id="levelProgressSMA" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Side Panel 2: Jalur Pendaftaran (Rasio) -->
+        <section class="dashboard-panel">
+          <div class="dashboard-panel-header">
+            <div>
+              <span class="dashboard-section-kicker">JALUR REGISTRASI</span>
+              <h2>Rasio Pendaftaran</h2>
+            </div>
+          </div>
+
+          <div class="dashboard-panel-body">
+            <div class="row g-2.5 text-center">
+              <div class="col-6">
+                <div class="p-3 rounded-3 bg-light border">
+                  <span class="fs-9 text-muted text-uppercase fw-bold">Mandiri</span>
+                  <div class="h3 fw-bold text-primary mb-0 mt-1 font-monospace" id="typeMandiriCount">0</div>
+                  <span class="fs-9 text-secondary">Peserta</span>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="p-3 rounded-3 bg-light border">
+                  <span class="fs-9 text-muted text-uppercase fw-bold">Kolektif</span>
+                  <div class="h3 fw-bold text-warning mb-0 mt-1 font-monospace" id="typeKolektifCount">0</div>
+                  <span class="fs-9 text-secondary">Sekolah</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Side Panel 3: Pintasan Aksi Cepat -->
+        <section class="dashboard-panel">
+          <div class="dashboard-panel-header">
+            <div>
+              <span class="dashboard-section-kicker">AKSI CEPAT</span>
+              <h2>Pusat Pintasan</h2>
+            </div>
+          </div>
+
+          <div class="dashboard-panel-body">
+            <div class="d-flex flex-column gap-2.5">
+              <a href="/admin/pendaftaran?filter=menunggu" class="btn btn-light border text-start d-flex align-items-center justify-content-between p-2.5 rounded-3 text-decoration-none">
+                <div class="d-flex align-items-center gap-2.5">
+                  <div class="p-2 rounded-2 bg-warning-subtle text-warning d-flex align-items-center justify-content-center" style="width: 34px; height: 34px;">
+                    <i class="bi bi-shield-check fs-5"></i>
+                  </div>
+                  <div>
+                    <div class="fw-bold fs-8 text-dark">Verifikasi Pembayaran</div>
+                    <div class="fs-9 text-muted">Cek bukti transfer pending</div>
+                  </div>
+                </div>
+                <i class="bi bi-chevron-right text-muted fs-8"></i>
+              </a>
+
+              <a href="/admin/pendaftaran" class="btn btn-light border text-start d-flex align-items-center justify-content-between p-2.5 rounded-3 text-decoration-none">
+                <div class="d-flex align-items-center gap-2.5">
+                  <div class="p-2 rounded-2 bg-primary-subtle text-primary d-flex align-items-center justify-content-center" style="width: 34px; height: 34px;">
+                    <i class="bi bi-file-earmark-arrow-down fs-5"></i>
+                  </div>
+                  <div>
+                    <div class="fw-bold fs-8 text-dark">Ekspor Data (.csv)</div>
+                    <div class="fs-9 text-muted">Unduh rekap peserta & sekolah</div>
+                  </div>
+                </div>
+                <i class="bi bi-chevron-right text-muted fs-8"></i>
+              </a>
+
+              <a href="/daftar/status" target="_blank" class="btn btn-light border text-start d-flex align-items-center justify-content-between p-2.5 rounded-3 text-decoration-none">
+                <div class="d-flex align-items-center gap-2.5">
+                  <div class="p-2 rounded-2 bg-info-subtle text-info d-flex align-items-center justify-content-center" style="width: 34px; height: 34px;">
+                    <i class="bi bi-search fs-5"></i>
+                  </div>
+                  <div>
+                    <div class="fw-bold fs-8 text-dark">Cek Status Peserta</div>
+                    <div class="fs-9 text-muted">Pratinjau form publik</div>
+                  </div>
+                </div>
+                <i class="bi bi-box-arrow-up-right text-muted fs-8"></i>
+              </a>
+            </div>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </div>
+
+  <style>
+    .fs-7 { font-size: 0.9rem !important; }
+    .fs-8 { font-size: 0.82rem !important; }
+    .fs-9 { font-size: 0.72rem !important; }
+
+    /* Internal padding for card bodies so content never touches the card borders */
+    .dashboard-panel-body {
+      padding: 1.25rem 1.5rem 1.5rem;
+    }
+
+    .table > :not(caption) > * > * {
+      padding: 0.85rem 0.85rem;
+    }
+    
+    .table thead th {
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid #eef2f6;
+    }
+  </style>
+
+  <script>
+    import { supabase } from '../../lib/supabase';
+
+    const DISTRICT_NAMES = [
+      { id: 'kota-kediri', name: 'Kota Kediri' },
+      { id: 'kabupaten-kediri', name: 'Kabupaten Kediri' },
+      { id: 'kabupaten-nganjuk', name: 'Kabupaten Nganjuk' },
+      { id: 'kabupaten-blitar', name: 'Kabupaten Blitar' },
+      { id: 'kota-blitar', name: 'Kota Blitar' },
+      { id: 'kabupaten-tulungagung', name: 'Kabupaten Tulungagung' },
+      { id: 'kabupaten-trenggalek', name: 'Kabupaten Trenggalek' }
+    ];
+
+    function formatRp(num: number) {
+      return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        maximumFractionDigits: 0
+      }).format(num);
+    }
+
+    function formatDate(str?: string) {
+      if (!str) return '-';
+      try {
+        const d = new Date(str);
+        return d.toLocaleDateString('id-ID', {
+          day: '2-digit',
+          month: 'short',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      } catch (e) {
+        return str;
+      }
+    }
+
+    async function loadDashboardData() {
+      try {
+        // 1. Fetch Registrations
+        const { data: registrations, error } = await supabase
+          .from('registrations')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.warn('[Admin Dashboard] Error fetching registrations:', error.message);
+        }
+
+        const list = registrations || [];
+
+        // Merge status overrides (menjaga sinkronisasi dengan aksi admin)
+        try {
+          const storedOverrides = localStorage.getItem('kka_status_overrides');
+          if (storedOverrides) {
+            const overrides = JSON.parse(storedOverrides);
+            list.forEach((r: any) => {
+              const ov = overrides[r.kode] || (r.id && overrides[r.id]);
+              if (ov) {
+                r.status = ov.status;
+                if (ov.catatan !== undefined) r.catatan = ov.catatan;
+              }
+            });
+          }
+        } catch (ovErr) {
+          console.warn('[Admin Dashboard] Error merging overrides:', ovErr);
+        }
+
+        // 2. Fetch Participants count
+        const { count: studentCount } = await supabase
+          .from('participants')
+          .select('*', { count: 'exact', head: true });
+
+        // Calculate KPIs
+        const totalReg = list.length;
+        const totalStudents = studentCount || totalReg;
+        const pendingCount = list.filter(r => (r.status || 'menunggu').toLowerCase() === 'menunggu').length;
+        const verifiedCount = list.filter(r => (r.status || '').toLowerCase() === 'lunas').length;
+        
+        let totalRevenue = 0;
+        list.forEach(r => {
+          totalRevenue += (Number(r.total_biaya) || 0);
+        });
+
+        // Update KPI Elements
+        const elTotalReg = document.getElementById('statTotalReg');
+        const elTotalStudents = document.getElementById('statTotalStudents');
+        const elPending = document.getElementById('statPendingCount');
+        const elVerified = document.getElementById('statVerifiedCount');
+        const elRevenue = document.getElementById('statTotalRevenue');
+
+        if (elTotalReg) elTotalReg.textContent = String(totalReg);
+        if (elTotalStudents) elTotalStudents.textContent = `${totalStudents} Siswa terdaftar`;
+        if (elPending) elPending.textContent = String(pendingCount);
+        if (elVerified) elVerified.textContent = String(verifiedCount);
+        if (elRevenue) elRevenue.textContent = formatRp(totalRevenue);
+
+        // Calculate Level breakdown
+        let sdCount = 0;
+        let smpCount = 0;
+        let smaCount = 0;
+        let mandiriCount = 0;
+        let kolektifCount = 0;
+
+        list.forEach(r => {
+          const lvl = (r.jenjang || '').toLowerCase();
+          if (lvl.includes('sd')) sdCount++;
+          else if (lvl.includes('smp')) smpCount++;
+          else if (lvl.includes('sma') || lvl.includes('smk')) smaCount++;
+
+          if (r.tipe === 'kolektif') kolektifCount++;
+          else mandiriCount++;
+        });
+
+        const totalLvl = (sdCount + smpCount + smaCount) || 1;
+        const sdPercent = Math.round((sdCount / totalLvl) * 100);
+        const smpPercent = Math.round((smpCount / totalLvl) * 100);
+        const smaPercent = Math.round((smaCount / totalLvl) * 100);
+
+        const elLvlSD = document.getElementById('levelCountSD');
+        const elLvlSMP = document.getElementById('levelCountSMP');
+        const elLvlSMA = document.getElementById('levelCountSMA');
+        const elProgSD = document.getElementById('levelProgressSD');
+        const elProgSMP = document.getElementById('levelProgressSMP');
+        const elProgSMA = document.getElementById('levelProgressSMA');
+
+        if (elLvlSD) elLvlSD.textContent = `${sdCount} (${sdPercent}%)`;
+        if (elLvlSMP) elLvlSMP.textContent = `${smpCount} (${smpPercent}%)`;
+        if (elLvlSMA) elLvlSMA.textContent = `${smaCount} (${smaPercent}%)`;
+
+        if (elProgSD) elProgSD.style.width = `${sdPercent}%`;
+        if (elProgSMP) elProgSMP.style.width = `${smpPercent}%`;
+        if (elProgSMA) elProgSMA.style.width = `${smaPercent}%`;
+
+        const elMandiri = document.getElementById('typeMandiriCount');
+        const elKolektif = document.getElementById('typeKolektifCount');
+        if (elMandiri) elMandiri.textContent = String(mandiriCount);
+        if (elKolektif) elKolektif.textContent = String(kolektifCount);
+
+        // Calculate District breakdown
+        const districtCounts: Record<string, number> = {};
+        DISTRICT_NAMES.forEach(d => { districtCounts[d.name] = 0; });
+
+        list.forEach(r => {
+          const w = (r.wilayah || '').trim();
+          DISTRICT_NAMES.forEach(d => {
+            if (w.toLowerCase().includes(d.name.toLowerCase()) || d.name.toLowerCase().includes(w.toLowerCase())) {
+              districtCounts[d.name] = (districtCounts[d.name] || 0) + 1;
+            }
+          });
+        });
+
+        const districtContainer = document.getElementById('districtBreakdownList');
+        if (districtContainer) {
+          districtContainer.innerHTML = '';
+          DISTRICT_NAMES.forEach(d => {
+            const count = districtCounts[d.name] || 0;
+            const pct = totalReg > 0 ? Math.round((count / totalReg) * 100) : 0;
+            const item = document.createElement('div');
+            item.innerHTML = `
+              <div class="d-flex align-items-center justify-content-between mb-1.5 small">
+                <span class="fw-semibold text-dark fs-8">${d.name}</span>
+                <span class="font-monospace text-secondary fs-8">${count} pendaftaran (${pct}%)</span>
+              </div>
+              <div class="progress" style="height: 7px; border-radius: 4px; background-color: #f1f5f9;">
+                <div class="progress-bar bg-primary rounded" style="width: ${pct}%"></div>
+              </div>
+            `;
+            districtContainer.appendChild(item);
+          });
+        }
+
+        // Render Recent 10 Registrations Table
+        const tbody = document.getElementById('recentRegistrationsTbody');
+        if (tbody) {
+          if (list.length === 0) {
+            tbody.innerHTML = `
+              <tr>
+                <td colspan="7" class="text-center py-5 text-muted">
+                  <div class="mb-2">Belum ada transaksi pendaftaran yang masuk.</div>
+                  <a href="/daftar/mandiri" target="_blank" class="btn btn-sm btn-primary rounded-pill px-3">
+                    Uji Form Pendaftaran Publik
+                  </a>
+                </td>
+              </tr>
+            `;
+          } else {
+            tbody.innerHTML = '';
+            list.slice(0, 10).forEach(r => {
+              const tr = document.createElement('tr');
+              const st = (r.status || 'menunggu').toLowerCase();
+
+              let statusBadge = '<span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill px-2.5 py-1">Menunggu</span>';
+              if (st === 'lunas') {
+                statusBadge = '<span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2.5 py-1">Lunas</span>';
+              } else if (st === 'ditolak') {
+                statusBadge = '<span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2.5 py-1">Ditolak</span>';
+              }
+
+              const tipeBadge = r.tipe === 'kolektif' 
+                ? '<span class="badge bg-warning text-dark px-2 py-0.5 rounded-pill fs-9">Kolektif</span>' 
+                : '<span class="badge bg-primary text-white px-2 py-0.5 rounded-pill fs-9">Mandiri</span>';
+
+              tr.innerHTML = `
+                <td class="ps-3 text-nowrap">
+                  <a href="/admin/pendaftaran?kode=${r.kode}" class="font-monospace fw-bold text-primary text-decoration-none fs-8">
+                    ${r.kode}
+                  </a>
+                  <div class="fs-9 text-muted">${formatDate(r.created_at)}</div>
+                </td>
+                <td class="text-nowrap">
+                  <div class="mb-1">${tipeBadge}</div>
+                  <span class="fs-8 text-secondary fw-semibold">${r.jenjang || '-'}</span>
+                </td>
+                <td>
+                  <div class="fw-bold text-dark text-truncate fs-8" style="max-width: 200px;">${r.sekolah || '-'}</div>
+                  <div class="fs-9 text-secondary text-truncate" style="max-width: 200px;">${r.nama_kontak || '-'} (${r.hp_kontak || '-'})</div>
+                </td>
+                <td class="text-nowrap">
+                  <span class="text-dark fw-semibold fs-8">${r.wilayah || '-'}</span>
+                  <div class="fs-9 text-muted">Kec. ${r.kecamatan || '-'}</div>
+                </td>
+                <td class="font-monospace fw-bold text-dark fs-8 text-nowrap">
+                  ${formatRp(r.total_biaya || 0)}
+                </td>
+                <td class="text-nowrap">
+                  ${statusBadge}
+                </td>
+                <td class="pe-3 text-end text-nowrap">
+                  <a href="/admin/pendaftaran?kode=${r.kode}" class="btn btn-sm btn-light border rounded-2 px-2.5 py-1 text-primary fw-semibold fs-8" title="Kelola Berkas">
+                    Kelola &rarr;
+                  </a>
+                </td>
+              `;
+              tbody.appendChild(tr);
+            });
+          }
+        }
+
+        // Check Registration Control Status
+        try {
+          const regStored = localStorage.getItem('kka_registration_status_control');
+          if (regStored) {
+            const regCfg = JSON.parse(regStored);
+            const bM = document.getElementById('dashHeroMandiriStatus');
+            const bK = document.getElementById('dashHeroKolektifStatus');
+
+            if (bM && regCfg.mandiri) {
+              if (regCfg.mandiri.enabled === false) {
+                const isQ = regCfg.mandiri.condition === 'kuota_penuh';
+                bM.textContent = `Mandiri: ${isQ ? 'Kuota Penuh' : 'Tutup'}`;
+                bM.className = 'badge bg-danger text-white rounded-pill px-2.5 py-0.5 fs-9 fw-bold';
+              } else {
+                bM.textContent = 'Mandiri: Buka';
+                bM.className = 'badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2.5 py-0.5 fs-9 fw-bold';
+              }
+            }
+
+            if (bK && regCfg.kolektif) {
+              if (regCfg.kolektif.enabled === false) {
+                const isQ = regCfg.kolektif.condition === 'kuota_penuh';
+                bK.textContent = `Kolektif: ${isQ ? 'Kuota Penuh' : 'Tutup'}`;
+                bK.className = 'badge bg-danger text-white rounded-pill px-2.5 py-0.5 fs-9 fw-bold';
+              } else {
+                bK.textContent = 'Kolektif: Buka';
+                bK.className = 'badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2.5 py-0.5 fs-9 fw-bold';
+              }
+            }
+          }
+        } catch (e) {
+          console.warn('Error loading reg status in dashboard:', e);
+        }
+
+      } catch (err) {
+        console.warn('[Admin Dashboard] Exception loading data:', err);
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadDashboardData);
+    } else {
+      loadDashboardData();
+    }
+    document.addEventListener('astro:page-load', loadDashboardData);
+    window.addEventListener('admin:refresh-data', loadDashboardData);
+  </script>
+</AdminLayout>

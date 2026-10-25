@@ -1,0 +1,392 @@
+---
+const currentPath = Astro.url.pathname;
+const isHome = currentPath === '/' || currentPath === '';
+
+const isActive = (href: string) => {
+  if (href === '/') return isHome;
+  return currentPath.startsWith(href);
+};
+
+const isInfoActive = currentPath.startsWith('/daftar') || currentPath.startsWith('/cek-status');
+---
+
+<header class={`header-kka ${isHome ? 'navbar-transparent' : 'navbar-solid sticky-top shadow-sm'}`} id="mainHeader">
+  <nav class="navbar navbar-expand-lg py-2 py-lg-3">
+    <div class="container">
+      <!-- Logo KKA on the left, bounded by standard container -->
+      <a class="navbar-brand d-flex align-items-center py-0" href="/" title="Beranda KKA 2026">
+        <img 
+          src="/images/logo-kka.webp" 
+          alt="Kompetisi Kompetensi Akademik (KKA) 2026 - Jawa Pos Radar Kediri" 
+          class="kka-main-logo"
+          width="135"
+          height="54"
+          loading="eager"
+        />
+      </a>
+
+      <!-- Mobile Toggle Button -->
+      <button 
+        class="navbar-toggler border-0 shadow-none px-2" 
+        type="button" 
+        data-bs-toggle="collapse" 
+        data-bs-target="#navbarMainCollapse" 
+        aria-controls="navbarMainCollapse" 
+        aria-expanded="false" 
+        aria-label="Toggle navigation"
+        id="navToggleBtn"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Nav Links on the right -->
+      <div class="collapse navbar-collapse" id="navbarMainCollapse">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center gap-1 gap-lg-2 py-2 py-lg-0">
+          <li class="nav-item">
+            <a 
+              class={`nav-link px-3 ${isActive('/') ? 'active' : ''}`} 
+              href="/"
+            >
+              Beranda
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a 
+              class={`nav-link px-3 ${isActive('/tentang-kka') ? 'active' : ''}`} 
+              href="/tentang-kka"
+            >
+              Tentang KKA
+            </a>
+          </li>
+
+          <!-- Dropdown Informasi -->
+          <li class="nav-item dropdown custom-dropdown">
+            <a 
+              class={`nav-link px-3 dropdown-toggle d-flex align-items-center gap-1 ${isInfoActive ? 'active' : ''}`} 
+              href="#" 
+              id="navbarDropdownInfo" 
+              role="button" 
+              data-bs-toggle="dropdown" 
+              aria-expanded="false"
+            >
+              <span>Informasi</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" class="dropdown-chevron-icon ms-1">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm border rounded-3 p-2" aria-labelledby="navbarDropdownInfo" id="infoDropdownMenu">
+              <li>
+                <a class="dropdown-item py-2 rounded-2 small" href="/daftar/mandiri">
+                  Pendaftaran Mandiri
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item py-2 rounded-2 small" href="/daftar/kolektif">
+                  Pendaftaran Kolektif
+                </a>
+              </li>
+              <li>
+                <hr class="dropdown-divider my-1 border-slate-200">
+              </li>
+              <li>
+                <a class="dropdown-item py-2 rounded-2 small d-flex align-items-center gap-2" href="/daftar/status">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="text-primary">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                  </svg>
+                  <span>Cek Status Pendaftaran</span>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item">
+            <a 
+              class={`nav-link px-3 ${isActive('/regulasi') ? 'active' : ''}`} 
+              href="/regulasi"
+            >
+              Regulasi
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a 
+              class={`nav-link px-3 ${isActive('/galeri') ? 'active' : ''}`} 
+              href="/galeri"
+            >
+              Galeri
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a 
+              class={`nav-link px-3 ${isActive('/blog') ? 'active' : ''}`} 
+              href="/blog"
+            >
+              Blog
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a 
+              class={`nav-link px-3 ${isActive('/kontak') ? 'active' : ''}`} 
+              href="/kontak"
+            >
+              Kontak
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<style>
+  .header-kka {
+    transition: background-color 0.25s ease, backdrop-filter 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .kka-main-logo {
+    height: 52px;
+    width: auto;
+    object-fit: contain;
+    transition: transform 0.2s ease;
+  }
+
+  .kka-main-logo:hover {
+    transform: scale(1.02);
+  }
+
+  .dropdown-chevron-icon {
+    transition: transform 0.2s ease;
+  }
+
+  .custom-dropdown:hover .dropdown-chevron-icon {
+    transform: rotate(180deg);
+  }
+
+  /* 1. Transparent Navbar on Homepage (Overlaying Hero) */
+  .header-kka.navbar-transparent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1030;
+    background-color: transparent !important;
+    border-bottom: none !important;
+  }
+
+  .header-kka.navbar-transparent .nav-link {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9) !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    transition: color 0.15s ease;
+  }
+
+  .header-kka.navbar-transparent .nav-link:hover {
+    color: #ffffff !important;
+  }
+
+  .header-kka.navbar-transparent .nav-link.active {
+    color: #ffffff !important;
+    font-weight: 700;
+  }
+
+  /* Scrolled State on Homepage: Clean Solid White (NO BLUE) */
+  .header-kka.navbar-transparent.scrolled {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1030;
+    background-color: rgba(255, 255, 255, 0.98) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border-bottom: 1px solid #e2e8f0 !important;
+  }
+
+  .header-kka.navbar-transparent.scrolled .nav-link {
+    color: #1e293b !important;
+    text-shadow: none;
+  }
+
+  .header-kka.navbar-transparent.scrolled .nav-link:hover,
+  .header-kka.navbar-transparent.scrolled .nav-link.active {
+    color: #0f2d59 !important;
+  }
+
+  /* 2. Solid Navbar on Inner Pages */
+  .header-kka.navbar-solid {
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    top: 0 !important;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1030 !important;
+    background-color: rgba(255, 255, 255, 0.98) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid #e2e8f0;
+    transition: box-shadow 0.2s ease, background-color 0.2s ease;
+  }
+
+  .header-kka.navbar-solid.scrolled {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08) !important;
+  }
+
+  .header-kka.navbar-solid .nav-link {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #1e293b;
+    transition: color 0.15s ease;
+  }
+
+  .header-kka.navbar-solid .nav-link:hover {
+    color: #0f2d59;
+  }
+
+  .header-kka.navbar-solid .nav-link.active {
+    color: #0f2d59 !important;
+    font-weight: 700;
+  }
+
+  /* 3. Global Unified Active Indicator Underline (Centered Bottom, No Side Floating) */
+  .header-kka .nav-link {
+    position: relative;
+    padding-bottom: 0.65rem !important;
+  }
+
+  /* Completely remove Bootstrap's default caret border and margin */
+  .dropdown-toggle::after,
+  .header-kka .dropdown-toggle::after {
+    border: none !important;
+    margin: 0 !important;
+    vertical-align: baseline !important;
+  }
+
+  .dropdown-toggle:not(.active)::after {
+    display: none !important;
+  }
+
+  /* Active underline (warm yellow / gold) centered underneath every active item */
+  .header-kka .nav-link.active::after {
+    content: '' !important;
+    display: block !important;
+    position: absolute !important;
+    bottom: 2px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 24px !important;
+    height: 3px !important;
+    background-color: #f59e0b !important;
+    border: none !important;
+    border-radius: 2px !important;
+    margin: 0 !important;
+    pointer-events: none !important;
+  }
+
+  /* Dropdown Menu Box Styling */
+  .custom-dropdown .dropdown-menu {
+    border-color: #e2e8f0;
+    min-width: 200px;
+    background-color: #ffffff;
+  }
+
+  .custom-dropdown .dropdown-item {
+    color: #334155;
+    font-weight: 500;
+  }
+
+  .custom-dropdown .dropdown-item:hover {
+    background-color: #f1f5f9;
+    color: #0f4c81;
+  }
+
+  @media (min-width: 992px) {
+    .custom-dropdown:hover .dropdown-menu {
+      display: block;
+      margin-top: 0;
+      animation: fadeIn 0.15s ease;
+    }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Mobile menu adjustments for transparent & scrolled mode */
+  @media (max-width: 991px) {
+    .header-kka.navbar-transparent:not(.scrolled) .navbar-collapse {
+      background-color: rgba(8, 20, 38, 0.98);
+      backdrop-filter: blur(16px);
+      border-radius: 14px;
+      padding: 16px;
+      margin-top: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .header-kka.navbar-transparent.scrolled .navbar-collapse {
+      background-color: #ffffff;
+      border-radius: 14px;
+      padding: 16px;
+      margin-top: 10px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    .header-kka.navbar-transparent:not(.scrolled) .navbar-toggler-icon {
+      filter: invert(1);
+    }
+    .header-kka.navbar-transparent.scrolled .navbar-toggler-icon {
+      filter: none;
+    }
+  }
+</style>
+
+<script>
+  // Mobile navbar toggle & dropdown support
+  const navBtn = document.getElementById('navToggleBtn');
+  const collapseEl = document.getElementById('navbarMainCollapse');
+  const dropdownToggle = document.getElementById('navbarDropdownInfo');
+  const dropdownMenu = document.getElementById('infoDropdownMenu');
+  const header = document.getElementById('mainHeader');
+
+  if (navBtn && collapseEl) {
+    navBtn.addEventListener('click', () => {
+      collapseEl.classList.toggle('show');
+    });
+  }
+
+  if (dropdownToggle && dropdownMenu) {
+    dropdownToggle.addEventListener('click', (e) => {
+      e.preventDefault();
+      dropdownMenu.classList.toggle('show');
+    });
+
+    // Close when clicked outside
+    document.addEventListener('click', (e) => {
+      if (!dropdownToggle.contains(e.target as Node) && !dropdownMenu.contains(e.target as Node)) {
+        dropdownMenu.classList.remove('show');
+      }
+    });
+  }
+
+  // Smooth scroll listener for navbar (elevation & transparent state)
+  if (header) {
+    const onScroll = () => {
+      if (window.scrollY > 20) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+</script>

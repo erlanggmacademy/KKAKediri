@@ -1,0 +1,577 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Breadcrumb from "../components/Breadcrumb.astro";
+import { SITE_INFO } from "../data/competition";
+---
+
+<BaseLayout
+  title="Tentang KKA - Kompetisi Kompetensi Akademik Jawa Pos Radar Kediri"
+  description="Pelajari latar belakang, visi, misi, dan standar kompetisi KKA (Kompetisi Kompetensi Akademik) yang diinisiasi oleh Jawa Pos Radar Kediri dan Neutron Yogyakarta."
+>
+  <!-- Page Header -->
+  <section class="bg-gradient-navy text-white py-5">
+    <div class="container py-3 text-center">
+      <span class="badge bg-danger rounded-pill px-3 py-1 mb-2"
+        >Profil & Informasi</span
+      >
+      <h1 class="display-5 fw-bold mb-3">Tentang KKA Radar Kediri</h1>
+      <p class="lead text-white-50 max-w-xl mx-auto mb-1">
+        Mengenal lebih dekat ajang kompetisi akademik paling bergengsi
+        se-Karesidenan Kediri dan sekitarnya.
+      </p>
+      <Breadcrumb items={[{ label: "Tentang KKA", active: true }]} />
+    </div>
+  </section>
+
+  <!-- Content Section -->
+  <section class="py-5 bg-white">
+    <div class="container py-3">
+      <!-- Main Overview & Logo Row -->
+      <div class="row g-4 g-lg-5 align-items-center mb-5">
+        <!-- Left: Text & Key Stats -->
+        <div class="col-lg-7">
+          <h2 class="fw-bold text-dark display-6 mb-3">
+            Kompetisi Kompetensi Akademik (KKA) 2026
+          </h2>
+          <p class="text-secondary lh-lg mb-3">
+            Pendidikan di Indonesia terus bertransformasi demi melahirkan
+            generasi berdaya saing global. Namun, hasil evaluasi <strong
+              >TKA Nasional</strong
+            > dan Daerah 2025 menunjukkan bahwa rata-rata nilai kompetensi akademik
+            siswa di semua jenjang masih belum optimal.
+          </p>
+          <p class="text-secondary lh-lg mb-4">
+            Ada kesenjangan nyata antara materi yang dipelajari di kelas dengan
+            kesiapan menghadapi soal-soal berbasis Higher Order Thinking Skills
+            (HOTS). KKA hadir sebagai jembatan mempersiapkan siswa secara mental
+            dan akademik sebelum menghadapi seleksi sesungguhnya.
+          </p>
+
+          <!-- Key Metrics / Stat Counters -->
+          <div class="d-flex flex-wrap gap-4 gap-md-5 pt-2">
+            <div class="stat-item">
+              <div class="stat-number fw-bold text-dark">362+</div>
+              <div class="stat-label text-secondary">Lembaga<br />peserta</div>
+              <div class="stat-bar"></div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number fw-bold text-dark">5.633</div>
+              <div class="stat-label text-secondary">
+                Peserta<br />terdaftar
+              </div>
+              <div class="stat-bar"></div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number fw-bold text-dark">7</div>
+              <div class="stat-label text-secondary">
+                Wilayah<br />kompetisi
+              </div>
+              <div class="stat-bar"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Official Logo Card -->
+        <div class="col-lg-5">
+          <div
+            class="logo-card-frame bg-white p-4 p-md-5 rounded-4 shadow-sm border text-center d-flex align-items-center justify-content-center"
+          >
+            <img
+              src="/images/logo-kka.webp"
+              alt="Logo Resmi Kompetisi Kompetensi Akademik (KKA) 2026 - Jawa Pos Radar Kediri"
+              class="img-fluid logo-emblem-image"
+              width="360"
+              height="360"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature Highlight Cards -->
+      <div class="row g-4 mb-5">
+        <div class="col-md-4">
+          <div
+            class="card-feature-item p-4 rounded-4 bg-white border h-100 text-center shadow-sm"
+          >
+            <div class="feature-icon-wrapper mb-3 mx-auto">
+              <!-- Trophy Icon -->
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="text-primary"
+              >
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                <path d="M4 22h16"></path>
+                <path
+                  d="M10 14.66V17c0 .55-.45 1-1 1H7v2h10v-2h-2c-.55 0-1-.45-1-1v-2.34"
+                ></path>
+                <path
+                  d="M6 4h12a2 2 0 0 1 2 2v3a6 6 0 0 1-6 6h0a6 6 0 0 1-6-6V6a2 2 0 0 1 2-2Z"
+                ></path>
+              </svg>
+            </div>
+            <h5 class="fw-bold text-dark mb-2 fs-6">
+              Dari KKA Menuju PTN Favorit
+            </h5>
+            <p class="text-secondary small mb-0 lh-base">
+              Bukan sekadar kompetisi KKA adalah batu loncatan nyata.
+            </p>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div
+            class="card-feature-item p-4 rounded-4 bg-white border h-100 text-center shadow-sm"
+          >
+            <div class="feature-icon-wrapper mb-3 mx-auto">
+              <!-- Rosette / Medal Ribbon Icon -->
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="text-primary"
+              >
+                <circle cx="12" cy="8" r="6"></circle>
+                <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"></path>
+              </svg>
+            </div>
+            <h5 class="fw-bold text-dark mb-2 fs-6">Bukti Nyata</h5>
+            <p class="text-secondary small mb-0 lh-base">
+              Prestasi di KKA bukan akhir perjalanan, melainkan awal dari
+              pencapaian yang lebih besar.
+            </p>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div
+            class="card-feature-item p-4 rounded-4 bg-white border h-100 text-center shadow-sm"
+          >
+            <div class="feature-icon-wrapper mb-3 mx-auto">
+              <!-- Book / Check Standard Icon -->
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="text-primary"
+              >
+                <path
+                  d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"
+                ></path>
+                <path d="M6 6h10"></path>
+                <path d="M6 10h10"></path>
+                <path d="m9 16 2 2 4-4"></path>
+              </svg>
+            </div>
+            <h5 class="fw-bold text-dark mb-2 fs-6">Standar Soal Teruji</h5>
+            <p class="text-secondary small mb-0 lh-base">
+              Disusun bersama Neutron Yogyakarta berstandar TKA dan penalaran
+              analitis HOTS.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visi & Misi Section -->
+      <div class="row g-4 pt-2">
+        <div class="col-md-6">
+          <div
+            class="kka-card p-4 p-xl-5 h-100 rounded-4 border bg-light d-flex flex-column justify-content-between"
+          >
+            <div>
+              <div class="d-flex align-items-center gap-2 mb-3">
+                <span
+                  class="badge bg-primary rounded-pill px-3 py-1 fs-8 fw-bold"
+                  >VISI KKA</span
+                >
+              </div>
+              <h4 class="fw-bold text-kka-primary mb-3">Visi KKA</h4>
+              <div class="d-flex flex-column gap-3 text-secondary lh-base">
+                <p class="mb-0">
+                  Menjadi sarana try-out dan asah kemampuan akademik yang
+                  representatif mengenalkan siswa pada model soal seleksi masuk
+                  jenjang pendidikan selanjutnya sebelum hari-H yang
+                  sesungguhnya.
+                </p>
+                <p class="mb-0">
+                  Menjadi alat ukur dan evaluasi kesiapan siswa dalam menghadapi
+                  seleksi jalur prestasi, sekaligus mendongkrak nama baik
+                  sekolah melalui raihan prestasi di tingkat regional.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div
+            class="kka-card p-4 p-xl-5 h-100 rounded-4 border bg-light d-flex flex-column justify-content-between"
+          >
+            <div>
+              <div class="d-flex align-items-center gap-2 mb-3">
+                <span
+                  class="badge bg-warning text-dark rounded-pill px-3 py-1 fs-8 fw-bold"
+                  >MISI KAMI</span
+                >
+              </div>
+              <h4 class="fw-bold text-kka-primary mb-3">Misi Kami</h4>
+              <p class="text-secondary mb-0 lh-lg">
+                Meningkatkan mutu dan standar nilai akademik pelajar di wilayah
+                Kediri dan sekitarnya, agar mampu bersaing di tingkat provinsi
+                maupun nasional.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Penyelenggara & Mitra Section -->
+  <section class="py-5 bg-slate-subtle border-top">
+    <div class="container py-3">
+      <div class="row g-4 g-lg-5 align-items-center">
+        <!-- Kolom Kiri: Penyelenggara & Dukungan -->
+        <div class="col-lg-5">
+          <span
+            class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-1 fs-8 fw-bold mb-2"
+          >
+            PENYELENGGARA & MITRA
+          </span>
+          <h2 class="display-6 fw-bold text-dark mb-3">
+            Diselenggarakan oleh Jawa Pos Radar Kediri
+          </h2>
+          <p class="text-secondary lh-lg mb-3">
+            KKA 2026 diselenggarakan oleh <strong>Jawa Pos Radar Kediri</strong> bekerja
+            sama dengan Lembaga Bimbingan Belajar <strong
+              >Neutron Yogyakarta</strong
+            > sebagai official partner penyusun soal dan sistem ujian.
+          </p>
+          <p class="text-secondary lh-lg mb-4">
+            Kegiatan ini didukung oleh <strong
+              >Cabang Dinas Pendidikan (Cabdindik)</strong
+            > Wilayah Kediri, Nganjuk, Tulungagung/Trenggalek, dan Blitar, serta Kemenag
+            dan dinas pendidikan setempat menjamin standar kualitas dan kredibilitas
+            kompetisi.
+          </p>
+          <a
+            href="/daftar"
+            class="btn btn-primary rounded-pill px-4 py-2.5 fw-semibold d-inline-flex align-items-center gap-2 shadow-sm"
+          >
+            <span>Daftar Sekarang</span>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+        </div>
+
+        <!-- Kolom Kanan: 2x2 Grid History & Milestones -->
+        <div class="col-lg-7">
+          <div class="row g-3 g-md-4">
+            <!-- Card 1: KKA dari Tahun ke Tahun -->
+            <div class="col-sm-6">
+              <div
+                class="partner-milestone-card p-4 rounded-4 bg-white border h-100 shadow-2xs"
+              >
+                <div class="milestone-icon-wrap mb-3 text-primary">
+                  <!-- Wave / Activity Icon -->
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M2 12h5l3 5 4-10 3 5h5"></path>
+                  </svg>
+                </div>
+                <h5 class="fw-bold text-dark mb-2 fs-6">
+                  KKA dari Tahun ke Tahun
+                </h5>
+                <p class="text-secondary small mb-0 lh-base">
+                  KKA tumbuh bersama antusiasme pelajar dan kepercayaan sekolah
+                  se-Karesidenan Kediri.
+                </p>
+              </div>
+            </div>
+
+            <!-- Card 2: KKA 2024 -->
+            <div class="col-sm-6">
+              <div
+                class="partner-milestone-card p-4 rounded-4 bg-white border h-100 shadow-2xs"
+              >
+                <div class="milestone-icon-wrap mb-3 text-primary">
+                  <!-- Shield Check Icon -->
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
+                    ></path>
+                    <path d="m9 12 2 2 4-4"></path>
+                  </svg>
+                </div>
+                <h5 class="fw-bold text-dark mb-2 fs-6">KKA 2024</h5>
+                <p class="text-secondary small mb-0 lh-base">
+                  3 wilayah · 4.920 peserta · 225 finalis
+                </p>
+              </div>
+            </div>
+
+            <!-- Card 3: KKA 2025 -->
+            <div class="col-sm-6">
+              <div
+                class="partner-milestone-card p-4 rounded-4 bg-white border h-100 shadow-2xs"
+              >
+                <div class="milestone-icon-wrap mb-3 text-primary">
+                  <!-- Trophy Icon -->
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                    <path d="M4 22h16"></path>
+                    <path
+                      d="M10 14.66V17c0 .55-.45 1-1 1H7v2h10v-2h-2c-.55 0-1-.45-1-1v-2.34"
+                    ></path>
+                    <path
+                      d="M6 4h12a2 2 0 0 1 2 2v3a6 6 0 0 1-6 6h0a6 6 0 0 1-6-6V6a2 2 0 0 1 2-2Z"
+                    ></path>
+                  </svg>
+                </div>
+                <h5 class="fw-bold text-dark mb-2 fs-6">KKA 2025</h5>
+                <p class="text-secondary small mb-0 lh-base">
+                  7 wilayah · 5.633 peserta · 525 finalis
+                </p>
+              </div>
+            </div>
+
+            <!-- Card 4: KKA 2026 -->
+            <div class="col-sm-6">
+              <div
+                class="partner-milestone-card p-4 rounded-4 bg-white border h-100 shadow-2xs highlight-card"
+              >
+                <div
+                  class="d-flex align-items-center justify-content-between mb-3"
+                >
+                  <div class="milestone-icon-wrap text-primary">
+                    <!-- Users Icon -->
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"
+                      ></path>
+                      <circle cx="9" cy="7" r="4"></circle>
+                      <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                      <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                  </div>
+                  <span
+                    class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2.5 py-1 fs-9 fw-bold"
+                    >EDISI 2026</span
+                  >
+                </div>
+                <h5 class="fw-bold text-dark mb-2 fs-6">KKA 2026</h5>
+                <p class="text-secondary small mb-0 lh-base">
+                  7 wilayah · Target lebih besar, lebih kompetitif!
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Banner Final (Desain Seragam Beranda) -->
+  <section
+    class="py-5 bg-gradient-navy text-white text-center position-relative overflow-hidden"
+  >
+    <div class="container py-4 position-relative">
+      <span class="badge bg-danger rounded-pill px-3 py-1 mb-3"
+        >KKA Radar Kediri 2026</span
+      >
+      <h2 class="display-6 fw-bold mb-3">
+        Tertarik Menguji Kemampuanmu di KKA 2026?
+      </h2>
+      <p class="lead text-white-50 max-w-xl mx-auto mb-4">
+        Daftar sekarang sebelum kuota peserta regional terpenuhi dan tarif promo
+        gelombang berakhir.
+      </p>
+      <div class="d-flex flex-wrap justify-content-center gap-3">
+        <a
+          href="/daftar/mandiri"
+          class="btn btn-kka-red btn-lg px-5 py-3 shadow-lg"
+        >
+          Daftar Mandiri
+        </a>
+        <a
+          href="/daftar/kolektif"
+          class="btn btn-outline-light btn-lg px-5 py-3"
+        >
+          Daftar Kolektif Sekolah
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .max-w-xl {
+    max-width: 640px;
+  }
+  .fs-8 {
+    font-size: 0.78rem;
+  }
+  .fs-9 {
+    font-size: 0.72rem;
+  }
+  .shadow-2xs {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+
+  /* Background slate subtle */
+  .bg-slate-subtle {
+    background-color: #f8fafc;
+  }
+
+  /* Stat Counters */
+  .stat-item {
+    min-width: 105px;
+  }
+  .stat-number {
+    font-size: 2.15rem;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  .stat-label {
+    font-size: 0.85rem;
+    margin-top: 0.35rem;
+    line-height: 1.35;
+  }
+  .stat-bar {
+    width: 32px;
+    height: 3px;
+    background-color: #0d6efd;
+    border-radius: 2px;
+    margin-top: 0.6rem;
+  }
+
+  /* Logo Frame */
+  .logo-card-frame {
+    border-color: rgba(0, 0, 0, 0.08) !important;
+    background: #ffffff;
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+  .logo-card-frame:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(0, 32, 96, 0.08) !important;
+  }
+  .logo-emblem-image {
+    max-width: 330px;
+    max-height: 330px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.06));
+  }
+
+  /* Feature Highlight Cards */
+  .card-feature-item {
+    border-color: rgba(0, 0, 0, 0.07) !important;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease,
+      border-color 0.2s ease;
+  }
+  .card-feature-item:hover {
+    transform: translateY(-3px);
+    border-color: rgba(13, 110, 253, 0.35) !important;
+    box-shadow: 0 10px 24px rgba(13, 110, 253, 0.08) !important;
+  }
+  .feature-icon-wrapper {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    background: rgba(13, 110, 253, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Partner & Milestone Cards */
+  .partner-milestone-card {
+    border-color: rgba(0, 0, 0, 0.07) !important;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease,
+      border-color 0.2s ease;
+  }
+  .partner-milestone-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(13, 110, 253, 0.3) !important;
+    box-shadow: 0 10px 22px rgba(13, 110, 253, 0.07) !important;
+  }
+  .partner-milestone-card.highlight-card {
+    border-color: rgba(13, 110, 253, 0.25) !important;
+  }
+  .milestone-icon-wrap {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: rgba(13, 110, 253, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>

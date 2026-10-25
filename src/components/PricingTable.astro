@@ -1,0 +1,107 @@
+---
+import { WAVES } from '../data/competition';
+import { formatRupiah } from '../lib/pricing';
+---
+
+<div class="row g-4 justify-content-center">
+  {WAVES.map((wave) => (
+    <div class="col-lg-4 col-md-6">
+      <div class={`kka-card h-100 p-4 p-xl-5 d-flex flex-column justify-content-between position-relative ${wave.isActive ? 'border-primary shadow-lg ring-active' : ''}`}>
+        {wave.isActive && (
+          <div class="position-absolute top-0 end-0 m-3">
+            <span class="badge bg-warning text-dark rounded-pill px-3 py-1 shadow-sm fw-bold">
+              Sedang Aktif
+            </span>
+          </div>
+        )}
+
+        <div>
+          <div class="mb-3">
+            <span class="text-uppercase tracking-wider fw-bold fs-8 text-primary">
+              Biaya Pendaftaran
+            </span>
+            <h4 class="fw-bold text-kka-primary mt-1 mb-1">{wave.name}</h4>
+            <div class="text-muted small fw-medium d-flex align-items-center gap-1.5">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              <span>{wave.period}</span>
+            </div>
+          </div>
+
+          <hr class="border-secondary-subtle my-3" />
+
+          <!-- Daftar Harga Per Jenjang -->
+          <div class="d-flex flex-column gap-3 mb-4">
+            <div class="d-flex justify-content-between align-items-center p-3 rounded-3 bg-light">
+              <div>
+                <div class="fw-bold text-dark">Jenjang SD / MI</div>
+                <div class="text-muted fs-8">Kelas IV, V, VI</div>
+              </div>
+              <div class="fs-5 fw-extrabold text-kka-primary">
+                {formatRupiah(wave.prices.sd)}
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center p-3 rounded-3 bg-light">
+              <div>
+                <div class="fw-bold text-dark">Jenjang SMP / MTs</div>
+                <div class="text-muted fs-8">Kelas VIII, IX</div>
+              </div>
+              <div class="fs-5 fw-extrabold text-kka-primary">
+                {formatRupiah(wave.prices.smp)}
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center p-3 rounded-3 bg-light border-start border-3 border-danger">
+              <div>
+                <div class="fw-bold text-dark">Jenjang SMA / MA / SMK</div>
+                <div class="text-muted fs-8">Kelas XI, XII</div>
+              </div>
+              <div class="fs-5 fw-extrabold text-danger">
+                {formatRupiah(wave.prices.sma)}
+              </div>
+            </div>
+          </div>
+
+          <div class="small text-muted mb-4">
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <span class="text-success fw-bold">✓</span>
+              <span>Sertifikat resmi Jawa Pos Radar Kediri</span>
+            </div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <span class="text-success fw-bold">✓</span>
+              <span>Soal standar TKA Neutron Yogyakarta</span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <span class="text-success fw-bold">✓</span>
+              <span>Peluang medali & uang pembinaan</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <a 
+            href="/daftar/mandiri" 
+            class={`btn w-100 py-3 fw-bold rounded-3 ${wave.isActive ? 'btn-kka-red' : 'btn-outline-secondary'}`}
+          >
+            {wave.isActive ? 'Daftar Sekarang' : 'Daftar di Gelombang Ini'}
+          </a>
+        </div>
+      </div>
+    </div>
+  ))}
+</div>
+
+<style>
+  .fs-8 { font-size: 0.78rem; }
+  .fw-extrabold { font-weight: 800; }
+  .tracking-wider { letter-spacing: 0.08em; }
+  .ring-active {
+    border-width: 2px !important;
+    background: #ffffff;
+  }
+</style>

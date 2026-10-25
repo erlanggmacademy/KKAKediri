@@ -1,0 +1,517 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { DISTRICTS, REGIONS } from '../../data/competition';
+---
+
+<AdminLayout title="Kelola Wilayah & Kuota Peserta" activeMenu="wilayah">
+  <div class="page-dashboard">
+    <!-- PAGE HERO BANNER -->
+    <div class="dashboard-hero mb-4">
+      <div class="dashboard-hero-copy">
+        <span class="dashboard-eyebrow">PENGATURAN REGIONAL &bull; KKA 2026</span>
+        <h1>Kelola Wilayah & Kuota CBT</h1>
+        <p>
+          Atur informasi 7 wilayah se-Karesidenan Kediri, lokasi venue ujian CBT Neutron, batas kuota peserta, kontak PIC panitia lokal, dan status pendaftaran publik.
+        </p>
+      </div>
+
+      <div class="dashboard-hero-actions">
+        <button type="button" class="btn btn-primary" id="btnResetAllWilayah">
+          <i class="bi bi-arrow-counterclockwise"></i>
+          <span>Reset Default</span>
+        </button>
+        <a href="/" target="_blank" class="btn btn-light border">
+          <i class="bi bi-globe"></i>
+          <span>Lihat di Beranda</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- SUMMARY CARDS REGIONAL -->
+    <div class="row g-3 mb-4">
+      {REGIONS.map((reg, idx) => (
+        <div class="col-12 col-md-4">
+          <div class="dashboard-panel h-100">
+            <div class="dashboard-panel-header compact py-2.5 px-3.5">
+              <span class="fw-bold fs-8 text-primary text-uppercase">{reg.name}</span>
+              <span class="badge bg-light text-secondary border rounded-pill px-2.5 py-0.5 fs-9">Regional</span>
+            </div>
+            <div class="dashboard-panel-body py-3 px-3.5">
+              <h3 class="h6 fw-bold text-dark mb-1">{reg.description}</h3>
+              <p class="fs-9 text-muted mb-0">Cakupan kompetisi & babak penyisihan CBT terpadu.</p>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- DAFTAR 7 WILAYAH -->
+    <div class="dashboard-panel mb-4">
+      <div class="dashboard-panel-header px-3.5 py-3">
+        <div class="d-flex align-items-center gap-2">
+          <span class="dashboard-section-kicker">DATA WILAYAH</span>
+          <h2 class="fs-6 mb-0">Daftar 7 Kota & Kabupaten</h2>
+          <span class="badge bg-primary rounded-pill px-2.5 py-1 fs-9 ms-1">7 Wilayah Aktif</span>
+        </div>
+        <div class="fs-8 text-secondary">
+          Klik tombol <strong>Edit</strong> untuk mengubah data venue, kuota, atau kontak PIC
+        </div>
+      </div>
+
+      <div class="table-responsive px-3 pb-3">
+        <table class="table table-hover align-middle mb-0 fs-8">
+          <thead class="table-light text-uppercase text-secondary fs-9">
+            <tr>
+              <th class="ps-3 py-3 text-nowrap" style="width: 50px;">No</th>
+              <th class="py-3 text-nowrap">Wilayah & Region</th>
+              <th class="py-3 text-nowrap">Lokasi Venue Tes CBT</th>
+              <th class="py-3 text-nowrap">Kuota Maksimal</th>
+              <th class="py-3 text-nowrap">Kontak PIC / Hotline</th>
+              <th class="py-3 text-nowrap">Status Pendaftaran</th>
+              <th class="pe-3 text-end py-3 text-nowrap">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="wilayahTableBody">
+            <!-- Populated via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL EDIT WILAYAH -->
+  <div class="modal fade" id="editWilayahModal" tabindex="-1" aria-labelledby="editWilayahModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content border-0 rounded-4 shadow-2xl overflow-hidden">
+        <div class="modal-header bg-dark text-white px-4 py-3">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-geo-alt-fill text-warning fs-5"></i>
+            <h5 class="modal-title fw-bold fs-6 text-white mb-0" id="modalWilayahTitle">Edit Data Wilayah</h5>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" id="modalWilayahCloseBtn"></button>
+        </div>
+
+        <form id="formEditWilayah">
+          <div class="modal-body p-4">
+            <input type="hidden" id="editDistrictId" />
+            <input type="hidden" id="editDistrictSlug" />
+
+            <div class="row g-3">
+              <!-- Nama Wilayah & Region -->
+              <div class="col-md-6">
+                <label class="form-label fw-bold fs-8 text-dark">Nama Wilayah</label>
+                <input type="text" class="form-control fs-8" id="editWilayahName" readonly disabled />
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-bold fs-8 text-dark">Region Cakupan</label>
+                <input type="text" class="form-control fs-8" id="editRegionName" readonly disabled />
+              </div>
+
+              <!-- Foto / Logo Lambang Wilayah -->
+              <div class="col-12">
+                <label class="form-label fw-bold fs-8 text-dark mb-1">Foto / Logo Lambang Wilayah</label>
+                <div class="d-flex align-items-center gap-3 p-3 bg-light rounded-3 border">
+                  <div class="rounded-3 border bg-white p-1 d-flex align-items-center justify-content-center shadow-sm shrink-0" style="width: 72px; height: 72px;">
+                    <img id="editWilayahLogoPreview" src="/images/logo-kka.webp" alt="Preview Lambang" style="max-width: 100%; max-height: 100%; object-fit: contain;" />
+                  </div>
+                  <div class="grow min-w-0">
+                    <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                      <label for="uploadWilayahLogoFile" class="btn btn-sm btn-outline-primary fs-8 mb-0" style="cursor: pointer;">
+                        <i class="bi bi-upload me-1"></i> Upload Foto Baru
+                      </label>
+                      <input type="file" id="uploadWilayahLogoFile" class="d-none" accept="image/*" />
+                      <button type="button" class="btn btn-sm btn-light border fs-8 text-secondary" id="btnResetWilayahLogo">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i> Reset ke Default
+                      </button>
+                    </div>
+                    <div class="input-group input-group-sm">
+                      <span class="input-group-text bg-white text-muted fs-9"><i class="bi bi-link-45deg"></i></span>
+                      <input type="text" class="form-control fs-9 font-monospace" id="editWilayahLogoUrl" placeholder="/images/wilayah/kota-kediri.webp atau URL gambar" />
+                    </div>
+                    <div class="form-text fs-9 text-muted mt-1">
+                      Pilih file gambar dari komputer (PNG, WEBP, JPG) atau ketik tautan URL gambar secara manual.
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Lokasi Venue CBT -->
+              <div class="col-md-6">
+                <label class="form-label fw-bold fs-8 text-dark">Lokasi Venue CBT <span class="text-danger">*</span></label>
+                <div class="input-group input-group-sm">
+                  <span class="input-group-text bg-light text-muted"><i class="bi bi-building"></i></span>
+                  <input type="text" class="form-control fs-8 py-2" id="editVenueName" placeholder="Contoh: Gedung Hall Bagawanta Bari" required />
+                </div>
+              </div>
+
+              <!-- Kuota Maksimal -->
+              <div class="col-md-6">
+                <label class="form-label fw-bold fs-8 text-dark">Kuota Maksimal Peserta <span class="text-danger">*</span></label>
+                <div class="input-group input-group-sm">
+                  <span class="input-group-text bg-light text-muted"><i class="bi bi-people"></i></span>
+                  <input type="number" class="form-control fs-8 py-2" id="editQuotaLimit" min="50" max="5000" placeholder="Contoh: 1000" required />
+                </div>
+              </div>
+
+              <!-- Kontak PIC / Hotline Wilayah -->
+              <div class="col-md-6">
+                <label class="form-label fw-bold fs-8 text-dark">Kontak Hotline PIC Wilayah</label>
+                <div class="input-group input-group-sm">
+                  <span class="input-group-text bg-light text-muted"><i class="bi bi-whatsapp text-success"></i></span>
+                  <input type="text" class="form-control fs-8 py-2" id="editContactHotline" placeholder="Contoh: 0812-3456-7890" />
+                </div>
+              </div>
+
+              <!-- Status Pendaftaran Wilayah -->
+              <div class="col-md-6">
+                <label class="form-label fw-bold fs-8 text-dark">Status Pendaftaran Publik</label>
+                <select class="form-select form-select-sm fs-8 py-2" id="editRegistrationStatus">
+                  <option value="buka">Buka (Pendaftaran Aktif)</option>
+                  <option value="menipis">Kuota Menipis (Hampir Penuh)</option>
+                  <option value="penuh">Kuota Penuh</option>
+                  <option value="tutup">Ditutup Sementara</option>
+                </select>
+              </div>
+
+              <!-- Deskripsi Wilayah untuk Halaman Publik -->
+              <div class="col-12">
+                <label class="form-label fw-bold fs-8 text-dark">Deskripsi Narasi Publik di Web</label>
+                <textarea class="form-control fs-8" id="editWilayahDescription" rows="3" placeholder="Deskripsi daya tarik & ajakan kompetisi untuk wilayah ini..."></textarea>
+                <div class="form-text fs-9 text-muted">Deskripsi ini akan tampil di kartu wilayah Beranda dan halaman detail /wilayah/[slug].</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer bg-light px-4 py-3 d-flex align-items-center justify-content-between">
+            <a href="#" target="_blank" id="modalPreviewPublicBtn" class="btn btn-outline-secondary btn-sm fs-8">
+              <i class="bi bi-box-arrow-up-right me-1"></i>
+              <span>Buka Halaman Publik Wilayah</span>
+            </a>
+            <div class="d-flex align-items-center gap-2">
+              <button type="button" class="btn btn-light btn-sm border fs-8" id="modalWilayahCancelBtn">Batal</button>
+              <button type="submit" class="btn btn-primary btn-sm fw-bold px-3 py-1.5 fs-8">
+                <i class="bi bi-check-circle me-1"></i>
+                <span>Simpan Perubahan</span>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .fs-7 { font-size: 0.9rem !important; }
+    .fs-8 { font-size: 0.82rem !important; }
+    .fs-9 { font-size: 0.72rem !important; }
+    .dashboard-panel-body {
+      padding: 1.25rem 1.5rem;
+    }
+    .table > :not(caption) > * > * {
+      padding: 0.85rem 0.85rem;
+    }
+  </style>
+
+  <script>
+    import { DISTRICTS } from '../../data/competition';
+    import { supabase } from '../../lib/supabase';
+
+    // Default venues and metadata
+    const DEFAULT_VENUES: Record<string, { venue: string; quota: number; contact: string; status: string }> = {
+      'kota-kediri': { venue: 'Hall IKCC Insumo Kediri Convention Center', quota: 1200, contact: '0812-3456-7890 (Panitia Kota Kediri)', status: 'buka' },
+      'kabupaten-kediri': { venue: 'Gedung Bagawanta Bari Kab. Kediri', quota: 1500, contact: '0812-3456-7891 (Panitia Kab. Kediri)', status: 'buka' },
+      'kabupaten-nganjuk': { venue: 'GOR Bung Karno Nganjuk', quota: 1000, contact: '0812-3456-7892 (Panitia Nganjuk)', status: 'buka' },
+      'kabupaten-blitar': { venue: 'Gedung Sasana Praja Kanigoro Blitar', quota: 1000, contact: '0812-3456-7893 (Panitia Kab. Blitar)', status: 'buka' },
+      'kota-blitar': { venue: 'Balai Kota Kusumo Wicitro Kota Blitar', quota: 800, contact: '0812-3456-7894 (Panitia Kota Blitar)', status: 'buka' },
+      'kabupaten-tulungagung': { venue: 'Crown Victoria Hotel Hall Tulungagung', quota: 1200, contact: '0812-3456-7895 (Panitia Tulungagung)', status: 'buka' },
+      'kabupaten-trenggalek': { venue: 'Gedung Serbaguna Kab. Trenggalek', quota: 800, contact: '0812-3456-7896 (Panitia Trenggalek)', status: 'buka' }
+    };
+
+    let allDistrictSettings: Record<string, any> = {};
+    let currentEditingDistrict: any = null;
+
+    async function loadDistrictSettingsFromCloud() {
+      try {
+        const { data, error } = await supabase.from('district_settings').select('*');
+        if (!error && data && data.length > 0) {
+          const map: Record<string, any> = {};
+          data.forEach((row: any) => {
+            map[row.slug] = {
+              venue: row.venue,
+              quota: row.quota,
+              contact: row.contact,
+              status: row.status,
+              logoUrl: row.logo_url || row.image_url || undefined,
+              description: row.description || undefined
+            };
+          });
+          allDistrictSettings = map;
+          localStorage.setItem('kka_admin_district_settings', JSON.stringify(map));
+          renderWilayahTable();
+        }
+      } catch (e) {
+        console.warn('[Supabase] Gagal fetch district_settings:', e);
+      }
+    }
+
+    function getDistrictSettings() {
+      if (Object.keys(allDistrictSettings).length > 0) return allDistrictSettings;
+      try {
+        const stored = localStorage.getItem('kka_admin_district_settings');
+        if (stored) {
+          allDistrictSettings = JSON.parse(stored);
+          return allDistrictSettings;
+        }
+      } catch (e) {
+        console.warn('Error reading district settings:', e);
+      }
+      return DEFAULT_VENUES;
+    }
+
+    function saveDistrictSettings(settings: any) {
+      allDistrictSettings = settings;
+      localStorage.setItem('kka_admin_district_settings', JSON.stringify(settings));
+    }
+
+    function renderWilayahTable() {
+      const tbody = document.getElementById('wilayahTableBody');
+      if (!tbody) return;
+
+      const settings = getDistrictSettings();
+      tbody.innerHTML = '';
+
+      DISTRICTS.forEach((d, idx) => {
+        const custom = settings[d.slug] || DEFAULT_VENUES[d.slug] || {
+          venue: 'Venue Belum Ditentukan',
+          quota: 1000,
+          contact: 'Sekretariat Radar Kediri',
+          status: 'buka'
+        };
+
+        const defaultLogo = d.logoUrl || `/images/wilayah/${d.slug}.webp`;
+        const currentLogo = custom.logoUrl || custom.logo_url || custom.image_url || defaultLogo;
+
+        let statusBadge = '<span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2.5 py-1">Buka</span>';
+        if (custom.status === 'menipis') {
+          statusBadge = '<span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill px-2.5 py-1">Kuota Menipis</span>';
+        } else if (custom.status === 'penuh') {
+          statusBadge = '<span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2.5 py-1">Penuh</span>';
+        } else if (custom.status === 'tutup') {
+          statusBadge = '<span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill px-2.5 py-1">Ditutup</span>';
+        }
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="ps-3 text-center text-muted fw-semibold">${idx + 1}</td>
+          <td class="text-nowrap">
+            <div class="d-flex align-items-center gap-2.5">
+              <div class="rounded-circle border bg-white p-1 d-flex align-items-center justify-content-center shadow-2xs shrink-0" style="width: 42px; height: 42px;">
+                <img src="${currentLogo}" alt="${d.name}" style="max-width: 100%; max-height: 100%; object-fit: contain;" />
+              </div>
+              <div>
+                <div class="d-flex align-items-center gap-1.5">
+                  <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-0.5 rounded fs-9">${d.regionName}</span>
+                  <strong class="text-dark fs-8">${d.name}</strong>
+                </div>
+                <div class="fs-9 text-muted mt-0.5">Slug: /wilayah/${d.slug}</div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="fw-semibold text-dark text-truncate fs-8" style="max-width: 240px;">${custom.venue}</div>
+            <div class="fs-9 text-muted">Standar CBT Neutron</div>
+          </td>
+          <td class="text-nowrap font-monospace fw-bold text-primary fs-8">
+            ${custom.quota} Peserta
+          </td>
+          <td class="text-nowrap fs-9 text-secondary">
+            ${custom.contact}
+          </td>
+          <td class="text-nowrap">
+            ${statusBadge}
+          </td>
+          <td class="pe-3 text-end text-nowrap">
+            <button type="button" class="btn btn-sm btn-primary rounded-2 px-2.5 py-1 fw-bold fs-8 btn-edit-wilayah d-inline-flex align-items-center gap-1" data-slug="${d.slug}">
+              <i class="bi bi-pencil-square"></i>
+              <span>Edit</span>
+            </button>
+            <a href="/wilayah/${d.slug}" target="_blank" class="btn btn-sm btn-light border rounded-2 px-2 py-1 text-secondary ms-1 fs-8" title="Lihat Halaman Publik">
+              <i class="bi bi-box-arrow-up-right"></i>
+            </a>
+          </td>
+        `;
+
+        tr.querySelector('.btn-edit-wilayah')?.addEventListener('click', () => {
+          openEditModal(d, custom);
+        });
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function openEditModal(district: any, customData: any) {
+      currentEditingDistrict = district;
+      const modalEl = document.getElementById('editWilayahModal');
+      const titleEl = document.getElementById('modalWilayahTitle');
+      const inputId = document.getElementById('editDistrictId') as HTMLInputElement;
+      const inputSlug = document.getElementById('editDistrictSlug') as HTMLInputElement;
+      const inputName = document.getElementById('editWilayahName') as HTMLInputElement;
+      const inputRegion = document.getElementById('editRegionName') as HTMLInputElement;
+      const inputLogo = document.getElementById('editWilayahLogoUrl') as HTMLInputElement;
+      const previewLogo = document.getElementById('editWilayahLogoPreview') as HTMLImageElement;
+      const inputVenue = document.getElementById('editVenueName') as HTMLInputElement;
+      const inputQuota = document.getElementById('editQuotaLimit') as HTMLInputElement;
+      const inputContact = document.getElementById('editContactHotline') as HTMLInputElement;
+      const selectStatus = document.getElementById('editRegistrationStatus') as HTMLSelectElement;
+      const textareaDesc = document.getElementById('editWilayahDescription') as HTMLTextAreaElement;
+      const previewLink = document.getElementById('modalPreviewPublicBtn') as HTMLAnchorElement;
+
+      const defaultLogo = district.logoUrl || `/images/wilayah/${district.slug}.webp`;
+      const currentLogo = customData.logoUrl || customData.logo_url || customData.image_url || defaultLogo;
+
+      if (titleEl) titleEl.textContent = `Edit Wilayah: ${district.name}`;
+      if (inputId) inputId.value = String(district.id);
+      if (inputSlug) inputSlug.value = district.slug;
+      if (inputName) inputName.value = district.name;
+      if (inputRegion) inputRegion.value = district.regionName;
+      if (inputLogo) inputLogo.value = currentLogo;
+      if (previewLogo) previewLogo.src = currentLogo;
+      if (inputVenue) inputVenue.value = customData.venue || '';
+      if (inputQuota) inputQuota.value = String(customData.quota || 1000);
+      if (inputContact) inputContact.value = customData.contact || '';
+      if (selectStatus) selectStatus.value = customData.status || 'buka';
+      if (textareaDesc) textareaDesc.value = customData.description || district.description || '';
+      if (previewLink) previewLink.href = `/wilayah/${district.slug}`;
+
+      if (modalEl) {
+        modalEl.classList.add('show');
+        modalEl.style.display = 'block';
+        document.body.classList.add('modal-open');
+
+        if (!document.getElementById('modalCustomBackdropWilayah')) {
+          const back = document.createElement('div');
+          back.id = 'modalCustomBackdropWilayah';
+          back.className = 'modal-backdrop fade show';
+          document.body.appendChild(back);
+        }
+      }
+    }
+
+    function closeEditModal() {
+      const modalEl = document.getElementById('editWilayahModal');
+      if (modalEl) {
+        modalEl.classList.remove('show');
+        modalEl.style.display = 'none';
+        document.body.classList.remove('modal-open');
+      }
+      const back = document.getElementById('modalCustomBackdropWilayah');
+      if (back) back.remove();
+    }
+
+    function setupWilayahPage() {
+      renderWilayahTable();
+      loadDistrictSettingsFromCloud();
+
+      document.getElementById('modalWilayahCloseBtn')?.addEventListener('click', closeEditModal);
+      document.getElementById('modalWilayahCancelBtn')?.addEventListener('click', closeEditModal);
+
+      // Listener URL Logo
+      const inputLogo = document.getElementById('editWilayahLogoUrl') as HTMLInputElement;
+      const previewLogo = document.getElementById('editWilayahLogoPreview') as HTMLImageElement;
+      inputLogo?.addEventListener('input', () => {
+        if (previewLogo) {
+          previewLogo.src = inputLogo.value || '/images/logo-kka.webp';
+        }
+      });
+
+      // Listener Upload File Logo (Base64)
+      const uploadFileInput = document.getElementById('uploadWilayahLogoFile') as HTMLInputElement;
+      uploadFileInput?.addEventListener('change', (e) => {
+        const file = (e.target as HTMLInputElement).files?.[0];
+        if (file) {
+          if (file.size > 2 * 1024 * 1024) {
+            alert('Ukuran file maksimal 2 MB!');
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const result = event.target?.result as string;
+            if (inputLogo) inputLogo.value = result;
+            if (previewLogo) previewLogo.src = result;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      // Listener Reset Logo ke Default
+      document.getElementById('btnResetWilayahLogo')?.addEventListener('click', () => {
+        if (currentEditingDistrict) {
+          const defaultLogo = currentEditingDistrict.logoUrl || `/images/wilayah/${currentEditingDistrict.slug}.webp`;
+          if (inputLogo) inputLogo.value = defaultLogo;
+          if (previewLogo) previewLogo.src = defaultLogo;
+        }
+      });
+
+      document.getElementById('btnResetAllWilayah')?.addEventListener('click', () => {
+        if (confirm('Apakah Anda yakin ingin mengembalikan seluruh data wilayah & kuota ke pengaturan awal?')) {
+          saveDistrictSettings(DEFAULT_VENUES);
+          renderWilayahTable();
+          alert('Data wilayah berhasil di-reset ke nilai default.');
+        }
+      });
+
+      document.getElementById('formEditWilayah')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const slug = (document.getElementById('editDistrictSlug') as HTMLInputElement).value;
+        const venue = (document.getElementById('editVenueName') as HTMLInputElement).value;
+        const quota = Number((document.getElementById('editQuotaLimit') as HTMLInputElement).value) || 1000;
+        const contact = (document.getElementById('editContactHotline') as HTMLInputElement).value;
+        const status = (document.getElementById('editRegistrationStatus') as HTMLSelectElement).value;
+        const logoUrl = (document.getElementById('editWilayahLogoUrl') as HTMLInputElement).value;
+        const description = (document.getElementById('editWilayahDescription') as HTMLTextAreaElement).value;
+
+        const currentSettings = getDistrictSettings();
+        currentSettings[slug] = { 
+          venue, 
+          quota, 
+          contact, 
+          status,
+          logoUrl,
+          description
+        };
+        saveDistrictSettings(currentSettings);
+
+        // Simpan langsung ke Supabase Cloud
+        try {
+          const districtObj = DISTRICTS.find(d => d.slug === slug);
+          await supabase.from('district_settings').upsert({
+            slug,
+            name: districtObj?.name || slug,
+            venue,
+            quota,
+            contact,
+            status,
+            logo_url: logoUrl,
+            image_url: logoUrl,
+            description,
+            updated_at: new Date().toISOString()
+          });
+        } catch (err) {
+          console.warn('[Supabase] Gagal menyimpan district_settings:', err);
+        }
+
+        renderWilayahTable();
+        closeEditModal();
+        alert(`Pengaturan wilayah & foto ${slug} berhasil disimpan ke Supabase Cloud!`);
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', setupWilayahPage);
+    } else {
+      setupWilayahPage();
+    }
+    document.addEventListener('astro:page-load', setupWilayahPage);
+  </script>
+</AdminLayout>

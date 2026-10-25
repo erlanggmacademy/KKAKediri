@@ -1,0 +1,485 @@
+---
+interface Props {
+  title?: string;
+  activeMenu?: 'dashboard' | 'pendaftaran' | 'wilayah' | 'cms' | 'galeri' | 'pengaturan';
+}
+
+const { title = 'Dashboard Administrator KKA 2026', activeMenu = 'dashboard' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title} - Jawa Pos Radar Kediri</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" href="/favicon.ico" />
+    
+    <!-- Preconnect Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- Template Vendor CSS (From AppDashboard-pro) -->
+    <link href="/admin-assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/admin-assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet" />
+    <link href="/admin-assets/vendor/remixicon/remixicon.css" rel="stylesheet" />
+    <link href="/admin-assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" />
+
+    <!-- Template Main CSS -->
+    <link href="/admin-assets/css/main.css" rel="stylesheet" />
+
+    <style is:global>
+      /* Brand Logo Alignment in Header */
+      .header-logo-mark img {
+        height: 38px;
+        width: 38px;
+        object-fit: contain;
+      }
+      .header-logo span {
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        font-size: 1.05rem;
+      }
+      .avatar-badge-initials {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: #315cf6;
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .dropdown-avatar-lg {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: #315cf6;
+        color: #ffffff;
+        font-weight: 800;
+        font-size: 1.15rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 8px auto;
+        box-shadow: 0 4px 10px rgba(49, 92, 246, 0.25);
+      }
+      .pulse-indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+        background-color: #10b981;
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+        animation: pulseGreen 2s infinite;
+      }
+      @keyframes pulseGreen {
+        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+        70% { transform: scale(1); box-shadow: 0 0 0 5px rgba(16, 185, 129, 0); }
+        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+      }
+      .animate-spin {
+        animation: spin 0.8s linear infinite;
+      }
+      @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Immediate Client-Side Auth Guard: Prevents rendering unauthenticated content -->
+    <script is:inline>
+      (function() {
+        try {
+          const auth = sessionStorage.getItem('kka_admin_auth') || localStorage.getItem('kka_admin_auth');
+          const session = sessionStorage.getItem('kka_admin_session') || localStorage.getItem('kka_admin_session');
+          if (auth !== 'true' || !session) {
+            window.location.replace('/admin/login');
+          }
+        } catch (e) {
+          window.location.replace('/admin/login');
+        }
+      })();
+    </script>
+
+    <!-- AppDashboard Header -->
+    <header class="header">
+      <!-- Header Left -->
+      <div class="header-left">
+        <a href="/admin" class="header-logo text-decoration-none">
+          <span class="header-logo-mark">
+            <img src="/images/logo-kka.webp" alt="Logo KKA 2026 Radar Kediri" />
+          </span>
+          <span class="text-dark">KKA Dashboard</span>
+        </a>
+        <button class="sidebar-toggle" title="Buka / Tutup Sidebar" type="button">
+          <i class="bi bi-list"></i>
+        </button>
+        <div class="header-context d-none d-lg-flex flex-column ms-2 ps-3 border-start">
+          <span class="fs-9 text-muted text-uppercase fw-semibold" style="letter-spacing: 0.05em;">Admin Portal</span>
+          <strong class="fs-8 text-dark">Jawa Pos Radar Kediri</strong>
+        </div>
+      </div>
+
+      <!-- Header Right -->
+      <div class="header-right">
+        <!-- Live Supabase Status Badge -->
+        <div class="d-none d-md-flex align-items-center gap-2 px-3 py-1.5 rounded-pill bg-success-subtle text-success border border-success-subtle fs-8 fw-semibold me-2">
+          <span class="pulse-indicator"></span>
+          <span>Supabase Terhubung</span>
+        </div>
+
+        <!-- Global Refresh Button -->
+        <button 
+          type="button" 
+          class="header-action border-0 bg-transparent text-secondary p-2 me-1" 
+          id="adminGlobalRefreshBtn" 
+          title="Segarkan Data Realtime"
+        >
+          <i class="bi bi-arrow-clockwise fs-5" id="refreshIcon"></i>
+        </button>
+
+        <!-- User Dropdown Menu (Template Standard) -->
+        <div class="header-action dropdown user-dropdown">
+          <button class="dropdown-toggle d-flex align-items-center gap-2 border-0 bg-transparent p-1" data-bs-toggle="dropdown" aria-expanded="false" id="userMenuBtn" type="button">
+            <div class="avatar-badge-initials" id="adminAvatarInitials">AD</div>
+            <span class="user-name">
+              <strong id="adminUserDisplayName">Administrator</strong>
+              <small id="adminUserSubRole">Super Admin</small>
+            </span>
+          </button>
+          
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+            <li class="dropdown-header">
+              <div class="dropdown-avatar-lg" id="adminDropdownAvatar">AD</div>
+              <h6 id="adminDropdownName">Administrator</h6>
+              <span id="adminDropdownRole">Admin Suite</span>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/admin">
+                <i class="bi bi-grid text-primary"></i>
+                <span>Dashboard Utama</span>
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/admin/pendaftaran">
+                <i class="bi bi-people text-info"></i>
+                <span>Data Pendaftaran</span>
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/admin/wilayah">
+                <i class="bi bi-geo-alt text-success"></i>
+                <span>Kelola Wilayah & Kuota</span>
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/admin/sekolah">
+                <i class="bi bi-mortarboard" style="color: #6366f1;"></i>
+                <span>CMS Data Sekolah</span>
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/admin/cms">
+                <i class="bi bi-newspaper text-warning"></i>
+                <span>CMS Berita & Artikel</span>
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/admin/galeri">
+                <i class="bi bi-images text-purple" style="color: #8b5cf6;"></i>
+                <span>CMS Galeri Foto</span>
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/admin/pengaturan">
+                <i class="bi bi-sliders text-secondary"></i>
+                <span>Pengaturan Gelombang</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <a class="dropdown-item" href="/daftar/status" target="_blank">
+                <i class="bi bi-search text-secondary"></i>
+                <span>Cek Status Peserta (Publik)</span>
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/" target="_blank">
+                <i class="bi bi-globe text-secondary"></i>
+                <span>Lihat Web Beranda</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <button class="dropdown-item text-danger border-0 bg-transparent w-100" type="button" id="adminLogoutBtn">
+                <i class="bi bi-box-arrow-right text-danger"></i>
+                <span class="fw-bold">Keluar (Logout)</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </header>
+
+    <!-- AppDashboard Sidebar -->
+    <aside class="sidebar">
+      <!-- Sidebar Header (Always Visible on Desktop & Mobile) -->
+      <div class="sidebar-header">
+        <a href="/admin" class="sidebar-logo text-decoration-none">
+          <span class="sidebar-logo-mark">
+            <img src="/images/logo-kka.webp" alt="Logo KKA 2026 Radar Kediri" style="height: 38px; width: 38px; object-fit: contain;" />
+          </span>
+          <span class="sidebar-logo-text">
+            <span class="sidebar-logo-name">KKA Dashboard</span>
+            <span class="sidebar-logo-label">Admin Suite</span>
+          </span>
+        </a>
+        <button class="sidebar-close" type="button" title="Tutup Menu">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <!-- Sidebar Navigation Menu -->
+      <nav class="sidebar-nav">
+        <ul class="nav-menu">
+          <!-- Item 1: Dashboard -->
+          <li class="nav-item">
+            <a class={`nav-link ${activeMenu === 'dashboard' ? 'active' : ''}`} href="/admin">
+              <i class="bi bi-grid"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+
+          <!-- Item 2: Data Pendaftaran -->
+          <li class="nav-item">
+            <a class={`nav-link ${activeMenu === 'pendaftaran' ? 'active' : ''}`} href="/admin/pendaftaran">
+              <i class="bi bi-people"></i>
+              <span>Data Pendaftaran</span>
+            </a>
+          </li>
+
+          <!-- Item 3: Kelola Wilayah & Kuota -->
+          <li class="nav-item">
+            <a class={`nav-link ${activeMenu === 'wilayah' ? 'active' : ''}`} href="/admin/wilayah">
+              <i class="bi bi-geo-alt"></i>
+              <span>Kelola Wilayah & Kuota</span>
+            </a>
+          </li>
+
+          <!-- Category Divider 1: CMS -->
+          <li class="nav-heading">
+            <span>CONTENT MANAGEMENT (CMS)</span>
+          </li>
+
+          <!-- Item 4: CMS Berita & Artikel -->
+          <li class="nav-item">
+            <a class={`nav-link ${activeMenu === 'cms' ? 'active' : ''}`} href="/admin/cms">
+              <i class="bi bi-newspaper"></i>
+              <span>CMS Berita & Artikel</span>
+            </a>
+          </li>
+
+          <!-- Item 5: CMS Galeri Foto -->
+          <li class="nav-item">
+            <a class={`nav-link ${activeMenu === 'galeri' ? 'active' : ''}`} href="/admin/galeri">
+              <i class="bi bi-images"></i>
+              <span>CMS Galeri Foto</span>
+            </a>
+          </li>
+
+          <!-- Item 6: CMS Data Sekolah -->
+          <li class="nav-item">
+            <a class={`nav-link ${activeMenu === 'sekolah' ? 'active' : ''}`} href="/admin/sekolah">
+              <i class="bi bi-mortarboard"></i>
+              <span>CMS Data Sekolah</span>
+            </a>
+          </li>
+
+          <!-- Category Divider 2: PENGATURAN -->
+          <li class="nav-heading">
+            <span>PENGATURAN SISTEM</span>
+          </li>
+
+          <!-- Item 6: Pengaturan Biaya & Gelombang -->
+          <li class="nav-item">
+            <a class={`nav-link ${activeMenu === 'pengaturan' ? 'active' : ''}`} href="/admin/pengaturan">
+              <i class="bi bi-sliders"></i>
+              <span>Gelombang & Biaya</span>
+            </a>
+          </li>
+
+          <!-- Category Divider 3: AKSES PUBLIK -->
+          <li class="nav-heading">
+            <span>AKSES PUBLIK</span>
+          </li>
+
+          <!-- Item 7: Cek Status Publik -->
+          <li class="nav-item">
+            <a class="nav-link" href="/daftar/status" target="_blank">
+              <i class="bi bi-search"></i>
+              <span>Cek Status Peserta</span>
+              <i class="bi bi-arrow-up-right ms-auto fs-9 opacity-50"></i>
+            </a>
+          </li>
+
+          <!-- Item 8: Lihat Beranda Publik -->
+          <li class="nav-item">
+            <a class="nav-link" href="/" target="_blank">
+              <i class="bi bi-globe"></i>
+              <span>Lihat Web Beranda</span>
+              <i class="bi bi-arrow-up-right ms-auto fs-9 opacity-50"></i>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Mobile Sidebar Backdrop Overlay -->
+    <div class="sidebar-overlay"></div>
+
+    <!-- Main Content Area -->
+    <main class="main">
+      <div class="main-content">
+        <slot />
+      </div>
+
+      <!-- Dashboard Footer -->
+      <footer class="footer mt-auto py-3 px-4 border-top bg-white d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 fs-8 text-muted">
+        <div>
+          &copy; 2026 <strong class="text-dark">Jawa Pos Radar Kediri</strong>. Hak Cipta Dilindungi.
+        </div>
+        <div class="d-flex align-items-center gap-3">
+          <span>Kompetisi Akademik (KKA)</span>
+          <span>&bull;</span>
+          <span class="text-primary fw-semibold">Admin Panel Pro</span>
+        </div>
+      </footer>
+    </main>
+
+    <!-- Template Vendor JS Files -->
+    <script is:inline src="/admin-assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script is:inline src="/admin-assets/js/main.js"></script>
+
+    <!-- Admin Authentication & Realtime Controller Logic -->
+    <script>
+      import { supabase } from '../lib/supabase';
+
+      async function verifySessionWithSupabase() {
+        const rawSession = sessionStorage.getItem('kka_admin_session') || localStorage.getItem('kka_admin_session');
+        const auth = sessionStorage.getItem('kka_admin_auth') || localStorage.getItem('kka_admin_auth');
+
+        if (!rawSession || auth !== 'true') {
+          sessionStorage.clear();
+          localStorage.removeItem('kka_admin_auth');
+          localStorage.removeItem('kka_admin_session');
+          window.location.replace('/admin/login');
+          return;
+        }
+
+        try {
+          const session = JSON.parse(rawSession);
+          if (!session || !session.username) {
+            throw new Error('Sesi tidak valid');
+          }
+
+          // Populate UI Profile
+          const nameEl = document.getElementById('adminUserDisplayName');
+          const subRoleEl = document.getElementById('adminUserSubRole');
+          const avatarEl = document.getElementById('adminAvatarInitials');
+          const dropdownAvatarEl = document.getElementById('adminDropdownAvatar');
+          const dropdownNameEl = document.getElementById('adminDropdownName');
+          const dropdownRoleEl = document.getElementById('adminDropdownRole');
+
+          const displayName = session.nama || session.username;
+          const displayRole = session.role === 'superadmin' ? 'Super Admin' : (session.role || 'Administrator');
+
+          if (nameEl) nameEl.textContent = displayName;
+          if (subRoleEl) subRoleEl.textContent = `@${session.username} • ${displayRole}`;
+          if (dropdownNameEl) dropdownNameEl.textContent = displayName;
+          if (dropdownRoleEl) dropdownRoleEl.textContent = `${displayRole} • Supabase`;
+
+          const initials = displayName
+            .split(' ')
+            .map((w: string) => w[0])
+            .filter(Boolean)
+            .slice(0, 2)
+            .join('')
+            .toUpperCase() || 'AD';
+
+          if (avatarEl) avatarEl.textContent = initials;
+          if (dropdownAvatarEl) dropdownAvatarEl.textContent = initials;
+
+          // Strict Live Check against Supabase Database Table admin_users
+          if (session.id && !session.is_fallback) {
+            const { data: dbUser, error } = await supabase
+              .from('admin_users')
+              .select('id, is_active, role, nama_lengkap')
+              .eq('id', session.id)
+              .eq('is_active', true)
+              .maybeSingle();
+
+            if (error) {
+              console.warn('[Admin Auth] Supabase check:', error.message);
+            } else if (!dbUser) {
+              alert('Sesi ditutup: Akun Anda telah dinonaktifkan atau dihapus dari database Supabase.');
+              sessionStorage.clear();
+              localStorage.removeItem('kka_admin_auth');
+              localStorage.removeItem('kka_admin_session');
+              window.location.replace('/admin/login');
+            }
+          }
+
+        } catch (e) {
+          sessionStorage.clear();
+          localStorage.removeItem('kka_admin_auth');
+          localStorage.removeItem('kka_admin_session');
+          window.location.replace('/admin/login');
+        }
+      }
+
+      function setupAdminLayout() {
+        verifySessionWithSupabase();
+
+        // Logout handler
+        const logoutBtn = document.getElementById('adminLogoutBtn');
+        logoutBtn?.addEventListener('click', () => {
+          if (confirm('Apakah Anda yakin ingin keluar dari Panel Administrator KKA 2026?')) {
+            sessionStorage.clear();
+            localStorage.removeItem('kka_admin_auth');
+            localStorage.removeItem('kka_admin_session');
+            window.location.href = '/admin/login';
+          }
+        });
+
+        // Global refresh trigger
+        const refreshBtn = document.getElementById('adminGlobalRefreshBtn');
+        refreshBtn?.addEventListener('click', () => {
+          const icon = document.getElementById('refreshIcon');
+          icon?.classList.add('animate-spin');
+          window.dispatchEvent(new CustomEvent('admin:refresh-data'));
+          setTimeout(() => {
+            icon?.classList.remove('animate-spin');
+          }, 800);
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupAdminLayout);
+      } else {
+        setupAdminLayout();
+      }
+      document.addEventListener('astro:page-load', setupAdminLayout);
+    </script>
+  </body>
+</html>

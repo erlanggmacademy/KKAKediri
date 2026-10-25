@@ -1,0 +1,57 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+  canonical?: string;
+  ogImage?: string;
+  type?: string;
+  noindex?: boolean;
+  schema?: Record<string, any>;
+}
+
+const {
+  title = 'Kompetisi Kompetensi Akademik (KKA) 2026 - Jawa Pos Radar Kediri',
+  description = 'Website resmi Kompetisi Kompetensi Akademik (KKA) Jawa Pos Radar Kediri 2026. Lomba akademik jenjang SD/MI, SMP/MTs, dan SMA/MA/SMK berstandar TKA bekerjasama dengan Neutron Yogyakarta.',
+  canonical,
+  ogImage = '/images/og-kka-2026.jpg',
+  type = 'website',
+  noindex = false,
+  schema
+} = Astro.props;
+
+const canonicalURL = canonical || new URL(Astro.url.pathname, Astro.site || 'https://kkaradarkediri.com').href;
+const fullOgImage = new URL(ogImage, Astro.site || 'https://kkaradarkediri.com').href;
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalURL} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+
+<!-- Open Graph / Facebook / WhatsApp -->
+<meta property="og:type" content={type} />
+<meta property="og:url" content={canonicalURL} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={fullOgImage} />
+<meta property="og:image:secure_url" content={fullOgImage} />
+<meta property="og:image:type" content="image/jpeg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="675" />
+<meta property="og:image:alt" content="Kompetisi Kompetensi Akademik (KKA) 2026 - Jawa Pos Radar Kediri" />
+<meta property="og:locale" content="id_ID" />
+<meta property="og:site_name" content="KKA Jawa Pos Radar Kediri" />
+<link rel="image_src" href={fullOgImage} />
+<meta name="theme-color" content="#0f2d59" />
+
+<!-- Twitter / X Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:url" content={canonicalURL} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={fullOgImage} />
+
+<!-- JSON-LD Structured Data if provided -->
+{schema && (
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+)}

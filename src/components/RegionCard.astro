@@ -1,0 +1,271 @@
+---
+import type { District } from '../data/competition';
+
+interface Props {
+  district: District;
+}
+
+const { district } = Astro.props;
+---
+
+<div class="wilayah-card">
+  <!-- Card Header: Emblem + District Name + Badge -->
+  <div class="d-flex align-items-center gap-3 mb-3">
+    <div class="emblem-box shrink-0">
+      <img 
+        src={district.logoUrl || '/images/logo-kka.webp'} 
+        alt={`Lambang ${district.name}`} 
+        class="emblem-img"
+        width="48"
+        height="48"
+        loading="lazy"
+        data-district-slug={district.slug}
+      />
+    </div>
+    <div class="grow min-w-0">
+      <h3 class="wilayah-title mb-1">{district.name}</h3>
+      <span class="wilayah-badge">KKA 2026</span>
+    </div>
+  </div>
+
+  <!-- Description Text -->
+  <p class="wilayah-desc" data-district-desc={district.slug}>
+    {district.description}
+  </p>
+
+  <!-- Level Badges (SD/MI, SMP/MTs, SMA/MA/SMK) -->
+  <div class="level-boxes-grid mb-3">
+    <div class="level-box">
+      <svg class="level-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+        <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+      </svg>
+      <div class="level-text">
+        <span>SD/MI ·</span>
+        <span>SMP/MTs</span>
+      </div>
+    </div>
+    <div class="level-box">
+      <svg class="level-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+        <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+      </svg>
+      <div class="level-text">
+        <span>SMA / MA /</span>
+        <span>SMK</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTAs: Daftar Mandiri & Daftar Kolektif -->
+  <div class="cta-grid">
+    <a 
+      href={`/daftar/mandiri/${district.slug}`} 
+      class="btn-wilayah-cta btn-mandiri"
+      title={`Daftar Mandiri ${district.name}`}
+    >
+      Daftar Mandiri
+    </a>
+    <a 
+      href={`/daftar/kolektif/${district.slug}`} 
+      class="btn-wilayah-cta btn-kolektif"
+      title={`Daftar Kolektif ${district.name}`}
+    >
+      Daftar Kolektif
+    </a>
+  </div>
+</div>
+
+<style>
+  .wilayah-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    box-shadow: 0 4px 18px -2px rgba(15, 23, 42, 0.05);
+    padding: 1.35rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
+                box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.25s ease;
+  }
+
+  .wilayah-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px -4px rgba(15, 23, 42, 0.1);
+    border-color: #cbd5e1;
+  }
+
+  /* Emblem Box */
+  .emblem-box {
+    width: 54px;
+    height: 54px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+  }
+
+  .emblem-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  /* Title & Badge */
+  .wilayah-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.3;
+    margin-bottom: 0.25rem;
+  }
+
+  .wilayah-badge {
+    display: inline-block;
+    background-color: #0f52ba;
+    color: #ffffff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.15rem 0.6rem;
+    border-radius: 6px;
+    letter-spacing: 0.02em;
+    line-height: 1.4;
+  }
+
+  /* Description */
+  .wilayah-desc {
+    font-size: 0.83rem;
+    line-height: 1.55;
+    color: #475569;
+    margin-bottom: 1.25rem;
+    flex-grow: 1;
+    min-height: 72px;
+  }
+
+  /* Level Boxes */
+  .level-boxes-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .level-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 0.55rem 0.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    transition: all 0.2s ease;
+  }
+
+  .level-box:hover {
+    border-color: #cbd5e1;
+    background: #ffffff;
+  }
+
+  .level-icon {
+    width: 16px;
+    height: 16px;
+    color: #1e3a8a;
+    flex-shrink: 0;
+  }
+
+  .level-text {
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: #334155;
+    line-height: 1.25;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+  }
+
+  /* CTA Grid */
+  .cta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-top: auto;
+  }
+
+  .btn-wilayah-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0.6rem 0.35rem;
+    font-size: 0.76rem;
+    font-weight: 700;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    white-space: nowrap;
+  }
+
+  .btn-mandiri {
+    background-color: #0f52ba;
+    color: #ffffff;
+    border: 1px solid #0f52ba;
+  }
+
+  .btn-mandiri:hover {
+    background-color: #0b3a75;
+    border-color: #0b3a75;
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(15, 82, 186, 0.28);
+  }
+
+  .btn-kolektif {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #ffffff;
+    border: 1px solid #d97706;
+  }
+
+  .btn-kolektif:hover {
+    background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+    border-color: #b45309;
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+  }
+</style>
+
+<script>
+  function syncDistrictCustomData() {
+    try {
+      const stored = localStorage.getItem('kka_admin_district_settings');
+      if (stored) {
+        const settings = JSON.parse(stored);
+        document.querySelectorAll('img[data-district-slug]').forEach((imgEl) => {
+          const slug = imgEl.getAttribute('data-district-slug');
+          if (slug && settings[slug]?.logoUrl) {
+            (imgEl as HTMLImageElement).src = settings[slug].logoUrl;
+          }
+        });
+        document.querySelectorAll('[data-district-desc]').forEach((descEl) => {
+          const slug = descEl.getAttribute('data-district-desc');
+          if (slug && settings[slug]?.description) {
+            descEl.textContent = settings[slug].description;
+          }
+        });
+      }
+    } catch (e) {}
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', syncDistrictCustomData);
+  } else {
+    syncDistrictCustomData();
+  }
+  document.addEventListener('astro:page-load', syncDistrictCustomData);
+</script>

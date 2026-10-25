@@ -1,0 +1,577 @@
+---
+import { SITE_INFO } from '../data/competition';
+
+const contacts = SITE_INFO.whatsappContacts;
+---
+
+<!-- Floating Widgets Container (Scroll To Top + Live Support FAB) -->
+<div class="floating-widgets" id="floatingWidgetsContainer">
+  
+  <!-- Go To Top Button -->
+  <button 
+    type="button" 
+    id="btnScrollTop" 
+    class="btn-scroll-top" 
+    title="Kembali ke atas" 
+    aria-label="Kembali ke atas"
+  >
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="18 15 12 9 6 15"></polyline>
+    </svg>
+  </button>
+
+  <!-- Live Support Floating Action Button -->
+  <button 
+    type="button" 
+    id="btnWaLiveSupport" 
+    class="whatsapp-fab" 
+    title="Live Support WhatsApp KKA 2026"
+    aria-label="Live Support WhatsApp KKA 2026"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-whatsapp shrink-0" viewBox="0 0 16 16">
+      <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.364 2.76 1.057 3.96L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.016-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.707 1.916.807 2.05c.099.133 1.39 2.123 3.368 2.975.47.203.837.325 1.123.415.472.15.902.13 1.242.078.379-.058 1.17-.478 1.336-.94.166-.462.166-.86.116-.94-.05-.08-.182-.133-.38-.232"/>
+    </svg>
+    <span>Live Support</span>
+  </button>
+</div>
+
+<!-- Live Support WhatsApp Popup Modal -->
+<div id="waSupportModal" class="wa-support-popup" role="dialog" aria-modal="true" aria-labelledby="waModalTitle">
+  
+  <!-- Header -->
+  <div class="wa-popup-header">
+    <div class="d-flex align-items-center gap-2.5">
+      <div class="wa-header-icon-wrap shrink-0">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="#25D366" viewBox="0 0 16 16">
+          <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.364 2.76 1.057 3.96L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.016-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.707 1.916.807 2.05c.099.133 1.39 2.123 3.368 2.975.47.203.837.325 1.123.415.472.15.902.13 1.242.078.379-.058 1.17-.478 1.336-.94.166-.462.166-.86.116-.94-.05-.08-.182-.133-.38-.232"/>
+        </svg>
+      </div>
+      <div>
+        <h6 id="waModalTitle" class="wa-header-title mb-0">Admin Support KKA</h6>
+        <div class="wa-header-subtitle">
+          <span class="status-indicator-dot"></span>
+          <span>Online</span>
+        </div>
+      </div>
+    </div>
+    <button type="button" id="btnCloseWaModal" class="wa-popup-close-btn" aria-label="Tutup live support">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Body -->
+  <div class="wa-popup-body">
+    <p class="wa-body-intro">
+      Halo! Silakan pilih Admin yang ingin Anda hubungi, lalu ketik pesan Anda di bawah:
+    </p>
+
+    <!-- Admin Selection List -->
+    <div class="wa-admin-options-container" id="waAdminList">
+      {contacts.map((contact, index) => (
+        <div 
+          class={`wa-admin-option-card ${index === 0 ? 'active' : ''}`}
+          data-number={contact.number}
+          data-name={contact.name}
+          tabindex="0"
+          role="radio"
+          aria-checked={index === 0 ? "true" : "false"}
+        >
+          <div class="wa-radio-indicator shrink-0">
+            <span class="radio-dot"></span>
+          </div>
+          <div class="wa-option-details flex-grow-1">
+            <div class="wa-option-name">{contact.name}</div>
+            <div class="wa-option-sub">{contact.subtext || contact.role}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- Message Textarea -->
+    <div class="wa-message-wrapper mt-3">
+      <textarea 
+        id="waSupportInput" 
+        class="wa-support-textarea" 
+        rows="3" 
+        placeholder="Ketik pesan Anda di sini..."
+      ></textarea>
+    </div>
+
+    <!-- Send Button -->
+    <div class="d-flex justify-content-end mt-3">
+      <button type="button" id="btnSendWaSupport" class="wa-send-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="shrink-0">
+          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+        </svg>
+        <span>Kirim</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile Sticky Bottom Navigation Bar (Sesuai Desain Screenshot Pengguna) -->
+<nav class="mobile-sticky-cta d-md-none" aria-label="Navigasi Aksi Mobile">
+  <!-- 1. Daftar Kolektif -->
+  <a href="/daftar/kolektif" class="mobile-bottom-nav-item">
+    <div class="mobile-nav-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+        <circle cx="9" cy="7" r="4"></circle>
+        <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+      </svg>
+    </div>
+    <span class="mobile-nav-label">Daftar kolektif</span>
+  </a>
+
+  <!-- 2. Daftar Mandiri -->
+  <a href="/daftar/mandiri" class="mobile-bottom-nav-item">
+    <div class="mobile-nav-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+        <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+      </svg>
+    </div>
+    <span class="mobile-nav-label">Daftar mandiri</span>
+  </a>
+
+  <!-- 3. Chat Admin -->
+  <button type="button" class="mobile-bottom-nav-item btn-trigger-wa" id="btnBottomWaSupport" aria-label="Buka Chat Admin WhatsApp">
+    <div class="mobile-nav-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.364 2.76 1.057 3.96L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.016-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.707 1.916.807 2.05c.099.133 1.39 2.123 3.368 2.975.47.203.837.325 1.123.415.472.15.902.13 1.242.078.379-.058 1.17-.478 1.336-.94.166-.462.166-.86.116-.94-.05-.08-.182-.133-.38-.232"/>
+      </svg>
+    </div>
+    <span class="mobile-nav-label">Chat admin</span>
+  </button>
+</nav>
+
+<style>
+  /* Floating Container */
+  .floating-widgets {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 1040;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+  }
+
+  /* Go To Top Button */
+  .btn-scroll-top {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: #0f172a;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(12px) scale(0.9);
+    transition: opacity 0.25s ease, transform 0.25s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .btn-scroll-top.show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+  }
+
+  .btn-scroll-top:hover {
+    background-color: #0d6efd;
+    box-shadow: 0 6px 18px rgba(13, 110, 253, 0.4);
+    transform: translateY(-2px) scale(1.05);
+  }
+
+  /* WhatsApp Live Support FAB */
+  .whatsapp-fab {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #25d366;
+    color: #ffffff;
+    padding: 12px 20px;
+    border-radius: 9999px;
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+    font-weight: 600;
+    font-size: 0.95rem;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .whatsapp-fab:hover {
+    background-color: #20ba59;
+    color: #ffffff;
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 10px 25px rgba(37, 211, 102, 0.5);
+  }
+
+  /* Live Support Popup Dialog */
+  .wa-support-popup {
+    display: none;
+    position: fixed;
+    bottom: 84px;
+    right: 24px;
+    width: 360px;
+    max-width: calc(100% - 32px);
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    z-index: 1050;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(16px) scale(0.95);
+    transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .wa-support-popup.active {
+    display: block;
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+  }
+
+  /* Header */
+  .wa-popup-header {
+    background: linear-gradient(135deg, #0066ff 0%, #0d6efd 100%);
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #ffffff;
+  }
+
+  .wa-header-icon-wrap {
+    width: 38px;
+    height: 38px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .wa-header-title {
+    color: #ffffff;
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  .wa-header-subtitle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-top: 3px;
+  }
+
+  .status-indicator-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #25d366;
+    box-shadow: 0 0 6px rgba(37, 211, 102, 0.8);
+  }
+
+  .wa-popup-close-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+  }
+
+  .wa-popup-close-btn:hover {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+
+  /* Body */
+  .wa-popup-body {
+    padding: 18px;
+    background-color: #ffffff;
+  }
+
+  .wa-body-intro {
+    font-size: 0.86rem;
+    color: #4b5563;
+    line-height: 1.45;
+    margin-bottom: 14px;
+  }
+
+  /* Admin Cards List */
+  .wa-admin-options-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 220px;
+    overflow-y: auto;
+    padding-right: 2px;
+  }
+
+  .wa-admin-option-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1.5px solid #e5e7eb;
+    background-color: #ffffff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+  }
+
+  .wa-admin-option-card:hover {
+    border-color: #93c5fd;
+    background-color: #f8fafc;
+  }
+
+  .wa-admin-option-card.active {
+    border-color: #22c55e;
+    background-color: #f0fdf4;
+    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.12);
+  }
+
+  /* Custom Radio Indicator */
+  .wa-radio-indicator {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #cbd5e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+
+  .wa-admin-option-card.active .wa-radio-indicator {
+    border-color: #22c55e;
+  }
+
+  .radio-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: transparent;
+    transition: background-color 0.2s ease;
+  }
+
+  .wa-admin-option-card.active .radio-dot {
+    background-color: #22c55e;
+  }
+
+  .wa-option-name {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #1f2937;
+    line-height: 1.25;
+  }
+
+  .wa-option-sub {
+    font-size: 0.76rem;
+    color: #6b7280;
+    line-height: 1.25;
+    margin-top: 2px;
+  }
+
+  /* Message Textarea */
+  .wa-support-textarea {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 0.88rem;
+    font-family: inherit;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    outline: none;
+    resize: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .wa-support-textarea:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+  }
+
+  /* Send Button */
+  .wa-send-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #22c55e;
+    color: #ffffff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 3px 10px rgba(34, 197, 94, 0.3);
+  }
+
+  .wa-send-btn:hover {
+    background-color: #16a34a;
+    box-shadow: 0 4px 14px rgba(22, 163, 74, 0.4);
+    transform: translateY(-1px);
+  }
+
+  /* Responsive Positioning */
+  @media (max-width: 768px) {
+    .floating-widgets {
+      bottom: 68px;
+      right: 16px;
+      gap: 8px;
+    }
+
+    .wa-support-popup {
+      bottom: 122px;
+      right: 16px;
+      left: 16px;
+      width: auto;
+      max-width: calc(100% - 32px);
+    }
+
+    .btn-scroll-top {
+      width: 40px;
+      height: 40px;
+    }
+  }
+</style>
+
+<script>
+  function setupLiveSupportWidget() {
+    const btnScrollTop = document.getElementById('btnScrollTop');
+    const btnWaLiveSupport = document.getElementById('btnWaLiveSupport');
+    const waSupportModal = document.getElementById('waSupportModal');
+    const btnCloseWaModal = document.getElementById('btnCloseWaModal');
+    const btnSendWaSupport = document.getElementById('btnSendWaSupport');
+    const waSupportInput = document.getElementById('waSupportInput') as HTMLTextAreaElement | null;
+    const adminCards = document.querySelectorAll('.wa-admin-option-card');
+
+    let selectedAdminNumber = '6281235508957';
+    let selectedAdminName = 'Pak Endro';
+
+    // 1. Scroll-To-Top Logic
+    function handleScroll() {
+      if (window.scrollY > 250) {
+        btnScrollTop?.classList.add('show');
+      } else {
+        btnScrollTop?.classList.remove('show');
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+
+    btnScrollTop?.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // 2. Toggle Popup Modal (Dari FAB Desktop maupun Bottom Bar Mobile)
+    const toggleWaModal = (e: Event) => {
+      e.stopPropagation();
+      const isActive = waSupportModal?.classList.contains('active');
+      if (isActive) {
+        waSupportModal?.classList.remove('active');
+      } else {
+        waSupportModal?.classList.add('active');
+        setTimeout(() => {
+          waSupportInput?.focus();
+        }, 150);
+      }
+    };
+
+    btnWaLiveSupport?.addEventListener('click', toggleWaModal);
+    const btnBottomWaSupport = document.getElementById('btnBottomWaSupport');
+    btnBottomWaSupport?.addEventListener('click', toggleWaModal);
+
+    btnCloseWaModal?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      waSupportModal?.classList.remove('active');
+    });
+
+    // 3. Admin Option Selection
+    adminCards.forEach((card) => {
+      card.addEventListener('click', () => {
+        adminCards.forEach((c) => {
+          c.classList.remove('active');
+          c.setAttribute('aria-checked', 'false');
+        });
+        card.classList.add('active');
+        card.setAttribute('aria-checked', 'true');
+
+        const num = card.getAttribute('data-number');
+        const name = card.getAttribute('data-name');
+        if (num) selectedAdminNumber = num;
+        if (name) selectedAdminName = name;
+      });
+    });
+
+    // 4. Send Message via WhatsApp
+    btnSendWaSupport?.addEventListener('click', () => {
+      const userText = waSupportInput?.value.trim();
+      let message = '';
+      if (userText) {
+        message = `Halo ${selectedAdminName},\n\n${userText}`;
+      } else {
+        message = `Halo ${selectedAdminName}, saya ingin konsultasi seputar pendaftaran KKA Radar Kediri 2026.`;
+      }
+
+      const waUrl = `https://wa.me/${selectedAdminNumber}?text=${encodeURIComponent(message)}`;
+      window.open(waUrl, '_blank');
+
+      // Close modal and reset input
+      waSupportModal?.classList.remove('active');
+      if (waSupportInput) waSupportInput.value = '';
+    });
+
+    // 5. Close on Outside Click or Escape
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (
+        waSupportModal?.classList.contains('active') &&
+        !waSupportModal.contains(target) &&
+        !btnWaLiveSupport?.contains(target)
+      ) {
+        waSupportModal.classList.remove('active');
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && waSupportModal?.classList.contains('active')) {
+        waSupportModal.classList.remove('active');
+      }
+    });
+  }
+
+  // Run on initial load and view transitions
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupLiveSupportWidget);
+  } else {
+    setupLiveSupportWidget();
+  }
+</script>

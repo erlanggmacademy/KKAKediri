@@ -1,0 +1,212 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import { DISTRICTS } from '../../data/competition';
+---
+
+<BaseLayout 
+  title="Portal Pendaftaran KKA 2026 - Jawa Pos Radar Kediri"
+  description="Pilih jalur pendaftaran mandiri (perorangan) atau kolektif (rombongan sekolah) untuk ajang Kompetisi Kompetensi Akademik (KKA) 2026 se-Karesidenan Kediri."
+>
+  <section class="bg-gradient-navy text-white py-5">
+    <div class="container py-3 text-center">
+      <span class="badge bg-warning text-dark fw-bold rounded-pill px-3 py-1 mb-2">PORTAL REGISTRASI</span>
+      <h1 class="display-5 fw-bold mb-3">Pendaftaran Peserta KKA 2026</h1>
+      <p class="lead text-white-50 max-w-xl mx-auto mb-1">
+        Pilih jalur pendaftaran sesuai kebutuhan Anda: mandiri perorangan atau kolektif rombongan sekolah.
+      </p>
+      <Breadcrumb items={[{ label: 'Pendaftaran', active: true }]} />
+    </div>
+  </section>
+
+  <section class="py-5 bg-light">
+    <div class="container py-3">
+      <!-- Global Notice Banner if any registration closed -->
+      <div id="portalClosedNotice" class="alert alert-warning border-warning-subtle shadow-sm rounded-4 p-4 mb-4 d-none">
+        <div class="d-flex align-items-center gap-3">
+          <div class="p-2 rounded-circle bg-warning text-dark">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+          </div>
+          <div class="flex-grow-1">
+            <h5 class="fw-bold mb-1 text-dark" id="portalNoticeTitle">Pemberitahuan Status Pendaftaran</h5>
+            <p class="mb-0 text-secondary small" id="portalNoticeMsg">Sebagian atau seluruh jalur pendaftaran telah ditutup.</p>
+          </div>
+          <div>
+            <a href="/cek-status" class="btn btn-outline-dark btn-sm rounded-pill fw-semibold px-3">Cek Status Anda</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4 justify-content-center">
+        <!-- Card Jalur Mandiri -->
+        <div class="col-lg-5">
+          <div class="card h-100 p-4 p-xl-5 border-0 shadow-sm rounded-4 bg-white d-flex flex-column justify-content-between" id="cardPortalMandiri">
+            <div>
+              <div class="p-3 bg-primary-subtle text-primary rounded-3 d-inline-flex mb-3">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </div>
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="badge bg-primary text-white rounded-pill px-3 py-1 fs-8 fw-bold w-fit">PERORANGAN</span>
+                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2.5 py-1 fs-8 fw-bold w-fit" id="badgePortalMandiri">BUKA</span>
+              </div>
+              <h3 class="fw-bold text-kka-primary mb-2">Jalur Pendaftaran Mandiri</h3>
+              <p class="text-secondary small mb-4" id="descPortalMandiri">
+                Ditujukan untuk siswa atau orang tua/wali yang mendaftar secara individu. Pengisian formulir online praktis dengan konfirmasi WhatsApp instan.
+              </p>
+              <ul class="list-unstyled text-secondary small d-flex flex-column gap-2 mb-4">
+                <li>✓ Pengisian formulir langsung perorangan</li>
+                <li>✓ Pilihan 7 wilayah kompetisi Karesidenan Kediri</li>
+                <li>✓ Upload bukti transfer pembayaran mandiri</li>
+                <li>✓ Kartu ujian CBT dikirim via WhatsApp</li>
+              </ul>
+            </div>
+            <a href="/daftar/mandiri" class="btn btn-primary fw-bold py-3 rounded-3 w-100 shadow-sm" id="btnPortalMandiri">
+              Masuk Jalur Mandiri
+            </a>
+          </div>
+        </div>
+
+        <!-- Card Jalur Kolektif -->
+        <div class="col-lg-5">
+          <div class="card h-100 p-4 p-xl-5 border-0 shadow-sm rounded-4 bg-white d-flex flex-column justify-content-between" id="cardPortalKolektif">
+            <div>
+              <div class="p-3 bg-warning-subtle text-dark rounded-3 d-inline-flex mb-3">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+              </div>
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="badge bg-warning text-dark rounded-pill px-3 py-1 fs-8 fw-bold w-fit">ROMBONGAN SEKOLAH</span>
+                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2.5 py-1 fs-8 fw-bold w-fit" id="badgePortalKolektif">BUKA</span>
+              </div>
+              <h3 class="fw-bold text-kka-primary mb-2">Jalur Pendaftaran Kolektif</h3>
+              <p class="text-secondary small mb-4" id="descPortalKolektif">
+                Ditujukan untuk guru pembina atau koordinator sekolah. Cukup unduh format spreadsheet Excel, isi daftar siswa, dan unggah untuk verifikasi tagihan otomatis.
+              </p>
+              <ul class="list-unstyled text-secondary small d-flex flex-column gap-2 mb-4">
+                <li>✓ Unduh format template resmi Excel (.xlsx)</li>
+                <li>✓ Otomatis hitung tagihan & rekap jenjang</li>
+                <li>✓ Satu bukti transfer untuk seluruh rombongan</li>
+                <li>✓ Invoice resmi instan untuk arsip sekolah</li>
+              </ul>
+            </div>
+            <a href="/daftar/kolektif" class="btn btn-warning fw-bold text-dark py-3 rounded-3 w-100 shadow-sm" id="btnPortalKolektif">
+              Masuk Jalur Kolektif (Guru/Sekolah)
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { supabase } from '../../lib/supabase';
+
+  function applyPortalStatus(regCfg: any) {
+    if (!regCfg) return;
+    const bannerNotice = document.getElementById('portalClosedNotice');
+    const noticeTitle = document.getElementById('portalNoticeTitle');
+    const noticeMsg = document.getElementById('portalNoticeMsg');
+
+    // Check Mandiri
+    if (regCfg.mandiri && regCfg.mandiri.enabled === false) {
+      const badgeM = document.getElementById('badgePortalMandiri');
+      const btnM = document.getElementById('btnPortalMandiri');
+      const descM = document.getElementById('descPortalMandiri');
+
+      const isQuota = regCfg.mandiri.condition === 'kuota_penuh';
+      const statusText = isQuota ? 'KUOTA PENUH' : 'DITUTUP';
+
+      if (badgeM) {
+        badgeM.textContent = statusText;
+        badgeM.className = 'badge bg-danger text-white rounded-pill px-2.5 py-1 fs-8 fw-bold w-fit';
+      }
+      if (btnM) {
+        btnM.textContent = `Jalur Mandiri ${statusText}`;
+        btnM.className = 'btn btn-secondary fw-semibold py-3 rounded-3 w-100 shadow-sm';
+        btnM.setAttribute('href', '/daftar/mandiri');
+      }
+      if (descM && regCfg.mandiri.closedMsg) {
+        descM.textContent = regCfg.mandiri.closedMsg;
+      }
+
+      if (bannerNotice && noticeTitle && noticeMsg) {
+        bannerNotice.classList.remove('d-none');
+        noticeTitle.textContent = regCfg.mandiri.closedTitle || 'Pendaftaran Mandiri Telah Ditutup';
+        noticeMsg.textContent = regCfg.mandiri.closedMsg;
+      }
+    }
+
+    // Check Kolektif
+    if (regCfg.kolektif && regCfg.kolektif.enabled === false) {
+      const badgeK = document.getElementById('badgePortalKolektif');
+      const btnK = document.getElementById('btnPortalKolektif');
+      const descK = document.getElementById('descPortalKolektif');
+
+      const isQuota = regCfg.kolektif.condition === 'kuota_penuh';
+      const statusText = isQuota ? 'KUOTA PENUH' : 'DITUTUP';
+
+      if (badgeK) {
+        badgeK.textContent = statusText;
+        badgeK.className = 'badge bg-danger text-white rounded-pill px-2.5 py-1 fs-8 fw-bold w-fit';
+      }
+      if (btnK) {
+        btnK.textContent = `Jalur Kolektif ${statusText}`;
+        btnK.className = 'btn btn-secondary fw-semibold py-3 rounded-3 w-100 shadow-sm';
+        btnK.setAttribute('href', '/daftar/kolektif');
+      }
+      if (descK && regCfg.kolektif.closedMsg) {
+        descK.textContent = regCfg.kolektif.closedMsg;
+      }
+
+      if (bannerNotice && noticeTitle && noticeMsg) {
+        bannerNotice.classList.remove('d-none');
+        noticeTitle.textContent = 'Pemberitahuan Status Pendaftaran';
+        noticeMsg.textContent = regCfg.kolektif.closedMsg;
+      }
+    }
+  }
+
+  async function checkRegistrationStatus() {
+    // 1. Terapkan cache lokal instan
+    try {
+      const stored = localStorage.getItem('kka_registration_status_control');
+      if (stored) applyPortalStatus(JSON.parse(stored));
+    } catch (e) {}
+
+    // 2. Ambil status terbaru dari Supabase Cloud
+    try {
+      const { data, error } = await supabase
+        .from('app_settings')
+        .select('value')
+        .eq('key', 'registration_control')
+        .single();
+
+      if (!error && data && data.value) {
+        applyPortalStatus(data.value);
+        localStorage.setItem('kka_registration_status_control', JSON.stringify(data.value));
+      }
+    } catch (err) {
+      console.warn('[Supabase] Gagal cek status pendaftaran:', err);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', checkRegistrationStatus);
+</script>
+
+<style>
+  .fs-8 { font-size: 0.78rem; }
+  .max-w-xl { max-width: 600px; }
+  .w-fit { width: fit-content; }
+</style>

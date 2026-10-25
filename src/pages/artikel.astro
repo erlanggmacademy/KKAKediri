@@ -1,0 +1,242 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+
+const sampleArticles = [
+  {
+    title: 'Pendaftaran KKA 2026 Resmi Dibuka, Ribuan Siswa Siap Unjuk Kemampuan',
+    slug: 'pendaftaran-kka-2026-resmi-dibuka',
+    date: '25 Oktober 2026',
+    author: 'Redaksi Radar Kediri',
+    category: 'Berita',
+    summary: 'Ajang bergengsi tahunan KKA Jawa Pos Radar Kediri kembali hadir dengan format uji soal standar TKA bekerja sama dengan Neutron Yogyakarta.'
+  },
+  {
+    title: 'Tips & Trik Menghadapi Soal Logika & Literasi Standar TKA Neutron',
+    slug: 'tips-menghadapi-soal-tka-neutron',
+    date: '20 Oktober 2026',
+    author: 'Tim Akademik Neutron',
+    category: 'Edukasi',
+    summary: 'Strategi efektif membagi waktu 90 menit dan menguasai pola soal penalaran kritis pada babak seleksi CBT KKA.'
+  },
+  {
+    title: 'Kisah Inspiratif Juara KKA Tahun Lalu: Dari Siswa Daerah Menuju Prestasi Nasional',
+    slug: 'kisah-inspiratif-juara-kka',
+    date: '15 Oktober 2026',
+    author: 'Radar Kediri Event',
+    category: 'Prestasi',
+    summary: 'Bagaimana portofolio sertifikat resmi Radar Kediri membantu siswa meraih jalur prestasi (PPDB) sekolah unggulan impian.'
+  }
+];
+---
+
+<BaseLayout
+  title="Artikel & Berita - KKA Radar Kediri 2026"
+  description="Kumpulan berita resmi, pengumuman tahapan kompetisi, tips belajar, dan artikel seputar Kompetisi Kompetensi Akademik (KKA) Jawa Pos Radar Kediri."
+>
+  <section class="bg-gradient-navy text-white py-5">
+    <div class="container py-3 text-center">
+      <span class="badge bg-danger rounded-pill px-3 py-1 mb-2">Pusat Informasi</span>
+      <h1 class="display-5 fw-bold mb-3">Artikel & Berita Terkini</h1>
+      <p class="lead text-white-50 max-w-xl mx-auto mb-1">
+        Informasi terbaru seputar pelaksanaan KKA 2026, panduan teknis, dan catatan prestasi pelajar.
+      </p>
+      <Breadcrumb items={[{ label: 'Artikel & Berita', active: true }]} />
+    </div>
+  </section>
+
+  <section class="py-5 bg-white">
+    <div class="container py-3">
+      <div class="row g-4" id="articlesGrid">
+        {sampleArticles.map((article) => (
+          <div class="col-lg-4 col-md-6 article-card-item" data-title={article.title} data-author={article.author} data-date={article.date} data-category={article.category} data-summary={article.summary}>
+            <div class="kka-card h-100 p-4 d-flex flex-column justify-content-between">
+              <div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <span class="badge bg-primary-subtle text-primary border rounded-pill px-3 py-1 fs-8 fw-semibold">
+                    {article.category}
+                  </span>
+                  <span class="text-muted fs-8">{article.date}</span>
+                </div>
+
+                <h5 class="fw-bold text-kka-primary mb-2 lh-base">
+                  {article.title}
+                </h5>
+
+                <p class="text-secondary small mb-4">
+                  {article.summary}
+                </p>
+              </div>
+
+              <div class="pt-3 border-top d-flex justify-content-between align-items-center">
+                <span class="fs-8 text-muted">Oleh: {article.author}</span>
+                <button type="button" class="btn btn-link text-primary fw-semibold small p-0 text-decoration-none btn-read-article">
+                  Baca Selengkapnya →
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Modal Baca Artikel Lengkap -->
+  <div class="modal fade" id="readArticleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+        <div class="modal-header bg-gradient-navy text-white px-4 py-3">
+          <div>
+            <span class="badge bg-primary text-white rounded-pill px-3 py-1 fs-8 mb-1" id="modalArtCategory">Kategori</span>
+            <h5 class="modal-title fw-bold mb-0 text-white" id="modalArtTitle">Judul Artikel</h5>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="d-flex align-items-center gap-3 text-muted fs-8 pb-3 mb-3 border-bottom">
+            <span><i class="bi bi-person me-1"></i> Penulis: <strong class="text-dark" id="modalArtAuthor">-</strong></span>
+            <span>&bull;</span>
+            <span><i class="bi bi-calendar3 me-1"></i> Tanggal: <strong class="text-dark" id="modalArtDate">-</strong></span>
+          </div>
+          <div class="lead fs-6 text-secondary mb-3 fw-medium" id="modalArtSummary">
+            Ringkasan artikel...
+          </div>
+          <div class="text-dark lh-lg" id="modalArtContent" style="white-space: pre-line;">
+            Konten lengkap artikel...
+          </div>
+        </div>
+        <div class="modal-footer bg-light px-4 py-2.5 d-flex justify-content-between">
+          <span class="fs-8 text-muted">Jawa Pos Radar Kediri &bull; KKA 2026</span>
+          <button type="button" class="btn btn-secondary px-4 rounded-pill" data-bs-dismiss="modal">Tutup</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  import { supabase } from '../lib/supabase';
+
+  async function loadPublishedArticles() {
+    let articles: any[] = [];
+
+    // 1. Ambil dari Supabase Cloud
+    try {
+      const { data, error } = await supabase
+        .from('articles')
+        .select('*')
+        .eq('status', 'published')
+        .order('created_at', { ascending: false });
+
+      if (!error && data && data.length > 0) {
+        articles = data;
+        localStorage.setItem('kka_admin_articles', JSON.stringify(data));
+      }
+    } catch (e) {
+      console.warn('Error fetching articles from Supabase:', e);
+    }
+
+    // 2. Fallback ke local cache
+    if (articles.length === 0) {
+      try {
+        const stored = localStorage.getItem('kka_admin_articles');
+        if (stored) {
+          const all = JSON.parse(stored);
+          articles = all.filter((a: any) => a.status === 'published');
+        }
+      } catch (e) {}
+    }
+
+    if (articles.length > 0) {
+      const grid = document.getElementById('articlesGrid');
+      if (grid) {
+        grid.innerHTML = '';
+        articles.forEach((art: any) => {
+          const col = document.createElement('div');
+          col.className = 'col-lg-4 col-md-6 article-card-item';
+          col.innerHTML = `
+            <div class="kka-card h-100 p-4 d-flex flex-column justify-content-between">
+              <div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <span class="badge bg-primary-subtle text-primary border rounded-pill px-3 py-1 fs-8 fw-semibold">
+                    ${art.category}
+                  </span>
+                  <span class="text-muted fs-8">${art.date}</span>
+                </div>
+
+                <h5 class="fw-bold text-kka-primary mb-2 lh-base">
+                  ${art.title}
+                </h5>
+
+                <p class="text-secondary small mb-4">
+                  ${art.summary}
+                </p>
+              </div>
+
+              <div class="pt-3 border-top d-flex justify-content-between align-items-center">
+                <span class="fs-8 text-muted">Oleh: ${art.author}</span>
+                <button type="button" class="btn btn-link text-primary fw-semibold small p-0 text-decoration-none btn-read-article">
+                  Baca Selengkapnya →
+                </button>
+              </div>
+            </div>
+          `;
+
+          const readBtn = col.querySelector('.btn-read-article');
+          if (readBtn) {
+            readBtn.addEventListener('click', () => {
+              openArticleModal(art.title, art.category, art.author, art.date, art.summary, art.content || art.summary);
+            });
+          }
+          grid.appendChild(col);
+        });
+      }
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    loadPublishedArticles();
+
+    // Default buttons listener if not replaced
+    document.querySelectorAll('.article-card-item').forEach((item) => {
+      const btn = item.querySelector('.btn-read-article');
+      if (btn) {
+        btn.addEventListener('click', () => {
+          const title = item.getAttribute('data-title') || '';
+          const author = item.getAttribute('data-author') || '';
+          const date = item.getAttribute('data-date') || '';
+          const category = item.getAttribute('data-category') || '';
+          const summary = item.getAttribute('data-summary') || '';
+          openArticleModal(title, category, author, date, summary, summary);
+        });
+      }
+    });
+
+    function openArticleModal(title: string, category: string, author: string, date: string, summary: string, content: string) {
+      const modalEl = document.getElementById('readArticleModal');
+      const catEl = document.getElementById('modalArtCategory');
+      const titleEl = document.getElementById('modalArtTitle');
+      const authorEl = document.getElementById('modalArtAuthor');
+      const dateEl = document.getElementById('modalArtDate');
+      const sumEl = document.getElementById('modalArtSummary');
+      const contentEl = document.getElementById('modalArtContent');
+
+      if (catEl) catEl.textContent = category;
+      if (titleEl) titleEl.textContent = title;
+      if (authorEl) authorEl.textContent = author;
+      if (dateEl) dateEl.textContent = date;
+      if (sumEl) sumEl.textContent = summary;
+      if (contentEl) contentEl.textContent = content;
+
+      if (modalEl && (window as any).bootstrap) {
+        const bsModal = new (window as any).bootstrap.Modal(modalEl);
+        bsModal.show();
+      }
+    }
+  });
+</script>
+
+<style>
+  .max-w-xl { max-width: 600px; }
+  .fs-8 { font-size: 0.78rem; }
+</style>

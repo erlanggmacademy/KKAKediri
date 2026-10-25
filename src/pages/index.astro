@@ -1,16 +1,1240 @@
 ---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import RegionCard from "../components/RegionCard.astro";
+import DetailKKA from "../components/DetailKKA.astro";
+import { DISTRICTS, LEVELS, SITE_INFO } from "../data/competition";
+
+const topWilayahSlugs = [
+  "kota-kediri",
+  "kabupaten-kediri",
+  "kabupaten-nganjuk",
+  "kabupaten-tulungagung",
+];
+const bottomWilayahSlugs = [
+  "kabupaten-blitar",
+  "kota-blitar",
+  "kabupaten-trenggalek",
+];
+
+const topWilayah = topWilayahSlugs.map((slug) =>
+  DISTRICTS.find((d) => d.slug === slug)!,
+);
+const bottomWilayah = bottomWilayahSlugs.map((slug) =>
+  DISTRICTS.find((d) => d.slug === slug)!,
+);
+
+const eventSchema = {
+  "@context": "https://schema.org",
+  "@type": "Event",
+  name: "Kompetisi Kompetensi Akademik (KKA) 2026",
+  description:
+    "Kompetisi akademik terbesar se-Karesidenan Kediri jenjang SD, SMP, SMA diselenggarakan oleh Jawa Pos Radar Kediri dan Neutron Yogyakarta.",
+  startDate: "2026-06-02",
+  endDate: "2026-07-25",
+  eventAttendanceMode: "https://schema.org/MixedEventAttendanceMode",
+  eventStatus: "https://schema.org/EventScheduled",
+  location: {
+    "@type": "Place",
+    name: "Wilayah Karesidenan Kediri & Sekitarnya (Online & Grand Final Offline)",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Kediri",
+      addressRegion: "Jawa Timur",
+      addressCountry: "ID",
+    },
+  },
+  organizer: {
+    "@type": "Organization",
+    name: "Jawa Pos Radar Kediri",
+    url: "https://kkaradarkediri.com",
+  },
+};
+
+const TESTIMONIALS = [
+  {
+    name: "Ahmad Rizky Pratama",
+    role: "Peraih Juara 1 KKA Jenjang SMP (Kota Kediri)",
+    initial: "A",
+    avatarBg: "bg-primary",
+    text: "KKA Jawa Pos Radar Kediri memberikan simulasi soal yang sangat mirip dengan model TKA dan olimpiade nasional. Berkat KKA, saya jauh lebih percaya diri saat seleksi masuk SMA unggulan favorit!",
+  },
+  {
+    name: "Dra. Siti Rahayu, M.Pd",
+    role: "Guru Pembina Prestasi Akademik (Kab. Kediri)",
+    initial: "S",
+    avatarBg: "bg-warning text-dark",
+    text: "Pendaftaran kolektif sangat memudahkan sekolah kami. Template Excel terbaca rapi oleh sistem, dan piagam penghargaan resmi Radar Kediri sangat diapresiasi para wali murid.",
+  },
+  {
+    name: "Muhammad Farhan Al-Ghifari",
+    role: "Finalis Jenjang SMA (Kabupaten Nganjuk)",
+    initial: "M",
+    avatarBg: "bg-success",
+    text: "Ajang paling objektif dan bergengsi di Karesidenan Kediri. Soal-soalnya menantang logika berpikir kritis dan analisis mendalam, bukan sekadar hafalan rumus.",
+  },
+  {
+    name: "Nabila Putri Kirana",
+    role: "Juara 2 KKA Jenjang SD/MI (Kota Blitar)",
+    initial: "N",
+    avatarBg: "bg-info text-dark",
+    text: "Senang sekali bisa ikut kompetisi KKA tingkat regional. Pengalaman ujian CBT-nya seru, soal literasi dan numerasinya melatih kecepatan berpikir saya sebelum ujian kelulusan sekolah.",
+  },
+  {
+    name: "Bambang Kusuma, S.Pd",
+    role: "Koordinator CBT & Pembina (Tulungagung)",
+    initial: "B",
+    avatarBg: "bg-primary",
+    text: "KKA Radar Kediri selalu menjadi barometer tahunan kami untuk mengevaluasi kesiapan siswa menghadapi seleksi masuk SMA favorit dan persiapan UTBK perguruan tinggi negeri.",
+  },
+  {
+    name: "Ibu Ratna Wulandari",
+    role: "Wali Murid Peserta KKA (Kab. Trenggalek)",
+    initial: "R",
+    avatarBg: "bg-secondary",
+    text: "Proses pendaftaran mandiri sangat jelas dan transparan. Informasi gelombang dan verifikasi WhatsApp dari panitia sangat ramah dan responsif. Sangat direkomendasikan!",
+  },
+  {
+    name: "Dimas Aditya Nugraha",
+    role: "Peserta Sains Terbaik Jenjang SMA (Kab. Blitar)",
+    initial: "D",
+    avatarBg: "bg-success",
+    text: "Persaingan di babak Grand Final sangat memacu adrenalin. Menjadi kebanggaan tersendiri bisa membawa medali dan mengharumkan nama sekolah di panggung penghargaan resmi Radar Kediri.",
+  },
+];
+
+const FAQS = [
+  {
+    question: "Siapa saja yang berhak mengikuti Kompetisi Kompetensi Akademik (KKA) 2026?",
+    answer: "KKA 2026 terbuka untuk seluruh siswa aktif di 7 wilayah Karesidenan Kediri (Kota Kediri, Kab. Kediri, Kab. Nganjuk, Kab. Blitar, Kota Blitar, Kab. Tulungagung, dan Kab. Trenggalek). Jenjang yang diperlombakan mencakup SD/MI (Kelas 4, 5, 6), SMP/MTs (Kelas 7, 8, 9), dan SMA/MA/SMK (Kelas 10, 11, 12) baik dari sekolah negeri maupun swasta."
+  },
+  {
+    question: "Apa perbedaan Pendaftaran Mandiri dan Pendaftaran Kolektif?",
+    answer: "<strong>Pendaftaran Mandiri</strong> diperuntukkan bagi siswa atau wali murid yang mendaftarkan anaknya secara perorangan langsung melalui formulir online. Sedangkan <strong>Pendaftaran Kolektif</strong> diperuntukkan bagi bapak/ibu guru pembina, kepala sekolah, atau koordinator sekolah yang mendaftarkan rombongan siswa dalam jumlah banyak sekaligus menggunakan file Excel template resmi."
+  },
+  {
+    question: "Bagaimana format ujian dan standar materi soal yang diujikan?",
+    answer: "Ujian seleksi awal dilaksanakan berbasis Computer Based Test (CBT) dengan standar materi Tes Kemampuan Akademik (TKA) yang disusun oleh tim akademik berpengalaman dari Neutron Yogyakarta. Materi menguji kemampuan penalaran kritis, literasi, numerasi (SD & SMP) serta materi pendalaman jurusan dan Bahasa Inggris (SMA)."
+  },
+  {
+    question: "Bagaimana cara mengecek status pendaftaran dan verifikasi pembayaran saya?",
+    answer: "Anda dapat mengakses menu <strong>Informasi > Cek Status Pendaftaran</strong> atau membuka tautan <code>/daftar/status</code>. Masukkan <strong>Kode Registrasi</strong> (cth: <code>KKA26-M-NGJ-8841</code>) atau cukup masukkan <strong>Nomor WhatsApp Penanggung Jawab</strong> yang digunakan saat mendaftar. Sistem akan menampilkan status verifikasi (Lunas/Menunggu) serta menyediakan tombol unduh/cetak lembar tanda bukti resmi."
+  },
+  {
+    question: "Kapan dan bagaimana cara mendapatkan Kartu Peserta Ujian?",
+    answer: "Setelah pendaftaran diverifikasi berstatus <strong>LUNAS</strong>, Anda dapat mencetak Lembar Bukti Resmi A4 dari website sebagai tiket verifikasi. Kartu Peserta Ujian resmi beserta jadwal sesi dan pembagian nomor meja akan diterbitkan menjelang hari pelaksanaan melalui koordinator sekolah atau diunduh langsung di website."
+  },
+  {
+    question: "Apakah sertifikat KKA Radar Kediri dapat digunakan untuk PPDB jalur prestasi?",
+    answer: "Ya! Seluruh peserta yang mengikuti ujian akan mendapatkan e-Sertifikat resmi, dan para juara/finalis regional berhak memperoleh Piagam Penghargaan bertandatangan resmi Pimpinan Jawa Pos Radar Kediri serta piala/medali dan uang pembinaan. Piagam resmi ini diakui dan dapat dilampirkan sebagai portofolio prestasi akademik pada PPDB sekolah lanjutan favorit maupun SNBP/SNBT perguruan tinggi."
+  }
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": FAQS.map((faq) => ({
+    "@type": "Question",
+    "name": faq.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": faq.answer.replace(/<[^>]*>?/gm, ""),
+    },
+  })),
+};
+
+const combinedSchema = {
+  "@context": "https://schema.org",
+  "@graph": [eventSchema, faqSchema],
+};
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout
+  title="Kompetisi Kompetensi Akademik (KKA) 2026 - Jawa Pos Radar Kediri"
+  description="Daftar Kompetisi Kompetensi Akademik (KKA) 2026 Jawa Pos Radar Kediri. Uji kemampuan akademik SD/MI, SMP/MTs, SMA/MA/SMK standar TKA bersama Neutron Yogyakarta."
+  schema={combinedSchema}
+  ogImage="/images/og-kka-2026.jpg"
+>
+  <!-- 1. HERO SECTION (REFERENCE DESIGN: FULL-WIDTH CENTERED WITH OVERLAY) -->
+  <section
+    class="hero-astana-style position-relative d-flex align-items-center justify-content-center text-center text-white py-5"
+  >
+    <div class="container position-relative py-5">
+      <div class="row justify-content-center">
+        <div class="col-lg-9 col-xl-8">
+          <!-- Main Headline -->
+          <h1
+            class="display-4 fw-extrabold text-white mb-3 tracking-tight hero-title"
+          >
+            Kompetisi Kompetensi Akademik (KKA) 2026
+          </h1>
+
+          <!-- Accent Line (like reference) -->
+          <div class="hero-accent-line"></div>
+
+          <!-- Description / Tagline -->
+          <p class="lead text-white-50 mb-4 mx-auto hero-desc">
+            Ajang kompetisi akademik bergengsi se-Karesidenan Kediri jenjang
+            SD/MI, SMP/MTs, dan SMA/MA/SMK. Mengukur kesiapan capaian kompetensi
+            siswa dengan standar soal TKA teruji bersama Neutron Yogyakarta.
+          </p>
+
+          <!-- Action Buttons: Daftar Mandiri & Daftar Kolektif (clean, no emojis) -->
+          <div
+            class="d-flex flex-wrap gap-3 justify-content-center align-items-center pt-2"
+          >
+            <a
+              href="/daftar/mandiri"
+              class="btn btn-hero-cta shadow-lg"
+            >
+              Daftar Mandiri
+            </a>
+            <a
+              href="/daftar/kolektif"
+              class="btn btn-hero-outline"
+            >
+              Daftar Kolektif
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. SECTION STATISTIK (ORIGINAL 4 METRICS WITH NEW MODERN CIRCLE-ICON DESIGN) -->
+  <section class="py-4 py-lg-5 bg-white border-bottom">
+    <div class="container">
+      <div class="row g-4 align-items-center">
+        <!-- Item 1: Peserta Terdaftar -->
+        <div class="col-sm-6 col-lg-3">
+          <div class="d-flex align-items-center gap-3">
+            <div
+              class="stat-icon-circle d-flex align-items-center justify-content-center shrink-0"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#0284c7"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                <polyline points="17 6 23 6 23 12"></polyline>
+              </svg>
+            </div>
+            <div>
+              <h6 class="fw-bold text-dark mb-1">
+                {SITE_INFO.stats.participants2025} Peserta (2025)
+              </h6>
+              <p class="text-secondary small mb-0 fs-8">
+                Meningkat dari 4.920 peserta di 2024
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 2: 7 Wilayah Kompetisi -->
+        <div class="col-sm-6 col-lg-3">
+          <div class="d-flex align-items-center gap-3">
+            <div
+              class="stat-icon-circle d-flex align-items-center justify-content-center shrink-0"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#0284c7"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+            </div>
+            <div>
+              <h6 class="fw-bold text-dark mb-1">7 Wilayah Kompetisi</h6>
+              <p class="text-secondary small mb-0 fs-8">
+                Kota & Kabupaten Se-Karesidenan Kediri
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 3: 350+ Sekolah Partisipan -->
+        <div class="col-sm-6 col-lg-3">
+          <div class="d-flex align-items-center gap-3">
+            <div
+              class="stat-icon-circle d-flex align-items-center justify-content-center shrink-0"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#0284c7"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+              </svg>
+            </div>
+            <div>
+              <h6 class="fw-bold text-dark mb-1">
+                {SITE_INFO.stats.schoolsCount} Sekolah
+              </h6>
+              <p class="text-secondary small mb-0 fs-8">
+                Jenjang SD, SMP, MTs, SMA, SMK, dan MA
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 4: Medali & Sertifikat -->
+        <div class="col-sm-6 col-lg-3">
+          <div class="d-flex align-items-center gap-3">
+            <div
+              class="stat-icon-circle d-flex align-items-center justify-content-center shrink-0"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#0284c7"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="12" cy="8" r="6"></circle>
+                <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"
+                ></polyline>
+              </svg>
+            </div>
+            <div>
+              <h6 class="fw-bold text-dark mb-1">Medali & Hadiah</h6>
+              <p class="text-secondary small mb-0 fs-8">
+                Tabungan pembinaan & piagam resmi
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. TENTANG KKA SECTION (REFERENCE DESIGN: PHOTO COMPOSITION + INFORMATIVE CONTENT) -->
+  <section class="py-5 py-lg-6 bg-white" id="tentang">
+    <div class="container py-2">
+      <div class="row align-items-center g-5">
+        <!-- Kolom Kiri: Galeri Foto Dokumentasi KKA (WebP < 100KB) -->
+        <div class="col-lg-6">
+          <div class="row g-3">
+            <div class="col-6">
+              <div
+                class="kka-card border rounded-4 overflow-hidden shadow-sm h-100"
+              >
+                <img
+                  src="/images/kka-square-01.webp"
+                  alt="Suasana Pelaksanaan Ujian KKA Radar Kediri"
+                  class="img-fluid w-100 h-100 object-fit-cover"
+                  style="aspect-ratio: 1/1;"
+                  loading="lazy"
+                />
+              </div>
+            </div>
+            <div class="col-6">
+              <div
+                class="kka-card border rounded-4 overflow-hidden shadow-sm h-100"
+              >
+                <img
+                  src="/images/kka-square-02.webp"
+                  alt="Penyerahan Penghargaan Juara KKA Radar Kediri"
+                  class="img-fluid w-100 h-100 object-fit-cover"
+                  style="aspect-ratio: 1/1;"
+                  loading="lazy"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kolom Kanan: Penjelasan Apa Itu KKA -->
+        <div class="col-lg-6">
+          <span
+            class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-1 fs-8 fw-bold mb-2"
+          >
+            Tentang KKA 2026
+          </span>
+
+          <h2 class="display-6 fw-bold text-kka-primary mb-3">
+            Apa Itu KKA Radar Kediri?
+          </h2>
+
+          <p class="text-secondary mb-3">
+            Kompetisi Kompetensi Akademik (KKA) Radar Kediri adalah program
+            edukatif tahunan yang dirancang khusus untuk mengukur kesiapan siswa
+            dalam menghadapi Tes Kemampuan Akademik (TKA) dari Kementerian
+            Pendidikan Dasar dan Menengah (Dikdasmen).
+          </p>
+
+          <p class="text-secondary mb-4">
+            KKA bukan sekadar kompetisi, melainkan simulasi nyata dan tolok ukur
+            kesiapan strategi akademik siswa sebelum menghadapi seleksi menuju
+            jenjang sekolah maupun kampus impian.
+          </p>
+
+          <!-- 3 Poin Keunggulan (Menggunakan SVG Resmi, Tanpa Emoji AI) -->
+          <div class="d-flex flex-column gap-3 mb-4">
+            <div class="d-flex gap-3 align-items-start">
+              <div class="text-primary shrink-0 mt-1">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#0f4c81"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="8" r="6"></circle>
+                  <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"
+                  ></polyline>
+                </svg>
+              </div>
+              <div>
+                <h6 class="fw-bold text-dark mb-1">Soal standar TKA</h6>
+                <p class="small text-secondary mb-0">
+                  Soal-soal KKA disusun sesuai standar Tes Kemampuan Akademik
+                  (TKA) resmi Kementerian Pendidikan Dasar dan Menengah sebagai
+                  simulasi persiapan seleksi masuk jenjang pendidikan lanjutan.
+                </p>
+              </div>
+            </div>
+
+            <div class="d-flex gap-3 align-items-start">
+              <div class="text-primary shrink-0 mt-1">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#0f4c81"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="8" r="6"></circle>
+                  <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"
+                  ></polyline>
+                </svg>
+              </div>
+              <div>
+                <h6 class="fw-bold text-dark mb-1">
+                  Dibimbing Neutron Yogyakarta
+                </h6>
+                <p class="small text-secondary mb-0">
+                  Didukung penuh oleh Neutron Yogyakarta sebagai mitra resmi
+                  bimbingan belajar terpercaya yang berpengalaman mencetak
+                  ribuan alumni berprestasi di seluruh Indonesia.
+                </p>
+              </div>
+            </div>
+
+            <div class="d-flex gap-3 align-items-start">
+              <div class="text-primary shrink-0 mt-1">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#0f4c81"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="8" r="6"></circle>
+                  <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"
+                  ></polyline>
+                </svg>
+              </div>
+              <div>
+                <h6 class="fw-bold text-dark mb-1">
+                  Didukung Cabdindik & Kemenag
+                </h6>
+                <p class="small text-secondary mb-0">
+                  KKA 2026 mendapat rekomendasi resmi dari Cabang Dinas
+                  Pendidikan (Cabdindik) Jawa Timur serta Kantor Kemenag
+                  setempat guna menjamin kredibilitas mutu kompetisi.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tombol Selengkapnya -->
+          <a
+            href="/tentang-kka"
+            class="btn btn-primary px-4 py-2 fw-semibold rounded-3 shadow-sm"
+          >
+            Selengkapnya
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. SECTION 7 WILAYAH KOMPETISI -->
+  <section
+    class="py-5 py-lg-6 bg-white"
+    id="wilayah"
+    style="scroll-margin-top: 80px;"
+  >
+    <div class="container">
+      <div class="text-center max-w-2xl mx-auto mb-5">
+        <h2 class="fw-bold text-kka-primary mb-2">
+          Pendaftaran Peserta KKA 2026 Berdasarkan Wilayah
+        </h2>
+        <p class="text-secondary small mb-0">
+          Pilih wilayah sekolah Anda untuk memulai pendaftaran secara mandiri
+          maupun kolektif.
+        </p>
+      </div>
+
+      <!-- Baris 1: 4 Wilayah Teratas -->
+      <div class="row g-4 mb-4">
+        {
+          topWilayah.map((district) => (
+            <div class="col-xl-3 col-lg-3 col-md-6 col-12">
+              <RegionCard district={district} />
+            </div>
+          ))
+        }
+      </div>
+
+      <!-- Baris 2: 3 Wilayah Sejajar di Tengah -->
+      <div class="row g-4 justify-content-center">
+        {
+          bottomWilayah.map((district) => (
+            <div class="col-xl-3 col-lg-3 col-md-6 col-12">
+              <RegionCard district={district} />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. MATERI SOAL KKA 2026 (CLEAN THREE-COLUMN DESIGN MATCHING USER REFERENCE) -->
+  <section class="py-5 py-lg-6 bg-light" id="jenjang">
+    <div class="container">
+      <div class="text-center max-w-2xl mx-auto mb-4 mb-lg-5">
+        <h2 class="fw-bold text-kka-primary mb-2">Materi Soal KKA 2026</h2>
+        <p class="text-secondary mb-0">
+          Materi terstandar untuk membiasakan siswa menghadapi soal HOTS
+        </p>
+      </div>
+
+      <div class="row g-4 justify-content-center">
+        <!-- Jenjang SD/MI -->
+        <div class="col-lg-4 col-md-6">
+          <div
+            class="card h-100 p-4 p-xl-5 bg-white border rounded-4 text-center d-flex flex-column justify-content-between shadow-xs materi-card"
+          >
+            <div>
+              <div class="materi-book-icon mb-3">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="38"
+                  height="38"
+                  viewBox="0 0 24 24"
+                  fill="#0d6efd"
+                  stroke="#0d6efd"
+                  stroke-width="1.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                </svg>
+              </div>
+              <h3 class="h4 fw-bold text-dark mb-3">Jenjang SD/MI</h3>
+              <p class="text-secondary small mb-4">
+                Dirancang untuk siswa kelas IV, V, dan VI SD/MI sebagai simulasi
+                nyata menghadapi seleksi masuk SMP/MTs unggulan melalui jalur
+                prestasi.
+              </p>
+            </div>
+
+            <div>
+              <div class="materi-pill-box p-3 rounded-3 mb-4">
+                <span class="fw-bold text-dark fs-8">Materi:</span>
+                <span class="text-secondary fs-8"
+                  >Matematika & Bahasa Indonesia</span
+                >
+              </div>
+              <a
+                href="/daftar"
+                class="btn btn-primary px-4 py-2.5 fw-semibold rounded-3 shadow-sm w-100"
+              >
+                Daftar Sekarang
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Jenjang SMP/MTs -->
+        <div class="col-lg-4 col-md-6">
+          <div
+            class="card h-100 p-4 p-xl-5 bg-white border rounded-4 text-center d-flex flex-column justify-content-between shadow-xs materi-card"
+          >
+            <div>
+              <div class="materi-book-icon mb-3">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="38"
+                  height="38"
+                  viewBox="0 0 24 24"
+                  fill="#0d6efd"
+                  stroke="#0d6efd"
+                  stroke-width="1.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                </svg>
+              </div>
+              <h3 class="h4 fw-bold text-dark mb-3">Jenjang SMP/MTs</h3>
+              <p class="text-secondary small mb-4">
+                Dirancang untuk siswa kelas VIII and IX SMP/MTs untuk mengukur
+                kesiapan akademik sebelum menghadapi seleksi masuk SMA/MA/SMK
+                favorit.
+              </p>
+            </div>
+
+            <div>
+              <div class="materi-pill-box p-3 rounded-3 mb-4">
+                <span class="fw-bold text-dark fs-8">Materi:</span>
+                <span class="text-secondary fs-8"
+                  >Matematika & Bahasa Indonesia</span
+                >
+              </div>
+              <a
+                href="/daftar"
+                class="btn btn-primary px-4 py-2.5 fw-semibold rounded-3 shadow-sm w-100"
+              >
+                Daftar Sekarang
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Jenjang SMA/MA/SMK -->
+        <div class="col-lg-4 col-md-6">
+          <div
+            class="card h-100 p-4 p-xl-5 bg-white border rounded-4 text-center d-flex flex-column justify-content-between shadow-xs materi-card"
+          >
+            <div>
+              <div class="materi-book-icon mb-3">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="38"
+                  height="38"
+                  viewBox="0 0 24 24"
+                  fill="#0d6efd"
+                  stroke="#0d6efd"
+                  stroke-width="1.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                </svg>
+              </div>
+              <h3 class="h4 fw-bold text-dark mb-3">Jenjang SMA/MA/SMK</h3>
+              <p class="text-secondary small mb-4">
+                Dirancang untuk siswa kelas XI and XII SMA/MA/SMK sebagai
+                persiapan menghadapi seleksi masuk Perguruan Tinggi Negeri (PTN)
+                melalui jalur prestasi akademik.
+              </p>
+            </div>
+
+            <div>
+              <div class="materi-pill-box p-3 rounded-3 mb-4">
+                <span class="fw-bold text-dark fs-8">Materi:</span>
+                <span class="text-secondary fs-8"
+                  >Matematika, B. Indonesia, B. Inggris + 2 Mapel Pilihan Sesuai
+                  Jurusan (rencana kuliah)</span
+                >
+              </div>
+              <a
+                href="/daftar"
+                class="btn btn-primary px-4 py-2.5 fw-semibold rounded-3 shadow-sm w-100"
+              >
+                Daftar Sekarang
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. DETAIL KKA 2026 SECTION (INTERACTIVE TABS WITH REAL PHOTO ILLUSTRATIONS) -->
+  <DetailKKA />
+
+  <!-- 7. SECTION TESTIMONI DENGAN CAROUSEL SLIDER & TOMBOL PANAH NAVIGASI -->
+  <section class="py-5 py-lg-6 bg-light" id="testimoni">
+    <div class="container">
+      <div
+        class="d-flex flex-column flex-md-row align-items-md-end justify-content-between mb-4 mb-lg-5 gap-3"
+      >
+        <div>
+          <h2 class="fw-bold text-kka-primary mb-2">
+            Apa Kata Peserta & Guru Pembina?
+          </h2>
+          <p class="text-secondary mb-0">
+            Telah diikuti oleh ribuan pelajar dan guru pembina berprestasi
+            se-Karesidenan Kediri.
+          </p>
+        </div>
+
+        <!-- Tombol Panah Geser Kiri & Kanan -->
+        <div class="d-flex gap-2 align-items-center shrink-0">
+          <button
+            type="button"
+            class="btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center testimoni-nav-btn shadow-2xs"
+            aria-label="Geser testimoni ke kiri"
+            id="testimoniPrev"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center testimoni-nav-btn shadow-2xs"
+            aria-label="Geser testimoni ke kanan"
+            id="testimoniNext"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Testimonials Slider Track -->
+      <div class="testimoni-slider-track d-flex gap-4 pb-3" id="testimoniTrack">
+        {
+          TESTIMONIALS.map((item) => (
+            <div class="testimoni-slide-item">
+              <div class="card h-100 p-4 p-xl-5 bg-white border rounded-4 shadow-2xs d-flex flex-column justify-content-between testimoni-card">
+                <div>
+                  <div class="text-warning mb-3 fs-6">★★★★★</div>
+                  <p class="text-secondary small fst-italic mb-4">
+                    "{item.text}"
+                  </p>
+                </div>
+                <div class="d-flex align-items-center gap-3 pt-3 border-top border-light-subtle">
+                  <div
+                    class={`rounded-circle text-white d-flex align-items-center justify-content-center fw-bold shrink-0 ${item.avatarBg}`}
+                    style="width: 44px; height: 44px; font-size: 1.1rem;"
+                  >
+                    {item.initial}
+                  </div>
+                  <div>
+                    <div class="fw-bold text-dark fs-7">{item.name}</div>
+                    <div class="text-secondary fs-8">{item.role}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. SECTION FAQ INTERAKTIF (PERTANYAAN UMUM SEPUTAR KKA 2026) -->
+  <section class="py-5 py-lg-6 bg-white border-top" id="faq">
+    <div class="container">
+      <div class="text-center max-w-2xl mx-auto mb-4 mb-lg-5">
+        <span class="badge bg-primary-subtle text-primary border rounded-pill px-3 py-1 mb-2 fw-semibold">Pusat Informasi</span>
+        <h2 class="display-6 fw-bold text-kka-primary mb-2">Pertanyaan yang Sering Diajukan (FAQ)</h2>
+        <p class="text-secondary mb-0">
+          Temukan jawaban cepat seputar teknis kompetisi, tata cara pendaftaran mandiri & kolektif, pembayaran, dan jadwal pelaksanaan KKA 2026.
+        </p>
+      </div>
+
+      <div class="max-w-4xl mx-auto">
+        <div class="custom-faq-list" id="faqAccordionList">
+          {FAQS.map((faq, idx) => (
+            <div class={`faq-item overflow-hidden ${idx === 0 ? 'active' : ''}`}>
+              <button 
+                type="button"
+                class={`faq-trigger-btn w-100 d-flex align-items-center justify-content-between text-start ${idx === 0 ? '' : 'collapsed'}`} 
+                data-faq-target={`faqAnswer${idx}`}
+                aria-expanded={idx === 0 ? 'true' : 'false'}
+              >
+                <div class="d-flex align-items-center me-3 flex-grow-1">
+                  <div class="faq-number-box d-flex align-items-center justify-content-center shrink-0 me-3 me-md-4">
+                    <span>0{idx + 1}</span>
+                  </div>
+                  <span class="faq-question-text">{faq.question}</span>
+                </div>
+                <div class="faq-chevron-bubble shrink-0 ms-2 d-flex align-items-center justify-content-center">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </div>
+              </button>
+              <div 
+                id={`faqAnswer${idx}`} 
+                class={`faq-collapse-body ${idx === 0 ? 'open' : ''}`}
+              >
+                <div class="faq-answer-inner text-secondary" set:html={faq.answer}>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. BANNER CTA FINAL -->
+  <section
+    class="py-5 bg-gradient-navy text-white text-center position-relative overflow-hidden"
+  >
+    <div class="container py-4 position-relative">
+      <span class="badge bg-danger rounded-pill px-3 py-1 mb-3"
+        >KKA Radar Kediri 2026</span
+      >
+      <h2 class="display-6 fw-bold mb-3">Siap Menguji Kemampuan Akademikmu?</h2>
+      <p class="lead text-white-50 max-w-xl mx-auto mb-4">
+        Daftar sekarang sebelum kuota peserta regional terpenuhi dan tarif promo
+        gelombang berakhir.
+      </p>
+      <div class="d-flex flex-wrap justify-content-center gap-3">
+        <a
+          href="/daftar/mandiri"
+          class="btn btn-kka-red btn-lg px-5 py-3 shadow-lg"
+        >
+          Daftar Mandiri
+        </a>
+        <a
+          href="/daftar/kolektif"
+          class="btn btn-outline-light btn-lg px-5 py-3"
+        >
+          Daftar Kolektif Sekolah
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .fw-extrabold {
+    font-weight: 800;
+  }
+  .max-w-xl {
+    max-width: 640px;
+  }
+  .fs-7 {
+    font-size: 0.85rem;
+  }
+  .fs-8 {
+    font-size: 0.78rem;
+  }
+  .tracking-wider {
+    letter-spacing: 0.08em;
+  }
+
+  /* Stat Icon Circle */
+  .stat-icon-circle {
+    width: 52px;
+    height: 52px;
+    background-color: #e0f2fe;
+    border-radius: 50%;
+  }
+
+  /* Hero Section Reference Style */
+  .hero-astana-style {
+    min-height: 700px;
+    padding-top: 160px !important;
+    padding-bottom: 110px !important;
+    background:
+      linear-gradient(rgba(8, 20, 38, 0.68), rgba(8, 20, 38, 0.76)),
+      url("/images/hero.webp") center center / cover no-repeat;
+    display: flex;
+    align-items: center;
+  }
+
+  .hero-title {
+    font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+  }
+
+  .hero-accent-line {
+    width: 64px;
+    height: 4px;
+    background: #f59e0b;
+    border-radius: 4px;
+    margin: 1.25rem auto 1.5rem auto;
+  }
+
+  .hero-desc {
+    max-width: 720px;
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    line-height: 1.7;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
+  }
+
+  .btn-hero-cta {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 10px 24px;
+    border-radius: 9999px;
+    border: none;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .btn-hero-cta:hover {
+    background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(245, 158, 11, 0.45);
+  }
+
+  .btn-hero-outline {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: #ffffff;
+    border: 1.5px solid rgba(255, 255, 255, 0.75);
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 10px 24px;
+    border-radius: 9999px;
+    transition: all 0.2s ease;
+  }
+
+  .btn-hero-outline:hover {
+    background: #ffffff;
+    color: #0f2d59;
+    border-color: #ffffff;
+    transform: translateY(-2px);
+  }
+
+  /* Materi Cards */
+  .materi-card {
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.25s ease;
+    border-color: #e2e8f0 !important;
+  }
+  .materi-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08) !important;
+  }
+  .materi-pill-box {
+    background-color: #f8fafc;
+    border: 1px solid #f1f5f9;
+  }
+
+  /* Testimonial Slider Track */
+  .testimoni-slider-track {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .testimoni-slider-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .testimoni-slide-item {
+    flex: 0 0 calc(33.333% - 16px);
+    scroll-snap-align: start;
+    min-width: 320px;
+  }
+
+  @media (max-width: 991px) {
+    .testimoni-slide-item {
+      flex: 0 0 calc(50% - 12px);
+      min-width: 300px;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .testimoni-slide-item {
+      flex: 0 0 88%;
+      min-width: 270px;
+    }
+  }
+
+  .testimoni-card {
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.25s ease;
+    border-color: #e2e8f0 !important;
+  }
+  .testimoni-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08) !important;
+  }
+
+  .testimoni-nav-btn {
+    width: 44px;
+    height: 44px;
+    transition: all 0.2s ease;
+  }
+  .testimoni-nav-btn:hover {
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 768px) {
+    .hero-astana-style {
+      min-height: 480px;
+    }
+  }
+
+  /* FAQ Custom Accordion - Lega, Proporsional & Modern */
+  .custom-faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .faq-item {
+    border: 1.5px solid #e2e8f0;
+    border-radius: 18px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.03);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .faq-item:hover {
+    border-color: #cbd5e1;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.07);
+  }
+  .faq-item.active {
+    border-color: #93c5fd;
+    box-shadow: 0 10px 28px rgba(29, 114, 242, 0.08);
+  }
+  .faq-trigger-btn {
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    padding: 22px 28px;
+    transition: background-color 0.2s ease;
+  }
+  .faq-trigger-btn:hover {
+    background-color: #f8fafc;
+  }
+  .faq-item.active .faq-trigger-btn {
+    background-color: #f8fbff;
+  }
+  .faq-number-box {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(29, 114, 242, 0.08);
+    color: #1d72f2;
+    font-weight: 800;
+    font-size: 0.95rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    border: 1.5px solid rgba(29, 114, 242, 0.15);
+    transition: all 0.25s ease;
+  }
+  .faq-item.active .faq-number-box {
+    background: #1d72f2;
+    color: #ffffff;
+    border-color: #1d72f2;
+    box-shadow: 0 4px 12px rgba(29, 114, 242, 0.3);
+  }
+  .faq-question-text {
+    font-size: 1.12rem;
+    font-weight: 700;
+    color: #0f2d59;
+    line-height: 1.45;
+  }
+  .faq-chevron-bubble {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    color: #64748b;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .faq-item.active .faq-chevron-bubble {
+    background: rgba(29, 114, 242, 0.12);
+    color: #1d72f2;
+    transform: rotate(180deg);
+  }
+  .faq-collapse-body {
+    display: none;
+    border-top: 1px solid #f1f5f9;
+  }
+  .faq-collapse-body.open {
+    display: block;
+    animation: faqFadeIn 0.25s ease;
+  }
+  .faq-answer-inner {
+    padding: 22px 28px 26px 88px;
+    font-size: 1rem;
+    line-height: 1.85;
+    color: #475569;
+  }
+  .faq-answer-inner strong {
+    color: #0f2d59;
+  }
+  @media (max-width: 768px) {
+    .faq-trigger-btn {
+      padding: 16px 18px;
+    }
+    .faq-number-box {
+      width: 38px;
+      height: 38px;
+      font-size: 0.88rem;
+    }
+    .faq-question-text {
+      font-size: 1rem;
+    }
+    .faq-chevron-bubble {
+      width: 34px;
+      height: 34px;
+    }
+    .faq-answer-inner {
+      padding: 16px 18px 20px 18px;
+      font-size: 0.95rem;
+    }
+  }
+  @keyframes faqFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+
+<script>
+  function setupTestimoniSlider() {
+    const track = document.getElementById("testimoniTrack");
+    const prevBtn = document.getElementById("testimoniPrev");
+    const nextBtn = document.getElementById("testimoniNext");
+
+    if (!track || !prevBtn || !nextBtn) return;
+
+    const getScrollAmount = () => {
+      const firstItem = track.querySelector(
+        ".testimoni-slide-item",
+      ) as HTMLElement | null;
+      if (firstItem) {
+        return firstItem.clientWidth + 24; // item width + gap
+      }
+      return 360;
+    };
+
+    prevBtn.addEventListener("click", () => {
+      track.scrollBy({ left: -getScrollAmount(), behavior: "smooth" });
+    });
+
+    nextBtn.addEventListener("click", () => {
+      track.scrollBy({ left: getScrollAmount(), behavior: "smooth" });
+    });
+  }
+
+  function setupFaqAccordion() {
+    const list = document.getElementById("faqAccordionList");
+    if (!list) return;
+
+    const items = list.querySelectorAll(".faq-item");
+    items.forEach((item) => {
+      const btn = item.querySelector(".faq-trigger-btn") as HTMLButtonElement | null;
+      const body = item.querySelector(".faq-collapse-body") as HTMLElement | null;
+      if (!btn || !body) return;
+
+      btn.addEventListener("click", () => {
+        const isOpen = item.classList.contains("active");
+
+        // Close all other items
+        items.forEach((other) => {
+          if (other !== item) {
+            other.classList.remove("active");
+            const otherBtn = other.querySelector(".faq-trigger-btn");
+            const otherBody = other.querySelector(".faq-collapse-body");
+            otherBtn?.setAttribute("aria-expanded", "false");
+            otherBody?.classList.remove("open");
+          }
+        });
+
+        // Toggle this item
+        if (isOpen) {
+          item.classList.remove("active");
+          btn.setAttribute("aria-expanded", "false");
+          body.classList.remove("open");
+        } else {
+          item.classList.add("active");
+          btn.setAttribute("aria-expanded", "true");
+          body.classList.add("open");
+        }
+      });
+    });
+  }
+
+  function initPage() {
+    setupTestimoniSlider();
+    setupFaqAccordion();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initPage);
+  } else {
+    initPage();
+  }
+  document.addEventListener("astro:page-load", initPage);
+</script>

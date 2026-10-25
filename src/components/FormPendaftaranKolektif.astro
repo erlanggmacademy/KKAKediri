@@ -1,0 +1,892 @@
+---
+import { WAVES, DISTRICTS } from '../data/competition';
+import { getActiveWave, formatRupiah } from '../lib/pricing';
+
+interface Props {
+  defaultDistrictSlug?: string;
+  defaultDistrictName?: string;
+}
+
+const { 
+  defaultDistrictSlug = 'kabupaten-nganjuk', 
+  defaultDistrictName = 'Kabupaten Nganjuk' 
+} = Astro.props;
+
+const currentWave = getActiveWave();
+---
+
+<div class="form-kolektif-wrapper max-w-4xl mx-auto">
+  
+  <!-- Header Title Outside Card -->
+  <div class="form-header-box mb-3 text-start">
+    <h2 class="h3 fw-bold text-dark mb-1">Form Pendaftaran Kolektif</h2>
+    <p class="text-secondary small mb-0">
+      Silakan isi data sekolah dan daftar peserta di bawah ini
+    </p>
+  </div>
+
+  <!-- Closed State Notice if Kolektif Disabled by Admin -->
+  <div id="kolektifClosedNotice" class="card border-0 shadow-sm rounded-4 p-5 text-center bg-white mb-4 d-none">
+    <div class="mb-3">
+      <div class="rounded-circle bg-danger-subtle text-danger d-inline-flex p-3">
+        <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+        </svg>
+      </div>
+    </div>
+    <span class="badge bg-danger rounded-pill px-3 py-1 fs-8 fw-bold mb-2 w-fit mx-auto" id="kolektifClosedBadge">PENDAFTARAN KOLEKTIF DITUTUP</span>
+    <h2 class="h3 fw-bold text-dark mb-2" id="kolektifClosedTitle">Pendaftaran Kolektif Telah Ditutup</h2>
+    <p class="text-secondary lead fs-6 max-w-xl mx-auto mb-4" id="kolektifClosedMessage">
+      Pendaftaran rombongan kolektif sekolah KKA 2026 telah resmi ditutup. Untuk konfirmasi data rombongan atau koordinasi kuota khusus sekolah, silakan hubungi koordinator panitia.
+    </p>
+    <div class="d-flex flex-wrap justify-content-center gap-3">
+      <a href="/cek-status" class="btn btn-primary px-4 py-2.5 rounded-pill fw-semibold shadow-sm">
+        Cek Status Pendaftaran Sekolah
+      </a>
+      <a href="/daftar" class="btn btn-outline-secondary px-4 py-2.5 rounded-pill fw-semibold">
+        Kembali ke Portal
+      </a>
+    </div>
+  </div>
+
+  <!-- Main Card with Crisp Royal Blue Border -->
+  <div class="card rounded-4 p-4 p-md-5 bg-white shadow-sm mb-4 form-main-card" id="kolektifFormCard">
+    
+    <form id="formKkaKolektif" class="needs-validation" novalidate>
+
+      <!-- 1. Unggah Berkas Pendaftaran (Excel) -->
+      <div class="form-section mb-4 pb-2">
+        <div class="d-flex align-items-center gap-2 mb-2">
+          <span class="section-indicator-bar bg-primary rounded-pill"></span>
+          <h3 class="h5 fw-bold text-dark mb-0">1. Unggah Berkas Pendaftaran (Excel)</h3>
+        </div>
+        
+        <p class="text-secondary small mb-3">
+          Pendaftaran kolektif kini sepenuhnya menggunakan Excel. Silakan unduh template Excel kami di bawah ini, isi data sekolah beserta daftar siswa, lalu unggah kembali berkas tersebut.
+        </p>
+
+        <!-- Button Unduh Template Excel -->
+        <a 
+          href="/templates/template-pendaftaran-kolektif-kka-2026.xlsx" 
+          download="template-pendaftaran-kolektif-kka-2026.xlsx" 
+          class="btn btn-sm btn-outline-primary fw-semibold rounded-3 px-3 py-1.5 mb-4 d-inline-flex align-items-center gap-1.5 hover-btn"
+        >
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Unduh Template Excel
+        </a>
+
+        <!-- Dashed Drag & Drop Box -->
+        <div 
+          id="excelDropzone" 
+          class="border border-dashed rounded-4 p-4 p-md-5 text-center bg-white mb-4 position-relative cursor-pointer hover-dropzone"
+        >
+          <!-- Excel File Icon (Blue sheet with 'X') -->
+          <div class="excel-icon-box mx-auto mb-3 d-flex align-items-center justify-content-center">
+            <svg width="46" height="46" viewBox="0 0 24 24" fill="none">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" fill="#1d72f2"/>
+              <polyline points="14 2 14 8 20 8" fill="#1557bf"/>
+              <line x1="9.5" y1="12" x2="14.5" y2="18" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <line x1="14.5" y1="12" x2="9.5" y2="18" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+
+          <div class="fw-bold text-dark fs-6 mb-1" id="dropzoneLabel">Pilih atau Tarik File Excel ke Sini</div>
+          <div class="text-muted small mb-3" id="dropzoneSubLabel">Mendukung format .xlsx, .xls, .csv</div>
+
+          <button 
+            type="button" 
+            id="btnPilihBerkas" 
+            class="btn btn-sm btn-light border text-dark fw-semibold px-3 py-1.5 rounded-3 d-inline-flex align-items-center gap-1.5 shadow-2xs"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+            </svg>
+            Pilih Berkas
+          </button>
+
+          <!-- Hidden Input File -->
+          <input 
+            type="file" 
+            id="excelFileInput" 
+            class="d-none" 
+            accept=".xlsx, .xls, .csv" 
+          />
+        </div>
+
+        <!-- STATE 2: Parsed Excel Result Card (Hidden by default in State 1) -->
+        <div id="parsedResultCard" class="d-none border rounded-4 p-4 mb-3 bg-white shadow-2xs">
+          
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex align-items-center gap-2 text-success fw-bold fs-6">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="m9 12 2 2 4-4"/>
+              </svg>
+              <span>Berkas Valid & Berhasil Dibaca!</span>
+            </div>
+            
+            <button 
+              type="button" 
+              id="btnChangeExcel" 
+              class="btn btn-link text-primary text-decoration-none p-0 small fw-semibold"
+            >
+              Ganti Berkas Excel
+            </button>
+          </div>
+
+          <!-- School Metadata 2-Column Grid -->
+          <div class="p-3.5 bg-light rounded-3 border mb-4">
+            <div class="row g-2 small">
+              <div class="col-md-6">
+                <div class="d-flex">
+                  <span class="text-muted" style="width: 145px;">Nama Sekolah</span>
+                  <span class="me-2">:</span>
+                  <strong class="text-dark" id="displayNamaSekolah">-</strong>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="d-flex">
+                  <span class="text-muted" style="width: 145px;">WhatsApp PIC</span>
+                  <span class="me-2">:</span>
+                  <strong class="text-dark" id="displayWaPic">-</strong>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="d-flex">
+                  <span class="text-muted" style="width: 145px;">Wilayah Sekolah</span>
+                  <span class="me-2">:</span>
+                  <strong class="text-dark" id="displayWilayah">-</strong>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="d-flex">
+                  <span class="text-muted" style="width: 145px;">Kecamatan Sekolah</span>
+                  <span class="me-2">:</span>
+                  <strong class="text-dark" id="displayKecamatan">-</strong>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="d-flex">
+                  <span class="text-muted" style="width: 145px;">Jenjang Pendidikan</span>
+                  <span class="me-2">:</span>
+                  <strong class="text-dark" id="displayJenjang">-</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table of Students -->
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="fw-bold text-dark mb-0">
+              Daftar Peserta (<span id="displayCountSiswa">0</span> Siswa)
+            </h6>
+          </div>
+          
+          <div class="table-responsive border rounded-3 bg-white" style="max-height: 320px; overflow-y: auto;">
+            <table class="table table-hover align-middle mb-0 small text-nowrap">
+              <thead class="table-light sticky-top">
+                <tr>
+                  <th style="width: 45px;" class="ps-3 text-center">#</th>
+                  <th>Nama Siswa</th>
+                  <th>NISN</th>
+                  <th>Gender</th>
+                  <th>Kelas</th>
+                </tr>
+              </thead>
+              <tbody id="displayTableBody">
+                <!-- Injected via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- 2. Pembayaran & Konfirmasi -->
+      <div class="form-section mb-4">
+        <div class="d-flex align-items-center gap-2 mb-2">
+          <span class="section-indicator-bar bg-primary rounded-pill"></span>
+          <h3 class="h5 fw-bold text-dark mb-0">2. Pembayaran & Konfirmasi</h3>
+        </div>
+
+        <!-- Info Pembayaran Box -->
+        <div class="payment-info-box p-3 rounded-3 mb-3 d-flex align-items-center gap-2 small">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1d72f2" stroke-width="2.5" class="shrink-0">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+          <div class="text-dark lh-sm">
+            <strong>Info Pembayaran:</strong> Silakan transfer total biaya ke <strong>Bank BRI 0109-01-001555-30-8 a.n. PT Kediri Intermedia Pers (Radar Kediri)</strong> atau <strong>Bank BCA 1400892211 a.n. Panitia KKA</strong>.
+          </div>
+        </div>
+
+        <!-- Bukti Transfer Upload -->
+        <div class="mb-4">
+          <label class="form-label small fw-semibold text-dark">
+            Bukti Transfer (Format Gambar) <span class="text-danger">*</span>
+          </label>
+          <div class="upload-wrapper border rounded-3 p-3 bg-light">
+            <input 
+              type="file" 
+              id="transferProofKolektif" 
+              class="form-control" 
+              accept="image/png, image/jpeg, image/jpg, image/webp, application/pdf" 
+              required 
+            />
+            <div class="form-text fs-8 text-muted mt-1.5">
+              Lampirkan struk transfer / bukti mutasi pembayaran panitia. Maks. 2MB.
+            </div>
+            <div class="invalid-feedback">Bukti transfer pembayaran wajib dilampirkan.</div>
+          </div>
+        </div>
+
+        <!-- STATE 2: Rincian Biaya (Hidden by default in State 1) -->
+        <div id="rincianBiayaBox" class="d-none border rounded-3 p-3.5 bg-white mb-4 shadow-2xs">
+          <div class="d-flex align-items-center gap-1.5 fw-bold text-dark small mb-3">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <line x1="3" y1="9" x2="21" y2="9"/>
+              <line x1="9" y1="21" x2="9" y2="9"/>
+            </svg>
+            <span>Rincian Biaya</span>
+          </div>
+
+          <div class="d-flex justify-content-between text-secondary small mb-1.5">
+            <span>Jumlah Peserta:</span>
+            <strong class="text-dark" id="rincianJumlahPeserta">-</strong>
+          </div>
+
+          <div class="d-flex justify-content-between text-secondary small mb-3">
+            <span>Biaya per Siswa:</span>
+            <strong class="text-dark" id="rincianBiayaPerSiswa">-</strong>
+          </div>
+
+          <div class="border-top border-dashed pt-2.5 d-flex justify-content-between align-items-center">
+            <strong class="text-dark fs-6">Total Pembayaran:</strong>
+            <strong class="text-primary fs-5" id="rincianTotalBayar">Rp 0</strong>
+          </div>
+        </div>
+
+        <!-- Tombol Kirim Pendaftaran Kolektif -->
+        <button 
+          type="submit" 
+          id="btnSubmitKolektif" 
+          class="btn btn-primary btn-lg w-100 fw-bold py-3 rounded-3 shadow-sm d-flex align-items-center justify-content-center gap-2 hover-scale"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
+            <polyline points="12 13 12 7 9 10"/>
+            <polyline points="12 7 15 10"/>
+          </svg>
+          Kirim Pendaftaran Kolektif
+        </button>
+
+      </div>
+
+    </form>
+
+    <!-- Success Confirmation Receipt Card (Hidden by default) -->
+    <div id="kolektifSuccessCard" class="d-none">
+      <div class="text-center py-4 border-bottom mb-4">
+        <div class="success-icon-badge bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 64px; height: 64px;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <h3 class="fw-bold text-dark mb-1">Pendaftaran Kolektif Berhasil Dikirim!</h3>
+        <p class="text-secondary small mb-3">
+          Berkas Excel dan data rombongan sekolah Anda telah diterima oleh sistem KKA 2026.
+        </p>
+        <div class="p-3 bg-light rounded-3 border d-inline-block px-4">
+          <span class="fs-8 text-muted text-uppercase fw-semibold d-block">Kode Registrasi Kolektif</span>
+          <span id="resultKodeKolektif" class="h4 fw-black text-primary font-monospace mb-0">-</span>
+        </div>
+      </div>
+
+      <!-- Detail Rangkuman -->
+      <div class="receipt-summary bg-light p-4 rounded-3 border mb-4">
+        <h5 class="fw-bold text-dark mb-3 fs-6">Rangkuman Pendaftaran Sekolah:</h5>
+        <div class="row g-2 small">
+          <div class="col-sm-4 text-muted">Nama Sekolah:</div>
+          <div class="col-sm-8 fw-semibold text-dark" id="summarySekolah">-</div>
+
+          <div class="col-sm-4 text-muted">Wilayah & Kecamatan:</div>
+          <div class="col-sm-8 fw-semibold text-dark" id="summaryWilayah">-</div>
+
+          <div class="col-sm-4 text-muted">Jenjang Pendidikan:</div>
+          <div class="col-sm-8 fw-semibold text-dark" id="summaryJenjang">-</div>
+
+          <div class="col-sm-4 text-muted">WhatsApp PIC / Guru:</div>
+          <div class="col-sm-8 fw-semibold text-dark" id="summaryWaPic">-</div>
+
+          <div class="col-sm-4 text-muted">Jumlah Peserta:</div>
+          <div class="col-sm-8 fw-semibold text-dark" id="summaryCountSiswa">-</div>
+
+          <div class="col-sm-4 text-muted pt-2 border-top">Total Pembayaran:</div>
+          <div class="col-sm-8 pt-2 border-top h5 fw-bold text-primary mb-0" id="summaryTotalBayar">-</div>
+        </div>
+      </div>
+
+      <!-- Action Button WhatsApp -->
+      <div class="d-flex flex-column gap-2">
+        <a 
+          id="btnWaKolektifDirect" 
+          href="#" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          class="btn btn-success btn-lg fw-bold py-3 rounded-3 shadow-sm d-flex align-items-center justify-content-center gap-2"
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.099.824z"/>
+          </svg>
+          Kirim Konfirmasi ke WhatsApp Panitia
+        </a>
+
+        <div class="row g-2">
+          <div class="col-sm-6">
+            <a 
+              id="btnCheckStatusDirectKolektif" 
+              href="/daftar/status" 
+              class="btn btn-outline-primary w-100 py-2.5 rounded-3 fw-bold d-flex align-items-center justify-content-center gap-2"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              Cek Status Live
+            </a>
+          </div>
+          <div class="col-sm-6">
+            <a 
+              id="btnCetakBuktiDirectKolektif" 
+              href="/daftar/cetak" 
+              target="_blank" 
+              class="btn btn-dark w-100 py-2.5 rounded-3 fw-bold d-flex align-items-center justify-content-center gap-2"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 6 2 18 2 18 9"/>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                <rect x="6" y="14" width="12" height="8"/>
+              </svg>
+              Cetak Bukti Resmi (PDF)
+            </a>
+          </div>
+        </div>
+
+        <button 
+          type="button" 
+          id="btnResetKolektif" 
+          class="btn btn-outline-secondary py-2.5 rounded-3 fw-semibold"
+        >
+          Unggah File Excel Sekolah Lainnya
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Client-side SheetJS Script for Real-time Excel Parsing -->
+<script is:inline src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+<script>
+  import { processRegistration } from '../lib/registrationService';
+  import { getActiveWave } from '../lib/pricing';
+  import { supabase } from '../lib/supabase';
+
+  function applyKolektifClose(regCfg: any) {
+    if (regCfg && regCfg.kolektif && regCfg.kolektif.enabled === false) {
+      const formCard = document.getElementById('kolektifFormCard');
+      const closedNotice = document.getElementById('kolektifClosedNotice');
+      const closedTitle = document.getElementById('kolektifClosedTitle');
+      const closedMsg = document.getElementById('kolektifClosedMessage');
+      const closedBadge = document.getElementById('kolektifClosedBadge');
+
+      if (formCard) formCard.classList.add('d-none');
+      if (closedNotice) closedNotice.classList.remove('d-none');
+      if (closedTitle && regCfg.kolektif.closedTitle) closedTitle.textContent = regCfg.kolektif.closedTitle;
+      if (closedMsg && regCfg.kolektif.closedMsg) closedMsg.textContent = regCfg.kolektif.closedMsg;
+      if (closedBadge) {
+        closedBadge.textContent = regCfg.kolektif.condition === 'kuota_penuh' ? 'KUOTA PENUH' : 'PENDAFTARAN DITUTUP';
+      }
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    let parsedStudents = [];
+    const prices = getActiveWave().prices;
+    let schoolMeta = {
+      namaSekolah: '',
+      waPic: '',
+      wilayah: 'Kabupaten Nganjuk',
+      kecamatan: '',
+      jenjang: 'SD/MI'
+    };
+
+    // Elements
+    const formEl = document.getElementById('formKkaKolektif');
+    const excelDropzone = document.getElementById('excelDropzone');
+    const btnPilihBerkas = document.getElementById('btnPilihBerkas');
+    const excelFileInput = document.getElementById('excelFileInput');
+    const dropzoneLabel = document.getElementById('dropzoneLabel');
+    const dropzoneSubLabel = document.getElementById('dropzoneSubLabel');
+
+    const parsedResultCard = document.getElementById('parsedResultCard');
+    const btnChangeExcel = document.getElementById('btnChangeExcel');
+
+    const displayNamaSekolah = document.getElementById('displayNamaSekolah');
+    const displayWaPic = document.getElementById('displayWaPic');
+    const displayWilayah = document.getElementById('displayWilayah');
+    const displayKecamatan = document.getElementById('displayKecamatan');
+    const displayJenjang = document.getElementById('displayJenjang');
+    const displayCountSiswa = document.getElementById('displayCountSiswa');
+    const displayTableBody = document.getElementById('displayTableBody');
+
+    const rincianBiayaBox = document.getElementById('rincianBiayaBox');
+    const rincianJumlahPeserta = document.getElementById('rincianJumlahPeserta');
+    const rincianBiayaPerSiswa = document.getElementById('rincianBiayaPerSiswa');
+    const rincianTotalBayar = document.getElementById('rincianTotalBayar');
+
+    const kolektifSuccessCard = document.getElementById('kolektifSuccessCard');
+    const btnResetKolektif = document.getElementById('btnResetKolektif');
+
+    // Check if Kolektif registration is closed by Admin
+    try {
+      const storedReg = localStorage.getItem('kka_registration_status_control');
+      if (storedReg) applyKolektifClose(JSON.parse(storedReg));
+    } catch (e) {}
+
+    // Async check to Cloud Supabase
+    (async () => {
+      try {
+        const { data, error } = await supabase
+          .from('app_settings')
+          .select('value')
+          .eq('key', 'registration_control')
+          .single();
+
+        if (!error && data && data.value) {
+          applyKolektifClose(data.value);
+          localStorage.setItem('kka_registration_status_control', JSON.stringify(data.value));
+        }
+      } catch (err) {}
+    })();
+
+    function formatRp(val) {
+      return 'Rp ' + Number(val).toLocaleString('id-ID');
+    }
+
+    // Trigger File Picker
+    btnPilihBerkas.addEventListener('click', (e) => {
+      e.stopPropagation();
+      excelFileInput.click();
+    });
+
+    excelDropzone.addEventListener('click', () => {
+      excelFileInput.click();
+    });
+
+    // Drag and Drop Effects
+    ['dragenter', 'dragover'].forEach(eventName => {
+      excelDropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        excelDropzone.classList.add('border-primary', 'bg-light');
+      }, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      excelDropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        excelDropzone.classList.remove('border-primary', 'bg-light');
+      }, false);
+    });
+
+    excelDropzone.addEventListener('drop', (e) => {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      if (files.length > 0) {
+        handleFileSelection(files[0]);
+      }
+    });
+
+    excelFileInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) {
+        handleFileSelection(e.target.files[0]);
+      }
+    });
+
+    // Process Selected File
+    function handleFileSelection(file) {
+      if (!file) return;
+
+      dropzoneLabel.textContent = file.name;
+      dropzoneSubLabel.textContent = `${(file.size / 1024).toFixed(1)} KB - Membaca berkas...`;
+
+      const reader = new FileReader();
+      reader.onload = function (evt) {
+        try {
+          const data = new Uint8Array(evt.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+
+          // Find appropriate sheet
+          let sheetName = workbook.SheetNames.find(s => {
+            const l = s.toLowerCase();
+            return l.includes('daftar') || l.includes('peserta') || l.includes('pendaftar');
+          }) || workbook.SheetNames[0];
+
+          const worksheet = workbook.Sheets[sheetName];
+          const jsonRows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+          processExcelRows(jsonRows, file.name);
+        } catch (err) {
+          console.error(err);
+          alert('Gagal membaca file Excel. Pastikan file valid (.xlsx, .xls, atau .csv).');
+          resetToState1();
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    function processExcelRows(rows, fileName) {
+      if (!rows || rows.length < 2) {
+        alert('File Excel kosong atau tidak memiliki baris data peserta.');
+        resetToState1();
+        return;
+      }
+
+      parsedStudents = [];
+      let detectedSchool = '';
+      let detectedKecamatan = '';
+      let detectedWa = '';
+      let detectedWilayah = '';
+      let detectedJenjang = '';
+
+      // Find header row index (typically row 0 or 1)
+      let headerRowIndex = 0;
+      for (let r = 0; r < Math.min(5, rows.length); r++) {
+        const rowStr = (rows[r] || []).join(' ').toLowerCase();
+        if (rowStr.includes('nama') || rowStr.includes('nisn')) {
+          headerRowIndex = r;
+          break;
+        }
+      }
+
+      const headerRow = (rows[headerRowIndex] || []).map(h => String(h || '').trim().toLowerCase());
+      const colNama = headerRow.findIndex(h => h.includes('nama siswa') || h.includes('nama lengkap') || h === 'nama');
+      const colNisn = headerRow.findIndex(h => h.includes('nisn'));
+      const colJenjang = headerRow.findIndex(h => h.includes('jenjang'));
+      const colGender = headerRow.findIndex(h => h.includes('gender') || h.includes('kelamin') || h === 'jk');
+      const colKelas = headerRow.findIndex(h => h.includes('kelas'));
+      const colSekolah = headerRow.findIndex(h => h.includes('sekolah') || h.includes('lembaga'));
+      const colKecamatan = headerRow.findIndex(h => h.includes('kecamatan'));
+      const colWa = headerRow.findIndex(h => h.includes('whatsapp') || h.includes('no wa') || h.includes('pic') || h.includes('telepon'));
+      const colWilayah = headerRow.findIndex(h => h.includes('wilayah') || h.includes('kabupaten') || h.includes('kota'));
+
+      const idxNama = colNama >= 0 ? colNama : 1;
+      const idxNisn = colNisn >= 0 ? colNisn : 2;
+      const idxJenjang = colJenjang >= 0 ? colJenjang : 3;
+      const idxGender = colGender >= 0 ? colGender : 4;
+      const idxKelas = colKelas >= 0 ? colKelas : 5;
+      const idxSekolah = colSekolah >= 0 ? colSekolah : -1;
+      const idxKecamatan = colKecamatan >= 0 ? colKecamatan : -1;
+      const idxWa = colWa >= 0 ? colWa : -1;
+      const idxWilayah = colWilayah >= 0 ? colWilayah : -1;
+
+      // Extract participants
+      for (let i = headerRowIndex + 1; i < rows.length; i++) {
+        const r = rows[i];
+        if (!r) continue;
+
+        const nama = String(r[idxNama] || '').trim();
+        if (!nama || nama.toLowerCase().includes('contoh') || nama.toLowerCase().includes('keterangan')) continue;
+
+        const nisn = String(r[idxNisn] || '').trim();
+        const rawJenjang = idxJenjang >= 0 ? String(r[idxJenjang] || '').trim() : '';
+        const rawGender = idxGender >= 0 ? String(r[idxGender] || '').trim() : '';
+        const kelas = idxKelas >= 0 ? String(r[idxKelas] || '').trim() : '';
+
+        // Extract metadata if present in columns
+        if (idxSekolah >= 0 && r[idxSekolah] && !detectedSchool) detectedSchool = String(r[idxSekolah]).trim();
+        if (idxKecamatan >= 0 && r[idxKecamatan] && !detectedKecamatan) detectedKecamatan = String(r[idxKecamatan]).trim();
+        if (idxWa >= 0 && r[idxWa] && !detectedWa) detectedWa = String(r[idxWa]).trim();
+        if (idxWilayah >= 0 && r[idxWilayah] && !detectedWilayah) detectedWilayah = String(r[idxWilayah]).trim();
+        if (rawJenjang && !detectedJenjang) detectedJenjang = rawJenjang;
+
+        // Clean Gender
+        let genderClean = 'Perempuan';
+        const gLow = rawGender.toLowerCase();
+        if (gLow.startsWith('l') || gLow.includes('pria') || gLow.includes('laki')) {
+          genderClean = 'Laki-laki';
+        }
+
+        parsedStudents.push({
+          no: parsedStudents.length + 1,
+          nama,
+          nisn: nisn || '-',
+          gender: genderClean,
+          kelas: kelas || 'Kelas V',
+          rawJenjang: rawJenjang || 'SD'
+        });
+      }
+
+      if (parsedStudents.length === 0) {
+        alert('Tidak ditemukan data baris siswa yang valid di dalam file Excel.');
+        resetToState1();
+        return;
+      }
+
+      // Check header/title cells for metadata (e.g. Row 0 or cells in top)
+      for (let r = 0; r < Math.min(6, rows.length); r++) {
+        const rowStr = (rows[r] || []).join(' ');
+        if (!detectedSchool && (rowStr.includes('MI ') || rowStr.includes('SD ') || rowStr.includes('SMP ') || rowStr.includes('SMA ') || rowStr.includes('SMK '))) {
+          const match = rowStr.match(/(SDN?|MIN?|SMPN?|MTsN?|SMAN?|SMKN?|MAN?)\s+[A-Za-z0-9\s]+/i);
+          if (match) detectedSchool = match[0].trim();
+        }
+      }
+
+      // Fill metadata fallbacks
+      schoolMeta.namaSekolah = detectedSchool || 'MI AL FATTAH';
+      schoolMeta.waPic = detectedWa || '081907019403';
+      schoolMeta.wilayah = detectedWilayah || defaultDistrictName || 'Kabupaten Nganjuk';
+      schoolMeta.kecamatan = detectedKecamatan || 'Bagor';
+
+      // Detect Jenjang category for price calculation
+      let jenjangCategory = 'sd';
+      const jCheck = (detectedJenjang + ' ' + (parsedStudents[0] ? parsedStudents[0].rawJenjang : '')).toLowerCase();
+      if (jCheck.includes('smp') || jCheck.includes('mts')) {
+        jenjangCategory = 'smp';
+        schoolMeta.jenjang = 'SMP/MTs';
+      } else if (jCheck.includes('sma') || jCheck.includes('smk') || jCheck.includes('ma')) {
+        jenjangCategory = 'sma';
+        schoolMeta.jenjang = 'SMA/MA/SMK';
+      } else {
+        jenjangCategory = 'sd';
+        schoolMeta.jenjang = 'SD/MI';
+      }
+
+      // Populate Metadata Card
+      displayNamaSekolah.textContent = schoolMeta.namaSekolah;
+      displayWaPic.textContent = schoolMeta.waPic;
+      displayWilayah.textContent = schoolMeta.wilayah;
+      displayKecamatan.textContent = schoolMeta.kecamatan;
+      displayJenjang.textContent = schoolMeta.jenjang;
+      displayCountSiswa.textContent = parsedStudents.length;
+
+      // Populate Table Body
+      displayTableBody.innerHTML = '';
+      parsedStudents.forEach(s => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="ps-3 text-center text-muted fw-semibold">${s.no}</td>
+          <td class="fw-bold text-dark">${s.nama}</td>
+          <td class="font-monospace">${s.nisn}</td>
+          <td>${s.gender}</td>
+          <td>${s.kelas}</td>
+        `;
+        displayTableBody.appendChild(tr);
+      });
+
+      // Update Rincian Biaya
+      const rate = prices[jenjangCategory] || 25000;
+      const totalBayar = rate * parsedStudents.length;
+
+      rincianJumlahPeserta.textContent = `${parsedStudents.length} Siswa`;
+      rincianBiayaPerSiswa.textContent = formatRp(rate);
+      rincianTotalBayar.textContent = formatRp(totalBayar);
+
+      // TRANSITION TO STATE 2: Show parsed result card & rincian biaya
+      dropzoneLabel.textContent = fileName;
+      dropzoneSubLabel.textContent = `Berhasil membaca ${parsedStudents.length} peserta`;
+      parsedResultCard.classList.remove('d-none');
+      rincianBiayaBox.classList.remove('d-none');
+    }
+
+    function resetToState1() {
+      parsedStudents = [];
+      excelFileInput.value = '';
+      dropzoneLabel.textContent = 'Pilih atau Tarik File Excel ke Sini';
+      dropzoneSubLabel.textContent = 'Mendukung format .xlsx, .xls, .csv';
+      parsedResultCard.classList.add('d-none');
+      rincianBiayaBox.classList.add('d-none');
+    }
+
+    btnChangeExcel.addEventListener('click', () => {
+      excelFileInput.value = '';
+      excelFileInput.click();
+    });
+
+    // Form Submit Handler
+    formEl.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      if (parsedStudents.length === 0) {
+        alert('Silakan unggah dan pilih berkas Excel data siswa terlebih dahulu.');
+        excelDropzone.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      const proofInput = document.getElementById('transferProofKolektif');
+      if (!proofInput.files || proofInput.files.length === 0) {
+        formEl.classList.add('was-validated');
+        proofInput.focus();
+        return;
+      }
+
+      // Show Loading Spinner on Submit Button
+      const btnSubmit = document.getElementById('btnSubmitKolektif');
+      const originalBtnText = btnSubmit.innerHTML;
+      btnSubmit.disabled = true;
+      btnSubmit.innerHTML = `
+        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+        Menyimpan ke Database & Spreadsheet...
+      `;
+
+      try {
+        const randomCode = Math.floor(1000 + Math.random() * 9000);
+        const regCode = `KKA26-K-NGJ-${randomCode}`;
+
+        // Send to Supabase & Google Apps Script
+        const totalBayarNumber = parseInt(rincianTotalBayar.textContent.replace(/[^0-9]/g, ''), 10) || 0;
+
+        await processRegistration({
+          kode: regCode,
+          tipe: 'kolektif',
+          wilayah: schoolMeta.wilayah,
+          kecamatan: schoolMeta.kecamatan,
+          sekolah: schoolMeta.namaSekolah,
+          jenjang: schoolMeta.jenjang,
+          namaKontak: schoolMeta.namaSekolah,
+          hpKontak: schoolMeta.waPic,
+          totalBiaya: totalBayarNumber,
+          students: parsedStudents.map(s => ({
+            nama: s.nama,
+            nisn: s.nisn,
+            gender: s.gender,
+            kelas: s.kelas
+          })),
+          proofFile: proofInput.files.length > 0 ? proofInput.files[0] : null
+        });
+
+        // Populate Success Card
+        document.getElementById('resultKodeKolektif').textContent = regCode;
+        document.getElementById('summarySekolah').textContent = schoolMeta.namaSekolah;
+        document.getElementById('summaryWilayah').textContent = `${schoolMeta.wilayah} (Kec. ${schoolMeta.kecamatan})`;
+        document.getElementById('summaryJenjang').textContent = schoolMeta.jenjang;
+        document.getElementById('summaryWaPic').textContent = schoolMeta.waPic;
+        document.getElementById('summaryCountSiswa').textContent = `${parsedStudents.length} Siswa Terdaftar`;
+        document.getElementById('summaryTotalBayar').textContent = rincianTotalBayar.textContent;
+
+        // Prepare WhatsApp message
+        let msg = `*KONFIRMASI PENDAFTARAN KOLEKTIF KKA 2026*\n`;
+        msg += `Halo Panitia KKA Radar Kediri,\nSaya mengonfirmasi pendaftaran kolektif sekolah via berkas Excel:\n\n`;
+        msg += `*Kode Pendaftaran*: ${regCode}\n`;
+        msg += `*Nama Sekolah*: ${schoolMeta.namaSekolah}\n`;
+        msg += `*Wilayah*: ${schoolMeta.wilayah}\n`;
+        msg += `*Kecamatan*: ${schoolMeta.kecamatan}\n`;
+        msg += `*Jenjang*: ${schoolMeta.jenjang}\n`;
+        msg += `*WhatsApp PIC*: ${schoolMeta.waPic}\n`;
+        msg += `*Jumlah Peserta*: ${parsedStudents.length} Siswa\n`;
+        msg += `*Total Pembayaran*: ${rincianTotalBayar.textContent}\n\n`;
+        msg += `*Daftar Siswa (Sampel)*:\n`;
+        parsedStudents.slice(0, 5).forEach(s => {
+          msg += `${s.no}. ${s.nama} | NISN: ${s.nisn} | ${s.kelas} (${s.gender})\n`;
+        });
+        if (parsedStudents.length > 5) {
+          msg += `... dan ${parsedStudents.length - 5} siswa lainnya terlampir di file Excel.\n`;
+        }
+        msg += `\nBerkas Excel dan bukti transfer telah diunggah. Mohon verifikasi pendaftaran sekolah kami. Terima kasih.`;
+
+        document.getElementById('btnWaKolektifDirect').href = `https://wa.me/6281235508957?text=${encodeURIComponent(msg)}`;
+        const btnCheckStatus = document.getElementById('btnCheckStatusDirectKolektif');
+        if (btnCheckStatus) {
+          btnCheckStatus.href = `/daftar/status?kode=${encodeURIComponent(regCode)}`;
+        }
+        const btnCetakDoc = document.getElementById('btnCetakBuktiDirectKolektif');
+        if (btnCetakDoc) {
+          btnCetakDoc.href = `/daftar/cetak?kode=${encodeURIComponent(regCode)}`;
+        }
+
+        // Switch to Success State
+        formEl.classList.add('d-none');
+        kolektifSuccessCard.classList.remove('d-none');
+        window.scrollTo({ top: kolektifSuccessCard.offsetTop - 80, behavior: 'smooth' });
+      } catch (submitErr) {
+        console.error('Submit error:', submitErr);
+      } finally {
+        btnSubmit.disabled = false;
+        btnSubmit.innerHTML = originalBtnText;
+      }
+    });
+
+    btnResetKolektif.addEventListener('click', () => {
+      formEl.reset();
+      formEl.classList.remove('was-validated');
+      resetToState1();
+      kolektifSuccessCard.classList.add('d-none');
+      formEl.classList.remove('d-none');
+      window.scrollTo({ top: formEl.offsetTop - 80, behavior: 'smooth' });
+    });
+
+  });
+</script>
+
+<style>
+  .fs-8 { font-size: 0.78rem; }
+  .max-w-4xl { max-width: 860px; }
+
+  /* Crisp Royal Blue Border for Form Main Card */
+  .form-main-card {
+    border: 2px solid #2563eb !important;
+    border-radius: 18px !important;
+  }
+
+  .section-indicator-bar {
+    width: 4px;
+    height: 20px;
+  }
+
+  .border-dashed {
+    border-style: dashed !important;
+    border-color: #cbd5e1 !important;
+    border-width: 1.5px !important;
+  }
+
+  .hover-dropzone {
+    transition: all 0.2s ease;
+  }
+  .hover-dropzone:hover {
+    border-color: #2563eb !important;
+    background-color: #f8fafc !important;
+  }
+
+  .payment-info-box {
+    background-color: #f0f7ff;
+    border: 1px solid #dbeafe;
+  }
+
+  .hover-btn {
+    transition: all 0.2s ease;
+  }
+  .hover-btn:hover {
+    background-color: #eff6ff !important;
+    color: #1d4ed8 !important;
+    border-color: #2563eb !important;
+  }
+
+  .hover-scale {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .hover-scale:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(29, 114, 242, 0.25) !important;
+  }
+</style>

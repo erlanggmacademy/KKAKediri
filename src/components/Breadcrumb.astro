@@ -1,0 +1,166 @@
+---
+export interface BreadcrumbItem {
+  label: string;
+  href?: string;
+  active?: boolean;
+}
+
+interface Props {
+  items: BreadcrumbItem[];
+  theme?: 'dark' | 'light';
+  align?: 'left' | 'center' | 'right';
+  class?: string;
+}
+
+const { items = [], theme = 'dark', align = 'center', class: className = '' } = Astro.props;
+
+// Ensure "Beranda" is the first item if not already defined
+const fullItems: BreadcrumbItem[] = [
+  ...(items[0]?.href === '/' || items[0]?.label.toLowerCase() === 'beranda' 
+    ? [] 
+    : [{ label: 'Beranda', href: '/' }]),
+  ...items
+];
+
+// Generate Schema.org BreadcrumbList
+const siteUrl = 'https://kkaradarkediri.com';
+const schemaData = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: fullItems.map((item, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: item.label,
+    ...(item.href ? { item: `${siteUrl}${item.href}` } : {})
+  }))
+};
+---
+
+<nav aria-label="breadcrumb" class={`kka-breadcrumb-nav theme-${theme} align-${align} ${className}`}>
+  <ol class="breadcrumb mb-0">
+    {fullItems.map((item, index) => {
+      const isLast = index === fullItems.length - 1 || item.active;
+      const isFirst = index === 0;
+
+      return (
+        <li class={`breadcrumb-item ${isLast ? 'active' : ''}`} aria-current={isLast ? 'page' : undefined}>
+          {isLast ? (
+            <span class="breadcrumb-current-text">{item.label}</span>
+          ) : (
+            <a href={item.href} class="breadcrumb-link">
+              {isFirst && (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="home-icon">
+                  <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                  <polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
+              )}
+              <span>{item.label}</span>
+            </a>
+          )}
+        </li>
+      );
+    })}
+  </ol>
+</nav>
+
+<!-- BreadcrumbList Schema JSON-LD -->
+<script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
+
+<style>
+  .kka-breadcrumb-nav {
+    font-size: 0.86rem;
+    line-height: 1.4;
+    margin-top: 0.85rem;
+    margin-bottom: 0;
+  }
+
+  .breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    list-style: none;
+    padding: 0;
+    gap: 4px;
+  }
+
+  /* Alignment */
+  .align-center .breadcrumb {
+    justify-content: center;
+  }
+
+  .align-left .breadcrumb {
+    justify-content: flex-start;
+  }
+
+  .align-right .breadcrumb {
+    justify-content: flex-end;
+  }
+
+  .breadcrumb-item {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .breadcrumb-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    transition: color 0.15s ease, transform 0.15s ease;
+  }
+
+  .breadcrumb-link .home-icon {
+    flex-shrink: 0;
+    margin-top: -1px;
+  }
+
+  /* Dark Theme (Used in dark navy header sections) */
+  .theme-dark .breadcrumb-link {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .theme-dark .breadcrumb-link:hover {
+    color: #f59e0b; /* Gold warm accent */
+  }
+
+  .theme-dark .breadcrumb-current-text {
+    color: #ffffff;
+    font-weight: 600;
+  }
+
+  .theme-dark .breadcrumb-item + .breadcrumb-item::before {
+    color: rgba(255, 255, 255, 0.4) !important;
+    content: "›" !important;
+    font-size: 1.15rem;
+    line-height: 1;
+    padding: 0 8px;
+  }
+
+  /* Light Theme (Used in white/gray background sections) */
+  .theme-light .breadcrumb-link {
+    color: #64748b;
+  }
+
+  .theme-light .breadcrumb-link:hover {
+    color: #0d6efd;
+  }
+
+  .theme-light .breadcrumb-current-text {
+    color: #1e293b;
+    font-weight: 600;
+  }
+
+  .theme-light .breadcrumb-item + .breadcrumb-item::before {
+    color: #94a3b8 !important;
+    content: "›" !important;
+    font-size: 1.15rem;
+    line-height: 1;
+    padding: 0 8px;
+  }
+
+  @media (max-width: 576px) {
+    .kka-breadcrumb-nav {
+      font-size: 0.8rem;
+    }
+  }
+</style>

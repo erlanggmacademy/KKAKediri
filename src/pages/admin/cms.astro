@@ -1,0 +1,521 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="CMS Berita & Artikel" activeMenu="cms">
+  <div class="page-dashboard">
+    <!-- PAGE HERO BANNER -->
+    <div class="dashboard-hero mb-4">
+      <div class="dashboard-hero-copy">
+        <span class="dashboard-eyebrow">CONTENT MANAGEMENT &bull; KKA 2026</span>
+        <h1>CMS Berita & Publikasi</h1>
+        <p>
+          Kelola publikasi artikel berita resmi Jawa Pos Radar Kediri, panduan tips belajar TKA Neutron, pengumuman babak penyisihan, dan liputan prestasi peserta.
+        </p>
+      </div>
+
+      <div class="dashboard-hero-actions">
+        <button type="button" class="btn btn-primary" id="btnCreateArticle">
+          <i class="bi bi-plus-circle"></i>
+          <span>Tulis Artikel Baru</span>
+        </button>
+        <a href="/artikel" target="_blank" class="btn btn-light border">
+          <i class="bi bi-box-arrow-up-right"></i>
+          <span>Lihat Halaman Publik</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- STATS SUMMARY (CMS METRICS) -->
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-3">
+        <div class="dashboard-panel p-3 text-center">
+          <span class="fs-9 text-muted text-uppercase fw-bold">Total Publikasi</span>
+          <div class="h3 fw-bold text-dark mb-0 mt-1 font-monospace" id="statArticleTotal">0</div>
+          <span class="fs-9 text-secondary">Artikel tersimpan</span>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="dashboard-panel p-3 text-center">
+          <span class="fs-9 text-muted text-uppercase fw-bold">Status Terbit</span>
+          <div class="h3 fw-bold text-success mb-0 mt-1 font-monospace" id="statArticlePublished">0</div>
+          <span class="fs-9 text-success">Aktif di web</span>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="dashboard-panel p-3 text-center">
+          <span class="fs-9 text-muted text-uppercase fw-bold">Konsep / Draft</span>
+          <div class="h3 fw-bold text-warning mb-0 mt-1 font-monospace" id="statArticleDraft">0</div>
+          <span class="fs-9 text-warning">Belum dipublikasikan</span>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="dashboard-panel p-3 text-center">
+          <span class="fs-9 text-muted text-uppercase fw-bold">Kategori Konten</span>
+          <div class="h3 fw-bold text-primary mb-0 mt-1 font-monospace" id="statArticleCategories">4</div>
+          <span class="fs-9 text-primary">Berita, Edukasi, Prestasi, CBT</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABLE DAFTAR ARTIKEL -->
+    <div class="dashboard-panel mb-4">
+      <div class="dashboard-panel-header px-3.5 py-3">
+        <div class="d-flex align-items-center gap-2">
+          <span class="dashboard-section-kicker">MANAJEMEN KONTEN</span>
+          <h2 class="fs-6 mb-0">Daftar Artikel & Berita KKA</h2>
+          <span class="badge bg-primary rounded-pill px-2.5 py-1 fs-9 ms-1" id="articleCountBadge">0 Artikel</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <input 
+            type="text" 
+            class="form-control form-control-sm fs-8 py-1.5" 
+            id="searchArticleInput" 
+            placeholder="Cari judul atau topik..." 
+            style="width: 200px;" 
+          />
+        </div>
+      </div>
+
+      <div class="table-responsive px-3 pb-3">
+        <table class="table table-hover align-middle mb-0 fs-8">
+          <thead class="table-light text-uppercase text-secondary fs-9">
+            <tr>
+              <th class="ps-3 py-3 text-center text-nowrap" style="width: 50px;">No</th>
+              <th class="py-3 text-nowrap">Judul Artikel & Topik</th>
+              <th class="py-3 text-nowrap">Kategori</th>
+              <th class="py-3 text-nowrap">Penulis & Tanggal</th>
+              <th class="py-3 text-nowrap">Status Publikasi</th>
+              <th class="pe-3 text-end py-3 text-nowrap">Aksi Kelola</th>
+            </tr>
+          </thead>
+          <tbody id="articlesTableBody">
+            <!-- Populated via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL CREATE & EDIT ARTIKEL -->
+  <div class="modal fade" id="articleModal" tabindex="-1" aria-labelledby="articleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content border-0 rounded-4 shadow-2xl overflow-hidden">
+        <div class="modal-header bg-dark text-white px-4 py-3">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-pencil-square text-warning fs-5"></i>
+            <h5 class="modal-title fw-bold fs-6 text-white mb-0" id="articleModalTitle">Tulis Artikel Baru</h5>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" id="articleModalCloseBtn"></button>
+        </div>
+
+        <form id="formArticle">
+          <div class="modal-body p-4">
+            <input type="hidden" id="articleId" />
+
+            <div class="row g-3">
+              <!-- Judul Artikel -->
+              <div class="col-12">
+                <label class="form-label fw-bold fs-8 text-dark">Judul Artikel <span class="text-danger">*</span></label>
+                <input type="text" class="form-control fs-8" id="articleTitle" placeholder="Contoh: Pendaftaran KKA 2026 Resmi Dibuka, Ribuan Siswa Siap Unjuk Kemampuan" required />
+              </div>
+
+              <!-- Slug URL & Kategori -->
+              <div class="col-md-6">
+                <label class="form-label fw-bold fs-8 text-dark">Slug URL (Otomatis)</label>
+                <input type="text" class="form-control fs-8 font-monospace" id="articleSlug" placeholder="pendaftaran-kka-2026-resmi-dibuka" required />
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-bold fs-8 text-dark">Kategori Konten <span class="text-danger">*</span></label>
+                <select class="form-select fs-8" id="articleCategory" required>
+                  <option value="Berita">Berita & Informasi Resmi</option>
+                  <option value="Edukasi">Edukasi & Tips Soal TKA</option>
+                  <option value="Prestasi">Prestasi & Profil Juara</option>
+                  <option value="Regulasi">Regulasi & Juknis CBT</option>
+                </select>
+              </div>
+
+              <!-- Penulis & Tanggal -->
+              <div class="col-md-6">
+                <label class="form-label fw-bold fs-8 text-dark">Nama Penulis / Redaksi</label>
+                <input type="text" class="form-control fs-8" id="articleAuthor" placeholder="Contoh: Redaksi Radar Kediri" required />
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-bold fs-8 text-dark">Tanggal Rilis Publik</label>
+                <input type="text" class="form-control fs-8" id="articleDate" placeholder="Contoh: 25 Oktober 2026" required />
+              </div>
+
+              <!-- Ringkasan Singkat (Lead) -->
+              <div class="col-12">
+                <label class="form-label fw-bold fs-8 text-dark">Ringkasan / Sinopsis Singkat (Lead) <span class="text-danger">*</span></label>
+                <textarea class="form-control fs-8" id="articleSummary" rows="2" placeholder="Uraian singkat 1-2 kalimat untuk kartu pratinjau berita..." required></textarea>
+              </div>
+
+              <!-- Konten Lengkap -->
+              <div class="col-12">
+                <label class="form-label fw-bold fs-8 text-dark">Isi Konten Artikel Lengkap</label>
+                <textarea class="form-control fs-8" id="articleContent" rows="6" placeholder="Tuliskan berita lengkap di sini... Paragraf, detail acara, dan pernyataan resmi panitia."></textarea>
+              </div>
+
+              <!-- Status Publikasi -->
+              <div class="col-12">
+                <label class="form-label fw-bold fs-8 text-dark">Status Publikasi</label>
+                <div class="d-flex align-items-center gap-3">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="articleStatus" id="statusPublished" value="published" checked />
+                    <label class="form-check-label fs-8 fw-semibold text-success" for="statusPublished">
+                      Terbit (Tampil di Website Publik)
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="articleStatus" id="statusDraft" value="draft" />
+                    <label class="form-check-label fs-8 fw-semibold text-warning" for="statusDraft">
+                      Draft / Konsep (Hanya Admin)
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer bg-light px-4 py-3 d-flex align-items-center justify-content-between">
+            <button type="button" class="btn btn-light btn-sm border fs-8" id="articleModalCancelBtn">Batal</button>
+            <button type="submit" class="btn btn-primary btn-sm fw-bold px-3.5 py-1.5 fs-8">
+              <i class="bi bi-save me-1"></i>
+              <span>Simpan Artikel</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .fs-7 { font-size: 0.9rem !important; }
+    .fs-8 { font-size: 0.82rem !important; }
+    .fs-9 { font-size: 0.72rem !important; }
+    .dashboard-panel-body {
+      padding: 1.25rem 1.5rem;
+    }
+    .table > :not(caption) > * > * {
+      padding: 0.85rem 0.85rem;
+    }
+  </style>
+
+  <script>
+    import { supabase } from '../../lib/supabase';
+
+    interface Article {
+      id: string;
+      title: string;
+      slug: string;
+      category: string;
+      author: string;
+      date: string;
+      summary: string;
+      content?: string;
+      status: 'published' | 'draft';
+    }
+
+    const INITIAL_ARTICLES: Article[] = [
+      {
+        id: 'art-1',
+        title: 'Pendaftaran KKA 2026 Resmi Dibuka, Ribuan Siswa Siap Unjuk Kemampuan',
+        slug: 'pendaftaran-kka-2026-resmi-dibuka',
+        date: '25 Oktober 2026',
+        author: 'Redaksi Radar Kediri',
+        category: 'Berita',
+        summary: 'Ajang bergengsi tahunan KKA Jawa Pos Radar Kediri kembali hadir dengan format uji soal standar TKA bekerja sama dengan Neutron Yogyakarta.',
+        content: 'Jawa Pos Radar Kediri secara resmi mengumumkan pembukaan pendaftaran Kompetisi Akademik (KKA) 2026 se-Karesidenan Kediri. Ajang ini menghadirkan sistem evaluasi komprehensif untuk jenjang SD, SMP, dan SMA.',
+        status: 'published'
+      },
+      {
+        id: 'art-2',
+        title: 'Tips & Trik Menghadapi Soal Logika & Literasi Standar TKA Neutron',
+        slug: 'tips-menghadapi-soal-tka-neutron',
+        date: '20 Oktober 2026',
+        author: 'Tim Akademik Neutron',
+        category: 'Edukasi',
+        summary: 'Strategi efektif membagi waktu 90 menit dan menguasai pola soal penalaran kritis pada babak seleksi CBT KKA.',
+        content: 'Dalam menghadapi ujian seleksi berbasis komputer (CBT), manajemen waktu dan ketelitian dalam membaca soal literasi menjadi kunci utama peraihan skor tinggi.',
+        status: 'published'
+      },
+      {
+        id: 'art-3',
+        title: 'Kisah Inspiratif Juara KKA: Dari Siswa Daerah Menuju Prestasi Nasional',
+        slug: 'kisah-inspiratif-juara-kka',
+        date: '15 Oktober 2026',
+        author: 'Radar Kediri Event',
+        category: 'Prestasi',
+        summary: 'Bagaimana portofolio sertifikat resmi Radar Kediri membantu siswa meraih jalur prestasi (PPDB) sekolah unggulan impian.',
+        content: 'Banyak alumni juara KKA berhasil menembus SMA/SMK negeri favorit dan perguruan tinggi negeri impian berkat portofolio piagam kejuaraan resmi dari Jawa Pos Radar Kediri.',
+        status: 'published'
+      }
+    ];
+
+    let allArticles: Article[] = [];
+
+    async function loadArticles() {
+      // 1. Tampilkan cache lokal instan
+      try {
+        const stored = localStorage.getItem('kka_admin_articles');
+        if (stored) {
+          allArticles = JSON.parse(stored);
+          renderArticlesTable();
+        } else {
+          allArticles = INITIAL_ARTICLES;
+          renderArticlesTable();
+        }
+      } catch (e) {
+        allArticles = INITIAL_ARTICLES;
+      }
+
+      // 2. Ambil dari Supabase Cloud
+      try {
+        const { data, error } = await supabase
+          .from('articles')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (!error && data && data.length > 0) {
+          allArticles = data;
+          localStorage.setItem('kka_admin_articles', JSON.stringify(data));
+          renderArticlesTable();
+        }
+      } catch (err) {
+        console.warn('[Supabase] Gagal mengambil artikel:', err);
+      }
+    }
+
+    function renderArticlesTable(query = '') {
+      const tbody = document.getElementById('articlesTableBody');
+      const badgeCount = document.getElementById('articleCountBadge');
+      const statTotal = document.getElementById('statArticleTotal');
+      const statPub = document.getElementById('statArticlePublished');
+      const statDraft = document.getElementById('statArticleDraft');
+
+      const all = allArticles;
+      const filtered = query ? all.filter(a => a.title.toLowerCase().includes(query.toLowerCase()) || a.category.toLowerCase().includes(query.toLowerCase())) : all;
+
+      if (statTotal) statTotal.textContent = String(all.length);
+      if (statPub) statPub.textContent = String(all.filter(a => a.status === 'published').length);
+      if (statDraft) statDraft.textContent = String(all.filter(a => a.status === 'draft').length);
+      if (badgeCount) badgeCount.textContent = `${filtered.length} Artikel`;
+
+      if (!tbody) return;
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="text-center py-5 text-muted">
+              Tidak ada artikel yang cocok dengan pencarian.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = '';
+      filtered.forEach((art, idx) => {
+        const tr = document.createElement('tr');
+        const isPub = art.status === 'published';
+        const statusBadge = isPub 
+          ? '<span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2.5 py-1">Terbit</span>'
+          : '<span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill px-2.5 py-1">Draft</span>';
+
+        tr.innerHTML = `
+          <td class="ps-3 text-center text-muted fw-semibold">${idx + 1}</td>
+          <td>
+            <div class="fw-bold text-dark fs-8 text-truncate" style="max-width: 320px;">${art.title}</div>
+            <div class="fs-9 text-muted text-truncate" style="max-width: 320px;">${art.summary}</div>
+          </td>
+          <td class="text-nowrap">
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-0.5 rounded fs-9">${art.category}</span>
+          </td>
+          <td class="text-nowrap">
+            <div class="text-dark fs-8">${art.author}</div>
+            <div class="fs-9 text-muted">${art.date}</div>
+          </td>
+          <td class="text-nowrap">
+            ${statusBadge}
+          </td>
+          <td class="pe-3 text-end text-nowrap">
+            <button type="button" class="btn btn-sm btn-primary rounded-2 px-2.5 py-1 fw-bold fs-8 btn-edit-art" data-id="${art.id}">
+              <i class="bi bi-pencil-square"></i> Edit
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-danger rounded-2 px-2 py-1 ms-1 fs-8 btn-delete-art" data-id="${art.id}" title="Hapus Artikel">
+              <i class="bi bi-trash"></i>
+            </button>
+          </td>
+        `;
+
+        tr.querySelector('.btn-edit-art')?.addEventListener('click', () => {
+          openArticleModal(art);
+        });
+
+        tr.querySelector('.btn-delete-art')?.addEventListener('click', async () => {
+          if (confirm(`Apakah Anda yakin ingin menghapus artikel "${art.title}"?`)) {
+            try {
+              await supabase.from('articles').delete().eq('id', art.id);
+            } catch (delErr) {
+              console.warn('[Supabase] Delete article err:', delErr);
+            }
+            allArticles = allArticles.filter(a => a.id !== art.id);
+            localStorage.setItem('kka_admin_articles', JSON.stringify(allArticles));
+            renderArticlesTable(query);
+            alert('Artikel berhasil dihapus dari Supabase Cloud!');
+          }
+        });
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function openArticleModal(art?: Article) {
+      const modalEl = document.getElementById('articleModal');
+      const titleEl = document.getElementById('articleModalTitle');
+      const inputId = document.getElementById('articleId') as HTMLInputElement;
+      const inputTitle = document.getElementById('articleTitle') as HTMLInputElement;
+      const inputSlug = document.getElementById('articleSlug') as HTMLInputElement;
+      const selectCategory = document.getElementById('articleCategory') as HTMLSelectElement;
+      const inputAuthor = document.getElementById('articleAuthor') as HTMLInputElement;
+      const inputDate = document.getElementById('articleDate') as HTMLInputElement;
+      const textareaSummary = document.getElementById('articleSummary') as HTMLTextAreaElement;
+      const textareaContent = document.getElementById('articleContent') as HTMLTextAreaElement;
+      const radioPub = document.getElementById('statusPublished') as HTMLInputElement;
+      const radioDraft = document.getElementById('statusDraft') as HTMLInputElement;
+
+      if (art) {
+        if (titleEl) titleEl.textContent = 'Edit Artikel';
+        if (inputId) inputId.value = art.id;
+        if (inputTitle) inputTitle.value = art.title;
+        if (inputSlug) inputSlug.value = art.slug;
+        if (selectCategory) selectCategory.value = art.category;
+        if (inputAuthor) inputAuthor.value = art.author;
+        if (inputDate) inputDate.value = art.date;
+        if (textareaSummary) textareaSummary.value = art.summary;
+        if (textareaContent) textareaContent.value = art.content || '';
+        if (art.status === 'published') radioPub.checked = true;
+        else radioDraft.checked = true;
+      } else {
+        if (titleEl) titleEl.textContent = 'Tulis Artikel Baru';
+        if (inputId) inputId.value = '';
+        if (inputTitle) inputTitle.value = '';
+        if (inputSlug) inputSlug.value = '';
+        if (selectCategory) selectCategory.value = 'Berita';
+        if (inputAuthor) inputAuthor.value = 'Redaksi Radar Kediri';
+        if (inputDate) inputDate.value = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+        if (textareaSummary) textareaSummary.value = '';
+        if (textareaContent) textareaContent.value = '';
+        radioPub.checked = true;
+      }
+
+      if (modalEl) {
+        modalEl.classList.add('show');
+        modalEl.style.display = 'block';
+        document.body.classList.add('modal-open');
+
+        if (!document.getElementById('modalCustomBackdropArticle')) {
+          const back = document.createElement('div');
+          back.id = 'modalCustomBackdropArticle';
+          back.className = 'modal-backdrop fade show';
+          document.body.appendChild(back);
+        }
+      }
+    }
+
+    function closeArticleModal() {
+      const modalEl = document.getElementById('articleModal');
+      if (modalEl) {
+        modalEl.classList.remove('show');
+        modalEl.style.display = 'none';
+        document.body.classList.remove('modal-open');
+      }
+      const back = document.getElementById('modalCustomBackdropArticle');
+      if (back) back.remove();
+    }
+
+    function setupCmsPage() {
+      loadArticles();
+
+      document.getElementById('btnCreateArticle')?.addEventListener('click', () => openArticleModal());
+      document.getElementById('articleModalCloseBtn')?.addEventListener('click', closeArticleModal);
+      document.getElementById('articleModalCancelBtn')?.addEventListener('click', closeArticleModal);
+
+      // Auto slug generator
+      document.getElementById('articleTitle')?.addEventListener('input', (e) => {
+        const titleVal = (e.target as HTMLInputElement).value;
+        const slugInput = document.getElementById('articleSlug') as HTMLInputElement;
+        const inputId = document.getElementById('articleId') as HTMLInputElement;
+        if (!inputId.value && slugInput) {
+          slugInput.value = titleVal
+            .toLowerCase()
+            .replace(/[^\w\s-]/g, '')
+            .replace(/[\s_-]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+        }
+      });
+
+      document.getElementById('searchArticleInput')?.addEventListener('input', (e) => {
+        renderArticlesTable((e.target as HTMLInputElement).value.trim());
+      });
+
+      document.getElementById('formArticle')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = (document.getElementById('articleId') as HTMLInputElement).value;
+        const title = (document.getElementById('articleTitle') as HTMLInputElement).value;
+        const slug = (document.getElementById('articleSlug') as HTMLInputElement).value;
+        const category = (document.getElementById('articleCategory') as HTMLSelectElement).value;
+        const author = (document.getElementById('articleAuthor') as HTMLInputElement).value;
+        const date = (document.getElementById('articleDate') as HTMLInputElement).value;
+        const summary = (document.getElementById('articleSummary') as HTMLTextAreaElement).value;
+        const content = (document.getElementById('articleContent') as HTMLTextAreaElement).value;
+        const status = (document.querySelector('input[name="articleStatus"]:checked') as HTMLInputElement)?.value as 'published' | 'draft';
+
+        const articlePayload: Article = {
+          id: id || ('art-' + Date.now()),
+          title,
+          slug: slug || ('artikel-' + Date.now()),
+          category,
+          author,
+          date,
+          summary,
+          content,
+          status: status || 'published'
+        };
+
+        // 1. Simpan ke Supabase Cloud
+        try {
+          await supabase.from('articles').upsert({
+            ...articlePayload,
+            updated_at: new Date().toISOString()
+          });
+        } catch (dbErr) {
+          console.warn('[Supabase] Gagal menyimpan artikel:', dbErr);
+        }
+
+        // 2. Perbarui state lokal
+        if (id) {
+          const index = allArticles.findIndex(a => a.id === id);
+          if (index !== -1) allArticles[index] = articlePayload;
+        } else {
+          allArticles.unshift(articlePayload);
+        }
+
+        localStorage.setItem('kka_admin_articles', JSON.stringify(allArticles));
+        renderArticlesTable();
+        closeArticleModal();
+        alert('Artikel berhasil disimpan ke Supabase Cloud!');
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', setupCmsPage);
+    } else {
+      setupCmsPage();
+    }
+    document.addEventListener('astro:page-load', setupCmsPage);
+  </script>
+</AdminLayout>

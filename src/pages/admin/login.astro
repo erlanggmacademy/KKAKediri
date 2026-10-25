@@ -1,0 +1,475 @@
+---
+import '../../styles/global.css';
+---
+
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Administrator KKA 2026 - Jawa Pos Radar Kediri</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" href="/favicon.ico" />
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  </head>
+  <body class="bg-gradient-navy min-vh-100 d-flex flex-column justify-content-center py-5">
+    <!-- Auto redirect if valid session already exists -->
+    <script is:inline>
+      try {
+        const auth = sessionStorage.getItem('kka_admin_auth') || localStorage.getItem('kka_admin_auth');
+        const session = sessionStorage.getItem('kka_admin_session') || localStorage.getItem('kka_admin_session');
+        if (auth === 'true' && session) {
+          window.location.replace('/admin');
+        }
+      } catch (e) {}
+    </script>
+
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-5 col-xl-4">
+          <!-- Brand Header -->
+          <div class="text-center mb-4">
+            <div class="d-inline-flex align-items-center justify-content-center p-3 bg-white rounded-4 shadow-lg mb-3">
+              <img src="/favicon.png" alt="KKA 2026" width="48" height="48" class="object-contain" />
+            </div>
+            <h1 class="h4 fw-bold text-white mb-1">ADMINISTRATOR KKA 2026</h1>
+            <p class="text-white-50 small mb-0">Portal Otentikasi Supabase &bull; Jawa Pos Radar Kediri</p>
+          </div>
+
+          <!-- Card Login -->
+          <div class="card border-0 rounded-4 shadow-2xl bg-white overflow-hidden">
+            <div class="p-4 p-sm-4.5">
+              <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom">
+                <h2 class="h5 fw-bold text-dark mb-0">Login Administrator</h2>
+                <span class="badge bg-primary text-white fw-bold rounded-pill px-2.5 py-1 fs-8">SUPABASE AUTH</span>
+              </div>
+
+              <!-- Alert Error -->
+              <div id="loginAlertError" class="alert alert-danger border-danger-subtle rounded-3 p-3 small d-none mb-3 d-flex align-items-start gap-2">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 mt-0.5">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <div class="flex-grow-1">
+                  <span id="loginAlertText">Username atau kata sandi tidak cocok di database Supabase.</span>
+                </div>
+              </div>
+
+              <!-- Alert Database Setup Notice (If admin_users table not yet created in Supabase) -->
+              <div id="setupSqlNotice" class="alert alert-warning border-warning-subtle rounded-3 p-3 small d-none mb-3">
+                <div class="fw-bold text-dark mb-1 d-flex align-items-center gap-1.5">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                    <line x1="12" y1="9" x2="12" y2="13"/>
+                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                  </svg>
+                  <span>Tabel Supabase Belum Dibuat</span>
+                </div>
+                <p class="mb-2 text-secondary fs-8">
+                  Tabel <code>admin_users</code> belum ada di database Supabase Anda. Anda dapat membuat tabelnya dengan sekali jalan via SQL Editor Supabase.
+                </p>
+                <button type="button" class="btn btn-sm btn-dark w-100 py-1.5 fs-8 fw-bold rounded-2 d-flex align-items-center justify-content-center gap-1.5" id="btnShowSqlModal">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                  <span>Lihat / Salin Script SQL Supabase</span>
+                </button>
+              </div>
+
+              <!-- Form -->
+              <form id="adminLoginForm" autocomplete="off">
+                <div class="mb-3">
+                  <label for="adminUsername" class="form-label small fw-bold text-dark">Username Administrator</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0 text-muted">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                      </svg>
+                    </span>
+                    <input 
+                      type="text" 
+                      id="adminUsername" 
+                      class="form-control border-start-0" 
+                      placeholder="Masukkan username admin" 
+                      required 
+                      autocomplete="off"
+                    />
+                  </div>
+                </div>
+
+                <div class="mb-3.5">
+                  <label for="adminPassword" class="form-label small fw-bold text-dark">Kata Sandi</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0 text-muted">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                      </svg>
+                    </span>
+                    <input 
+                      type="password" 
+                      id="adminPassword" 
+                      class="form-control border-start-0 border-end-0" 
+                      placeholder="Masukkan kata sandi" 
+                      required 
+                      autocomplete="new-password"
+                    />
+                    <button type="button" class="btn btn-light border border-start-0 text-muted" id="togglePasswordBtn">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="eyeIcon">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="rememberMeCheck" />
+                    <label class="form-check-label small text-secondary" for="rememberMeCheck">
+                      Ingat saya di perangkat ini
+                    </label>
+                  </div>
+                </div>
+
+                <button type="submit" id="submitLoginBtn" class="btn btn-primary w-100 py-2.5 fw-bold rounded-3 shadow-sm d-flex align-items-center justify-content-center gap-2">
+                  <span>Masuk sebagai Admin</span>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                </button>
+              </form>
+
+              <!-- Petunjuk Setup SQL Supabase -->
+              <div class="mt-4 pt-3 border-top text-center">
+                <button type="button" class="btn btn-link text-decoration-none text-secondary fs-8 p-0" id="btnToggleHelpSql">
+                  Setup tabel admin di Supabase? Klik di sini &rarr;
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Back to Public Site -->
+          <div class="text-center mt-3.5">
+            <a href="/" class="text-white-50 text-decoration-none small d-inline-flex align-items-center gap-1.5 hover-text-white">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+              <span>Kembali ke Halaman Beranda Publik</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL SCRIPT SQL SUPABASE -->
+    <div class="modal fade" id="sqlHelperModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow-2xl">
+          <div class="modal-header bg-dark text-white px-4 py-3">
+            <div class="d-flex align-items-center gap-2">
+              <span class="badge bg-success rounded-pill px-2.5 py-1 fs-8">SQL SCRIPT</span>
+              <h5 class="modal-title fw-bold fs-6 mb-0">Setup Tabel admin_users di Supabase</h5>
+            </div>
+            <button type="button" class="btn-close btn-close-white" id="btnCloseSqlModal"></button>
+          </div>
+          <div class="modal-body p-4">
+            <p class="small text-secondary mb-3">
+              Jalankan perintah SQL berikut di menu <strong>SQL Editor</strong> dashboard Supabase Anda (<a href="https://supabase.com/dashboard" target="_blank" class="fw-bold">supabase.com</a>) agar akun admin tersimpan permanen dan terotentikasi di database:
+            </p>
+            <div class="position-relative">
+              <pre class="bg-dark text-light p-3 rounded-3 small font-monospace overflow-x-auto" style="max-height: 280px;" id="sqlContentBox">-- 1. Buat Tabel admin_users
+CREATE TABLE IF NOT EXISTS public.admin_users (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  username text UNIQUE NOT NULL,
+  password text NOT NULL,
+  nama_lengkap text NOT NULL,
+  role text DEFAULT 'admin',
+  is_active boolean DEFAULT true,
+  created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
+  last_login timestamp with time zone
+);
+
+-- 2. Aktifkan RLS & Kebijakan Akses
+ALTER TABLE public.admin_users ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow anon select active admin" ON public.admin_users
+  FOR SELECT USING (is_active = true);
+
+CREATE POLICY "Allow anon update last_login" ON public.admin_users
+  FOR UPDATE USING (is_active = true);
+
+-- 3. Masukkan Akun Admin Panitia KKA Radar Kediri 2026
+INSERT INTO public.admin_users (username, password, nama_lengkap, role)
+VALUES 
+  ('admin', 'kka2026radarkediri', 'Super Admin KKA Radar Kediri', 'superadmin'),
+  ('panitia', 'kka2026', 'Panitia Pusat Radar Kediri', 'admin'),
+  ('fajar', 'radar2026', 'Mas Fajar (Verifikator)', 'verifikator'),
+  ('endro', 'radar2026', 'Pak Endro (Teknis)', 'verifikator')
+ON CONFLICT (username) DO UPDATE 
+SET password = EXCLUDED.password, is_active = true;</pre>
+            </div>
+          </div>
+          <div class="modal-footer bg-light px-4 py-3 d-flex align-items-center justify-content-between">
+            <span class="text-secondary fs-8">Kredensial default: <code>admin</code> / <code>kka2026radarkediri</code></span>
+            <button type="button" class="btn btn-success fw-bold px-3.5 py-2 rounded-3 d-inline-flex align-items-center gap-1.5 shadow-sm" id="btnCopySql">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              <span id="copyBtnText">Salin Seluruh SQL</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <style>
+      .hover-text-white:hover {
+        color: #ffffff !important;
+      }
+      .fs-8 { font-size: 0.8rem !important; }
+      .shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important; }
+    </style>
+
+    <script>
+      import { supabase } from '../../lib/supabase';
+
+      function setupLoginForm() {
+        const form = document.getElementById('adminLoginForm') as HTMLFormElement | null;
+        const userInput = document.getElementById('adminUsername') as HTMLInputElement | null;
+        const passInput = document.getElementById('adminPassword') as HTMLInputElement | null;
+        const rememberCheck = document.getElementById('rememberMeCheck') as HTMLInputElement | null;
+        const toggleBtn = document.getElementById('togglePasswordBtn');
+        const alertBox = document.getElementById('loginAlertError');
+        const alertText = document.getElementById('loginAlertText');
+        const setupNotice = document.getElementById('setupSqlNotice');
+        const submitBtn = document.getElementById('submitLoginBtn');
+
+        // SQL Modal controls
+        const modal = document.getElementById('sqlHelperModal');
+        const btnShowModal = document.getElementById('btnShowSqlModal');
+        const btnToggleHelp = document.getElementById('btnToggleHelpSql');
+        const btnCloseModal = document.getElementById('btnCloseSqlModal');
+        const btnCopy = document.getElementById('btnCopySql');
+        const copyText = document.getElementById('copyBtnText');
+
+        const openSqlModal = () => {
+          if (modal) {
+            modal.classList.add('show');
+            modal.style.display = 'block';
+            document.body.classList.add('modal-open');
+          }
+        };
+        const closeSqlModal = () => {
+          if (modal) {
+            modal.classList.remove('show');
+            modal.style.display = 'none';
+            document.body.classList.remove('modal-open');
+          }
+        };
+
+        btnShowModal?.addEventListener('click', openSqlModal);
+        btnToggleHelp?.addEventListener('click', openSqlModal);
+        btnCloseModal?.addEventListener('click', closeSqlModal);
+
+        btnCopy?.addEventListener('click', () => {
+          const sql = document.getElementById('sqlContentBox')?.textContent || '';
+          navigator.clipboard.writeText(sql).then(() => {
+            if (copyText) copyText.textContent = 'Berhasil Disalin!';
+            setTimeout(() => {
+              if (copyText) copyText.textContent = 'Salin Seluruh SQL';
+            }, 2500);
+          });
+        });
+
+        // Toggle Password visibility
+        toggleBtn?.addEventListener('click', () => {
+          if (!passInput) return;
+          passInput.type = passInput.type === 'password' ? 'text' : 'password';
+        });
+
+        // Form submit: Verifikasi langsung ke Supabase
+        form?.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          alertBox?.classList.add('d-none');
+          setupNotice?.classList.add('d-none');
+
+          const user = (userInput?.value || '').trim();
+          const pass = (passInput?.value || '').trim();
+
+          if (!user || !pass) return;
+
+          if (!submitBtn) return;
+          submitBtn.innerHTML = `
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <span>Memeriksa Database Supabase...</span>
+          `;
+          submitBtn.setAttribute('disabled', 'true');
+
+          try {
+            // 1. Query ke tabel admin_users di Supabase
+            const { data: adminUser, error } = await supabase
+              .from('admin_users')
+              .select('id, username, password, nama_lengkap, role, is_active')
+              .eq('username', user)
+              .eq('is_active', true)
+              .maybeSingle();
+
+            if (error) {
+              console.warn('[Supabase Auth Error]:', error);
+              
+              // Jika tabel admin_users belum dibuat di database Supabase
+              if (error.code === 'PGRST205' || error.message.includes('admin_users')) {
+                setupNotice?.classList.remove('d-none');
+                
+                // Fallback darurat jika tabel belum dibuat di Supabase agar pengguna bisa masuk pertama kali untuk setup
+                const emergencyUsers = ['admin', 'panitia'];
+                const emergencyPasses = ['kka2026radarkediri', 'kka2026', 'admin123'];
+                if (emergencyUsers.includes(user.toLowerCase()) && emergencyPasses.includes(pass)) {
+                  const sessionData = {
+                    id: 'fallback-superadmin-id',
+                    username: user,
+                    nama: 'Super Admin KKA (Emergency Session)',
+                    role: 'superadmin',
+                    is_fallback: true,
+                    loginAt: Date.now()
+                  };
+                  sessionStorage.setItem('kka_admin_auth', 'true');
+                  sessionStorage.setItem('kka_admin_session', JSON.stringify(sessionData));
+                  if (rememberCheck?.checked) {
+                    localStorage.setItem('kka_admin_auth', 'true');
+                    localStorage.setItem('kka_admin_session', JSON.stringify(sessionData));
+                  }
+                  window.location.href = '/admin';
+                  return;
+                }
+
+                if (alertBox && alertText) {
+                  alertText.textContent = 'Tabel admin_users belum dibuat di database Supabase Anda. Silakan klik tombol di bawah untuk menyalin SQL setup.';
+                  alertBox.classList.remove('d-none');
+                }
+              } else {
+                if (alertBox && alertText) {
+                  alertText.textContent = `Gagal terhubung ke Supabase: ${error.message}`;
+                  alertBox.classList.remove('d-none');
+                }
+              }
+
+              submitBtn.removeAttribute('disabled');
+              submitBtn.innerHTML = `
+                <span>Masuk dengan Supabase</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              `;
+              return;
+            }
+
+            // 2. Jika akun ditemukan di Supabase, verifikasi password
+            if (adminUser) {
+              if (adminUser.password === pass) {
+                // UPDATE last_login di Supabase
+                try {
+                  await supabase
+                    .from('admin_users')
+                    .update({ last_login: new Date().toISOString() })
+                    .eq('id', adminUser.id);
+                } catch (e) {}
+
+                // SIMPAN SESI RESMI
+                const sessionData = {
+                  id: adminUser.id,
+                  username: adminUser.username,
+                  nama: adminUser.nama_lengkap,
+                  role: adminUser.role,
+                  loginAt: Date.now()
+                };
+
+                sessionStorage.setItem('kka_admin_auth', 'true');
+                sessionStorage.setItem('kka_admin_session', JSON.stringify(sessionData));
+
+                if (rememberCheck?.checked) {
+                  localStorage.setItem('kka_admin_auth', 'true');
+                  localStorage.setItem('kka_admin_session', JSON.stringify(sessionData));
+                }
+
+                submitBtn.className = 'btn btn-success w-100 py-2.5 fw-bold rounded-3 shadow-sm d-flex align-items-center justify-content-center gap-2';
+                submitBtn.innerHTML = `
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  <span>Terotentikasi Supabase! Mengalihkan...</span>
+                `;
+
+                setTimeout(() => {
+                  window.location.href = '/admin';
+                }, 400);
+
+              } else {
+                // Password salah
+                if (alertBox && alertText) {
+                  alertText.textContent = 'Kata sandi salah. Silakan periksa kembali kata sandi akun panitia Anda.';
+                  alertBox.classList.remove('d-none');
+                }
+                submitBtn.removeAttribute('disabled');
+                submitBtn.innerHTML = `
+                  <span>Masuk dengan Supabase</span>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                `;
+              }
+            } else {
+              // Username tidak ditemukan di database Supabase
+              if (alertBox && alertText) {
+                alertText.textContent = `Akun dengan username "${user}" tidak ditemukan atau berstatus nonaktif di database Supabase.`;
+                alertBox.classList.remove('d-none');
+              }
+              submitBtn.removeAttribute('disabled');
+              submitBtn.innerHTML = `
+                <span>Masuk dengan Supabase</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              `;
+            }
+
+          } catch (err: any) {
+            console.error(err);
+            if (alertBox && alertText) {
+              alertText.textContent = `Terjadi kendala sistem: ${err?.message || 'Gagal menghubungi server Supabase'}`;
+              alertBox.classList.remove('d-none');
+            }
+            submitBtn.removeAttribute('disabled');
+            submitBtn.innerHTML = `
+              <span>Masuk dengan Supabase</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            `;
+          }
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupLoginForm);
+      } else {
+        setupLoginForm();
+      }
+      document.addEventListener('astro:page-load', setupLoginForm);
+    </script>
+  </body>
+</html>

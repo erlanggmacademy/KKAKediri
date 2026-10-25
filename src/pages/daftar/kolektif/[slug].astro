@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../../components/Breadcrumb.astro';
+import FormPendaftaranKolektif from '../../../components/FormPendaftaranKolektif.astro';
+import { DISTRICTS, type District } from '../../../data/competition';
+
+export function getStaticPaths() {
+  return DISTRICTS.map((district) => ({
+    params: { slug: district.slug },
+    props: { district }
+  }));
+}
+
+interface Props {
+  district: District;
+}
+
+const { district } = Astro.props;
+---
+
+<BaseLayout 
+  title={`Pendaftaran Kolektif Sekolah ${district.name} - KKA 2026 Radar Kediri`}
+  description={`Formulir pendaftaran kolektif rombongan siswa sekolah di ${district.name} (${district.regionName}) untuk ajang Kompetisi Kompetensi Akademik (KKA) 2026 Jawa Pos Radar Kediri.`}
+>
+  <!-- Breadcrumb & Page Header -->
+  <section class="bg-gradient-navy text-white py-4 py-lg-5">
+    <div class="container">
+      <div class="d-flex align-items-center gap-3 mb-2 flex-wrap">
+        <div class="emblem-header-box bg-white p-2 rounded-3 shadow-sm d-flex align-items-center justify-content-center" style="width: 58px; height: 58px;">
+          <img 
+            src={district.logoUrl || '/images/logo-kka.webp'} 
+            alt={`Lambang ${district.name}`} 
+            width="46" 
+            height="46" 
+            style="object-fit: contain;" 
+          />
+        </div>
+        <div>
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <span class="badge bg-warning text-dark fw-bold rounded-pill px-3 py-1 fs-8">KOLEKTIF SEKOLAH</span>
+            <span class="badge bg-white text-dark rounded-pill px-2.5 py-1 fs-8 fw-semibold">{district.regionName}</span>
+          </div>
+          <h1 class="h2 fw-bold text-white mb-0">Pendaftaran Kolektif: {district.name}</h1>
+        </div>
+      </div>
+      <p class="text-white-50 mb-1 mt-2 max-w-2xl">
+        Khusus guru pembina atau koordinator sekolah di {district.name}. Unduh format Excel resmi, isi data sekolah beserta daftar siswa, lalu unggah kembali berkas tersebut untuk kalkulasi biaya instan.
+      </p>
+
+      <Breadcrumb items={[
+        { label: 'Pendaftaran', href: '/daftar' },
+        { label: 'Pendaftaran Kolektif', href: '/daftar/kolektif' },
+        { label: district.name, active: true }
+      ]} align="left" />
+    </div>
+  </section>
+
+  <!-- Main Form Content -->
+  <section class="py-5 bg-light">
+    <div class="container py-2">
+      <FormPendaftaranKolektif 
+        defaultDistrictSlug={district.slug} 
+        defaultDistrictName={district.name} 
+      />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .fs-8 { font-size: 0.78rem; }
+  .max-w-2xl { max-width: 680px; }
+</style>

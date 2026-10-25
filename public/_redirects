@@ -1,0 +1,8 @@
+# Redirects dari struktur URL Blogspot lama ke URL bersih baru KKA 2026
+/p/tentang-kka.html   /tentang-kka   301
+/p/regulasi.html      /regulasi      301
+/p/galeri.html        /galeri        301
+/p/kontak.html        /kontak        301
+/p/blog.html          /blog          301
+/p/kka.html           /daftar/mandiri 301
+/informasi             /              301

@@ -1,0 +1,597 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { WAVES } from '../../data/competition';
+---
+
+<AdminLayout title="Pengaturan Gelombang & Biaya" activeMenu="pengaturan">
+  <div class="page-dashboard">
+    <!-- PAGE HERO BANNER -->
+    <div class="dashboard-hero mb-4">
+      <div class="dashboard-hero-copy">
+        <span class="dashboard-eyebrow">KONFIGURASI SISTEM &bull; KKA 2026</span>
+        <h1>Pengaturan Gelombang & Biaya</h1>
+        <p>
+          Atur jadwal periode pendaftaran, tarif biaya ujian CBT per jenjang (SD, SMP, SMA), status gelombang aktif, rekening pembayaran resmi, dan nomor hotline panitia.
+        </p>
+      </div>
+
+      <div class="dashboard-hero-actions">
+        <button type="button" class="btn btn-primary" id="btnSaveAllSettings">
+          <i class="bi bi-check-all"></i>
+          <span>Simpan Seluruh Pengaturan</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- MASTER SWITCH STATUS PENDAFTARAN (MANDIRI & KOLEKTIF) -->
+    <div class="dashboard-panel mb-4 border-warning shadow-sm">
+      <div class="dashboard-panel-header px-3.5 py-3 d-flex align-items-center justify-content-between flex-wrap gap-2 bg-warning-subtle border-bottom border-warning-subtle">
+        <div class="d-flex align-items-center gap-2">
+          <span class="badge bg-warning text-dark fw-bold rounded-pill px-2.5 py-1 fs-9">KONTROL STATUS EVENT</span>
+          <h2 class="fs-6 fw-bold mb-0 text-dark">Saklar Buka / Tutup Pendaftaran Publik</h2>
+        </div>
+        <span class="fs-9 text-muted fw-semibold">
+          Aktifkan / nonaktifkan jika event sudah selesai, pendaftaran ditutup, atau kuota telah terpenuhi
+        </span>
+      </div>
+
+      <div class="dashboard-panel-body py-3.5 px-3.5">
+        <div class="row g-4">
+          <!-- Jalur Mandiri Control -->
+          <div class="col-12 col-md-6 border-end-md">
+            <div class="p-3 bg-white rounded-3 border h-100 shadow-2xs">
+              <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="badge bg-primary text-white rounded-pill px-2.5 py-1 fs-9 fw-bold">JALUR MANDIRI</span>
+                  <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0.5 fs-9 fw-bold" id="badgeStatusMandiri">BUKA (NORMAL)</span>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input class="form-check-input" type="checkbox" id="switchRegMandiri" checked style="width: 2.5em; height: 1.3em; cursor: pointer;" />
+                  <label class="form-check-label fs-8 fw-bold text-success ms-1" for="switchRegMandiri" id="lblSwitchMandiri">Aktif (Buka)</label>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Status Kondisi Pendaftaran</label>
+                <select class="form-select form-select-sm fs-8" id="selectMandiriCondition">
+                  <option value="buka">Pendaftaran Buka (Normal)</option>
+                  <option value="kuota_penuh">Kuota Telah Terpenuhi (Penuh)</option>
+                  <option value="tutup_periode">Event Selesai / Pendaftaran Ditutup (Tutup)</option>
+                  <option value="maintenance">Ditutup Sementara (Pemeliharaan Sistem)</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Judul Banner Saat Ditutup</label>
+                <input type="text" class="form-control form-control-sm fs-8" id="txtMandiriClosedTitle" value="Pendaftaran Mandiri Telah Ditutup" />
+              </div>
+
+              <div class="mb-0">
+                <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Pesan Pengumuman untuk Pengunjung</label>
+                <textarea class="form-control form-control-sm fs-8" rows="3" id="txtMandiriClosedMsg">Pendaftaran peserta mandiri KKA 2026 telah resmi ditutup karena telah mencapai kuota maksimal atau periode pendaftaran telah berakhir. Bagi peserta yang telah mendaftar, silakan cek status pendaftaran Anda.</textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Jalur Kolektif Control -->
+          <div class="col-12 col-md-6">
+            <div class="p-3 bg-white rounded-3 border h-100 shadow-2xs">
+              <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="badge bg-warning text-dark rounded-pill px-2.5 py-1 fs-9 fw-bold">JALUR KOLEKTIF</span>
+                  <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0.5 fs-9 fw-bold" id="badgeStatusKolektif">BUKA (NORMAL)</span>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input class="form-check-input" type="checkbox" id="switchRegKolektif" checked style="width: 2.5em; height: 1.3em; cursor: pointer;" />
+                  <label class="form-check-label fs-8 fw-bold text-success ms-1" for="switchRegKolektif" id="lblSwitchKolektif">Aktif (Buka)</label>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Status Kondisi Pendaftaran</label>
+                <select class="form-select form-select-sm fs-8" id="selectKolektifCondition">
+                  <option value="buka">Pendaftaran Buka (Normal)</option>
+                  <option value="kuota_penuh">Kuota Telah Terpenuhi (Penuh)</option>
+                  <option value="tutup_periode">Event Selesai / Pendaftaran Ditutup (Tutup)</option>
+                  <option value="maintenance">Ditutup Sementara (Pemeliharaan Sistem)</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Judul Banner Saat Ditutup</label>
+                <input type="text" class="form-control form-control-sm fs-8" id="txtKolektifClosedTitle" value="Pendaftaran Kolektif Sekolah Ditutup" />
+              </div>
+
+              <div class="mb-0">
+                <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Pesan Pengumuman untuk Pengunjung</label>
+                <textarea class="form-control form-control-sm fs-8" rows="3" id="txtKolektifClosedMsg">Pendaftaran rombongan kolektif sekolah KKA 2026 telah resmi ditutup. Untuk konfirmasi data rombongan atau koordinasi kuota khusus sekolah, silakan hubungi koordinator panitia.</textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 GELOMBANG CARDS -->
+    <div class="row g-3 mb-4">
+      <!-- Gelombang 1 -->
+      <div class="col-12 col-lg-4">
+        <div class="dashboard-panel h-100 border-primary-subtle">
+          <div class="dashboard-panel-header compact py-2.5 px-3.5 d-flex align-items-center justify-content-between">
+            <div>
+              <span class="badge bg-primary text-white rounded-pill px-2.5 py-0.5 fs-9">Gelombang 1</span>
+              <h3 class="fs-8 fw-bold text-dark mt-1 mb-0">Early Bird</h3>
+            </div>
+            <div class="form-check form-switch mb-0">
+              <input class="form-check-input" type="radio" name="activeWaveRadio" id="waveRadio1" value="1" checked />
+              <label class="form-check-label fs-9 fw-bold text-success" for="waveRadio1">Aktif</label>
+            </div>
+          </div>
+
+          <div class="dashboard-panel-body py-3 px-3.5">
+            <div class="mb-3">
+              <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Periode Waktu</label>
+              <input type="text" class="form-control form-control-sm fs-8" id="wave1Period" value="10 Des 2025 - 20 Jan 2026" />
+            </div>
+
+            <div class="mb-2">
+              <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Tarif SD / MI (Rp)</label>
+              <input type="number" class="form-control form-control-sm fs-8 font-monospace" id="wave1PriceSD" value="25000" />
+            </div>
+
+            <div class="mb-2">
+              <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Tarif SMP / MTs (Rp)</label>
+              <input type="number" class="form-control form-control-sm fs-8 font-monospace" id="wave1PriceSMP" value="30000" />
+            </div>
+
+            <div class="mb-0">
+              <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Tarif SMA / SMK (Rp)</label>
+              <input type="number" class="form-control form-control-sm fs-8 font-monospace" id="wave1PriceSMA" value="35000" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gelombang 2 -->
+      <div class="col-12 col-lg-4">
+        <div class="dashboard-panel h-100">
+          <div class="dashboard-panel-header compact py-2.5 px-3.5 d-flex align-items-center justify-content-between">
+            <div>
+              <span class="badge bg-warning text-dark rounded-pill px-2.5 py-0.5 fs-9">Gelombang 2</span>
+              <h3 class="fs-8 fw-bold text-dark mt-1 mb-0">Reguler</h3>
+            </div>
+            <div class="form-check form-switch mb-0">
+              <input class="form-check-input" type="radio" name="activeWaveRadio" id="waveRadio2" value="2" />
+              <label class="form-check-label fs-9 fw-bold text-secondary" for="waveRadio2">Aktifkan</label>
+            </div>
+          </div>
+
+          <div class="dashboard-panel-body py-3 px-3.5">
+            <div class="mb-3">
+              <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Periode Waktu</label>
+              <input type="text" class="form-control form-control-sm fs-8" id="wave2Period" value="21 Jan 2026 - 15 Feb 2026" />
+            </div>
+
+            <div class="mb-2">
+              <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Tarif SD / MI (Rp)</label>
+              <input type="number" class="form-control form-control-sm fs-8 font-monospace" id="wave2PriceSD" value="30000" />
+            </div>
+
+            <div class="mb-2">
+              <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Tarif SMP / MTs (Rp)</label>
+              <input type="number" class="form-control form-control-sm fs-8 font-monospace" id="wave2PriceSMP" value="35000" />
+            </div>
+
+            <div class="mb-0">
+              <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Tarif SMA / SMK (Rp)</label>
+              <input type="number" class="form-control form-control-sm fs-8 font-monospace" id="wave2PriceSMA" value="40000" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gelombang 3 -->
+      <div class="col-12 col-lg-4">
+        <div class="dashboard-panel h-100">
+          <div class="dashboard-panel-header compact py-2.5 px-3.5 d-flex align-items-center justify-content-between">
+            <div>
+              <span class="badge bg-danger text-white rounded-pill px-2.5 py-0.5 fs-9">Gelombang 3</span>
+              <h3 class="fs-8 fw-bold text-dark mt-1 mb-0">Last Call</h3>
+            </div>
+            <div class="form-check form-switch mb-0">
+              <input class="form-check-input" type="radio" name="activeWaveRadio" id="waveRadio3" value="3" />
+              <label class="form-check-label fs-9 fw-bold text-secondary" for="waveRadio3">Aktifkan</label>
+            </div>
+          </div>
+
+          <div class="dashboard-panel-body py-3 px-3.5">
+            <div class="mb-3">
+              <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Periode Waktu</label>
+              <input type="text" class="form-control form-control-sm fs-8" id="wave3Period" value="16 Feb 2026 - 28 Feb 2026" />
+            </div>
+
+            <div class="mb-2">
+              <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Tarif SD / MI (Rp)</label>
+              <input type="number" class="form-control form-control-sm fs-8 font-monospace" id="wave3PriceSD" value="35000" />
+            </div>
+
+            <div class="mb-2">
+              <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Tarif SMP / MTs (Rp)</label>
+              <input type="number" class="form-control form-control-sm fs-8 font-monospace" id="wave3PriceSMP" value="40000" />
+            </div>
+
+            <div class="mb-0">
+              <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Tarif SMA / SMK (Rp)</label>
+              <input type="number" class="form-control form-control-sm fs-8 font-monospace" id="wave3PriceSMA" value="45000" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PENGATURAN REKENING & HOTLINE -->
+    <div class="row g-3 mb-4">
+      <!-- Rekening Pembayaran Resmi -->
+      <div class="col-12 col-md-6">
+        <div class="dashboard-panel h-100">
+          <div class="dashboard-panel-header px-3.5 py-2.5">
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-credit-card text-primary fs-6"></i>
+              <h3 class="fs-7 fw-bold text-dark mb-0">Rekening Resmi Pembayaran</h3>
+            </div>
+          </div>
+
+          <div class="dashboard-panel-body py-3 px-3.5">
+            <div class="mb-2.5">
+              <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Nama Bank</label>
+              <input type="text" class="form-control form-control-sm fs-8" id="settingBankName" value="Bank Jatim Cabang Kediri" />
+            </div>
+            <div class="mb-2.5">
+              <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Nomor Rekening</label>
+              <input type="text" class="form-control form-control-sm fs-8 font-monospace" id="settingBankNumber" value="0061001234" />
+            </div>
+            <div class="mb-0">
+              <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Atas Nama Penerima</label>
+              <input type="text" class="form-control form-control-sm fs-8" id="settingBankHolder" value="PT Radar Kediri Intermedia" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hotline CS Panitia -->
+      <div class="col-12 col-md-6">
+        <div class="dashboard-panel h-100">
+          <div class="dashboard-panel-header px-3.5 py-2.5">
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-headset text-success fs-6"></i>
+              <h3 class="fs-7 fw-bold text-dark mb-0">Hotline & Customer Service</h3>
+            </div>
+          </div>
+
+          <div class="dashboard-panel-body py-3 px-3.5">
+            <div class="mb-2.5">
+              <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Nomor WhatsApp CS 1 (Pendaftaran)</label>
+              <input type="text" class="form-control form-control-sm fs-8 font-monospace" id="settingWa1" value="081234567890" />
+            </div>
+            <div class="mb-2.5">
+              <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Nomor WhatsApp CS 2 (Konfirmasi Bayar)</label>
+              <input type="text" class="form-control form-control-sm fs-8 font-monospace" id="settingWa2" value="089876543210" />
+            </div>
+            <div class="mb-0">
+              <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Email Sekretariat Resmi</label>
+              <input type="email" class="form-control form-control-sm fs-8" id="settingEmail" value="kka@radarkediri.jawapos.com" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .fs-7 { font-size: 0.9rem !important; }
+    .fs-8 { font-size: 0.82rem !important; }
+    .fs-9 { font-size: 0.72rem !important; }
+    .dashboard-panel-body {
+      padding: 1.25rem 1.5rem;
+    }
+  </style>
+
+  <script>
+    import { supabase } from '../../lib/supabase';
+
+    const DEFAULT_REG_CONTROL = {
+      mandiri: {
+        enabled: true,
+        condition: 'buka',
+        closedTitle: 'Pendaftaran Mandiri Telah Ditutup',
+        closedMsg: 'Pendaftaran peserta mandiri KKA 2026 telah resmi ditutup karena telah mencapai kuota maksimal atau periode pendaftaran telah berakhir. Bagi peserta yang telah mendaftar, silakan cek status pendaftaran Anda.'
+      },
+      kolektif: {
+        enabled: true,
+        condition: 'buka',
+        closedTitle: 'Pendaftaran Kolektif Sekolah Ditutup',
+        closedMsg: 'Pendaftaran rombongan kolektif sekolah KKA 2026 telah resmi ditutup. Untuk konfirmasi data rombongan atau koordinasi kuota khusus sekolah, silakan hubungi koordinator panitia.'
+      }
+    };
+
+    function applySystemSettings(cfg: any) {
+      if (!cfg) return;
+      const r1 = document.getElementById('waveRadio1') as HTMLInputElement;
+      const r2 = document.getElementById('waveRadio2') as HTMLInputElement;
+      const r3 = document.getElementById('waveRadio3') as HTMLInputElement;
+
+      if (cfg.activeWave === 1 && r1) r1.checked = true;
+      if (cfg.activeWave === 2 && r2) r2.checked = true;
+      if (cfg.activeWave === 3 && r3) r3.checked = true;
+
+      if (cfg.bankName) (document.getElementById('settingBankName') as HTMLInputElement).value = cfg.bankName;
+      if (cfg.bankNumber) (document.getElementById('settingBankNumber') as HTMLInputElement).value = cfg.bankNumber;
+      if (cfg.bankHolder) (document.getElementById('settingBankHolder') as HTMLInputElement).value = cfg.bankHolder;
+      if (cfg.wa1) (document.getElementById('settingWa1') as HTMLInputElement).value = cfg.wa1;
+      if (cfg.wa2) (document.getElementById('settingWa2') as HTMLInputElement).value = cfg.wa2;
+      if (cfg.email) (document.getElementById('settingEmail') as HTMLInputElement).value = cfg.email;
+    }
+
+    function applyRegControl(regCfg: any) {
+      if (!regCfg) return;
+      const swMandiri = document.getElementById('switchRegMandiri') as HTMLInputElement;
+      const selMandiri = document.getElementById('selectMandiriCondition') as HTMLSelectElement;
+      const txtMTitle = document.getElementById('txtMandiriClosedTitle') as HTMLInputElement;
+      const txtMMsg = document.getElementById('txtMandiriClosedMsg') as HTMLTextAreaElement;
+
+      const swKolektif = document.getElementById('switchRegKolektif') as HTMLInputElement;
+      const selKolektif = document.getElementById('selectKolektifCondition') as HTMLSelectElement;
+      const txtKTitle = document.getElementById('txtKolektifClosedTitle') as HTMLInputElement;
+      const txtKMsg = document.getElementById('txtKolektifClosedMsg') as HTMLTextAreaElement;
+
+      if (regCfg.mandiri) {
+        if (swMandiri) swMandiri.checked = regCfg.mandiri.enabled !== false;
+        if (selMandiri && regCfg.mandiri.condition) selMandiri.value = regCfg.mandiri.condition;
+        if (txtMTitle && regCfg.mandiri.closedTitle) txtMTitle.value = regCfg.mandiri.closedTitle;
+        if (txtMMsg && regCfg.mandiri.closedMsg) txtMMsg.value = regCfg.mandiri.closedMsg;
+      }
+
+      if (regCfg.kolektif) {
+        if (swKolektif) swKolektif.checked = regCfg.kolektif.enabled !== false;
+        if (selKolektif && regCfg.kolektif.condition) selKolektif.value = regCfg.kolektif.condition;
+        if (txtKTitle && regCfg.kolektif.closedTitle) txtKTitle.value = regCfg.kolektif.closedTitle;
+        if (txtKMsg && regCfg.kolektif.closedMsg) txtKMsg.value = regCfg.kolektif.closedMsg;
+      }
+
+      updateRegUI();
+    }
+
+    function updateRegUI() {
+      const swMandiri = document.getElementById('switchRegMandiri') as HTMLInputElement;
+      const lblSwMandiri = document.getElementById('lblSwitchMandiri');
+      const badgeMandiri = document.getElementById('badgeStatusMandiri');
+      const selMandiri = document.getElementById('selectMandiriCondition') as HTMLSelectElement;
+
+      const swKolektif = document.getElementById('switchRegKolektif') as HTMLInputElement;
+      const lblSwKolektif = document.getElementById('lblSwitchKolektif');
+      const badgeKolektif = document.getElementById('badgeStatusKolektif');
+      const selKolektif = document.getElementById('selectKolektifCondition') as HTMLSelectElement;
+
+      if (swMandiri && lblSwMandiri && badgeMandiri && selMandiri) {
+        if (swMandiri.checked) {
+          lblSwMandiri.textContent = 'Aktif (Buka)';
+          lblSwMandiri.className = 'form-check-label fs-8 fw-bold text-success ms-1';
+          if (selMandiri.value === 'buka') {
+            badgeMandiri.textContent = 'BUKA (NORMAL)';
+            badgeMandiri.className = 'badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0.5 fs-9 fw-bold';
+          } else if (selMandiri.value === 'kuota_penuh') {
+            badgeMandiri.textContent = 'KUOTA PENUH';
+            badgeMandiri.className = 'badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2 py-0.5 fs-9 fw-bold';
+          } else {
+            badgeMandiri.textContent = 'DITUTUP';
+            badgeMandiri.className = 'badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill px-2 py-0.5 fs-9 fw-bold';
+          }
+        } else {
+          lblSwMandiri.textContent = 'Nonaktif (Tutup)';
+          lblSwMandiri.className = 'form-check-label fs-8 fw-bold text-danger ms-1';
+          badgeMandiri.textContent = 'NONAKTIF / TUTUP';
+          badgeMandiri.className = 'badge bg-danger text-white rounded-pill px-2 py-0.5 fs-9 fw-bold';
+        }
+      }
+
+      if (swKolektif && lblSwKolektif && badgeKolektif && selKolektif) {
+        if (swKolektif.checked) {
+          lblSwKolektif.textContent = 'Aktif (Buka)';
+          lblSwKolektif.className = 'form-check-label fs-8 fw-bold text-success ms-1';
+          if (selKolektif.value === 'buka') {
+            badgeKolektif.textContent = 'BUKA (NORMAL)';
+            badgeKolektif.className = 'badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0.5 fs-9 fw-bold';
+          } else if (selKolektif.value === 'kuota_penuh') {
+            badgeKolektif.textContent = 'KUOTA PENUH';
+            badgeKolektif.className = 'badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2 py-0.5 fs-9 fw-bold';
+          } else {
+            badgeKolektif.textContent = 'DITUTUP';
+            badgeKolektif.className = 'badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill px-2 py-0.5 fs-9 fw-bold';
+          }
+        } else {
+          lblSwKolektif.textContent = 'Nonaktif (Tutup)';
+          lblSwKolektif.className = 'form-check-label fs-8 fw-bold text-danger ms-1';
+          badgeKolektif.textContent = 'NONAKTIF / TUTUP';
+          badgeKolektif.className = 'badge bg-danger text-white rounded-pill px-2 py-0.5 fs-9 fw-bold';
+        }
+      }
+    }
+
+    async function loadSettings() {
+      // 1. Render cache lokal terlebih dahulu (agar instan)
+      try {
+        const storedSys = localStorage.getItem('kka_admin_system_settings');
+        if (storedSys) applySystemSettings(JSON.parse(storedSys));
+
+        const storedReg = localStorage.getItem('kka_registration_status_control');
+        if (storedReg) applyRegControl(JSON.parse(storedReg));
+      } catch (e) {}
+
+      // 2. Ambil data terbaru langsung dari Cloud Supabase
+      try {
+        const { data, error } = await supabase.from('app_settings').select('*');
+        if (!error && data) {
+          data.forEach((row: any) => {
+            if (row.key === 'system_settings' && row.value) {
+              applySystemSettings(row.value);
+              localStorage.setItem('kka_admin_system_settings', JSON.stringify(row.value));
+            } else if (row.key === 'registration_control' && row.value) {
+              applyRegControl(row.value);
+              localStorage.setItem('kka_registration_status_control', JSON.stringify(row.value));
+            }
+          });
+        }
+      } catch (err) {
+        console.warn('[Supabase] Gagal mengambil app_settings:', err);
+      }
+    }
+
+    async function saveSettings() {
+      const btnSave = document.getElementById('btnSaveAllSettings') as HTMLButtonElement | null;
+      if (btnSave) {
+        btnSave.disabled = true;
+        btnSave.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Menyimpan ke Cloud Supabase...';
+      }
+
+      // 1. Siapkan Payload System Settings
+      const activeWaveVal = Number((document.querySelector('input[name="activeWaveRadio"]:checked') as HTMLInputElement)?.value) || 1;
+      const bankName = (document.getElementById('settingBankName') as HTMLInputElement)?.value;
+      const bankNumber = (document.getElementById('settingBankNumber') as HTMLInputElement)?.value;
+      const bankHolder = (document.getElementById('settingBankHolder') as HTMLInputElement)?.value;
+      const wa1 = (document.getElementById('settingWa1') as HTMLInputElement)?.value;
+      const wa2 = (document.getElementById('settingWa2') as HTMLInputElement)?.value;
+      const email = (document.getElementById('settingEmail') as HTMLInputElement)?.value;
+
+      const payload = {
+        activeWave: activeWaveVal,
+        bankName,
+        bankNumber,
+        bankHolder,
+        wa1,
+        wa2,
+        email,
+        updatedAt: new Date().toISOString()
+      };
+      localStorage.setItem('kka_admin_system_settings', JSON.stringify(payload));
+
+      // 2. Siapkan Payload Registration Control Status
+      const swMandiri = (document.getElementById('switchRegMandiri') as HTMLInputElement)?.checked;
+      const selMandiri = (document.getElementById('selectMandiriCondition') as HTMLSelectElement)?.value;
+      const txtMTitle = (document.getElementById('txtMandiriClosedTitle') as HTMLInputElement)?.value;
+      const txtMMsg = (document.getElementById('txtMandiriClosedMsg') as HTMLTextAreaElement)?.value;
+
+      const swKolektif = (document.getElementById('switchRegKolektif') as HTMLInputElement)?.checked;
+      const selKolektif = (document.getElementById('selectKolektifCondition') as HTMLSelectElement)?.value;
+      const txtKTitle = (document.getElementById('txtKolektifClosedTitle') as HTMLInputElement)?.value;
+      const txtKMsg = (document.getElementById('txtKolektifClosedMsg') as HTMLTextAreaElement)?.value;
+
+      const regPayload = {
+        mandiri: {
+          enabled: swMandiri,
+          condition: selMandiri,
+          closedTitle: txtMTitle,
+          closedMsg: txtMMsg
+        },
+        kolektif: {
+          enabled: swKolektif,
+          condition: selKolektif,
+          closedTitle: txtKTitle,
+          closedMsg: txtKMsg
+        },
+        updatedAt: new Date().toISOString()
+      };
+      localStorage.setItem('kka_registration_status_control', JSON.stringify(regPayload));
+
+      updateRegUI();
+
+      // 3. Simpan Langsung ke Database Supabase Cloud (Tabel app_settings)
+      let supabaseSaved = false;
+      let errorMsg = '';
+
+      try {
+        const { error: err1 } = await supabase.from('app_settings').upsert({
+          key: 'system_settings',
+          value: payload,
+          updated_at: new Date().toISOString()
+        });
+
+        const { error: err2 } = await supabase.from('app_settings').upsert({
+          key: 'registration_control',
+          value: regPayload,
+          updated_at: new Date().toISOString()
+        });
+
+        if (!err1 && !err2) {
+          supabaseSaved = true;
+        } else {
+          errorMsg = (err1?.message || err2?.message) || 'Error upserting app_settings';
+        }
+      } catch (ex: any) {
+        errorMsg = ex.message;
+      } finally {
+        if (btnSave) {
+          btnSave.disabled = false;
+          btnSave.innerHTML = '<i class="bi bi-cloud-check-fill me-1.5"></i> Simpan Semua Perubahan';
+        }
+      }
+
+      if (supabaseSaved) {
+        alert('BERHASIL DISIMPAN KE SUPABASE CLOUD!\n\nPengaturan pendaftaran (saklar buka/tutup, pesan penutupan, rekening panitia, gelombang) telah tersimpan permanen di Supabase dan langsung aktif di semua perangkat pengguna.');
+      } else {
+        alert(`Pengaturan tersimpan di browser ini, namun database Supabase Cloud belum menerima:\n"${errorMsg}"\n\nPastikan Anda telah menjalankan skrip SQL migrasi di Supabase SQL Editor.`);
+      }
+    }
+
+    function setupPengaturanPage() {
+      loadSettings();
+      document.getElementById('btnSaveAllSettings')?.addEventListener('click', saveSettings);
+
+      document.getElementById('switchRegMandiri')?.addEventListener('change', (e) => {
+        const sw = e.target as HTMLInputElement;
+        const sel = document.getElementById('selectMandiriCondition') as HTMLSelectElement;
+        if (!sw.checked && sel.value === 'buka') {
+          sel.value = 'tutup_periode';
+        } else if (sw.checked && sel.value !== 'buka') {
+          sel.value = 'buka';
+        }
+        updateRegUI();
+      });
+
+      document.getElementById('switchRegKolektif')?.addEventListener('change', (e) => {
+        const sw = e.target as HTMLInputElement;
+        const sel = document.getElementById('selectKolektifCondition') as HTMLSelectElement;
+        if (!sw.checked && sel.value === 'buka') {
+          sel.value = 'tutup_periode';
+        } else if (sw.checked && sel.value !== 'buka') {
+          sel.value = 'buka';
+        }
+        updateRegUI();
+      });
+
+      document.getElementById('selectMandiriCondition')?.addEventListener('change', (e) => {
+        const sel = e.target as HTMLSelectElement;
+        const sw = document.getElementById('switchRegMandiri') as HTMLInputElement;
+        if (sel.value === 'buka') {
+          sw.checked = true;
+        }
+        updateRegUI();
+      });
+
+      document.getElementById('selectKolektifCondition')?.addEventListener('change', (e) => {
+        const sel = e.target as HTMLSelectElement;
+        const sw = document.getElementById('switchRegKolektif') as HTMLInputElement;
+        if (sel.value === 'buka') {
+          sw.checked = true;
+        }
+        updateRegUI();
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', setupPengaturanPage);
+    } else {
+      setupPengaturanPage();
+    }
+    document.addEventListener('astro:page-load', setupPengaturanPage);
+  </script>
+</AdminLayout>

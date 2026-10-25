@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+---
+
+<BaseLayout
+  title="Halaman Tidak Ditemukan (404) - KKA Radar Kediri"
+  description="Halaman yang Anda tuju tidak ditemukan atau telah dipindahkan."
+  noindex={true}
+>
+  <div class="container py-4 my-3 text-center">
+    <div class="max-w-md mx-auto py-5">
+      <span class="badge bg-danger rounded-pill px-3 py-1 fs-7 fw-bold mb-3">ERROR 404</span>
+      <h1 class="display-3 fw-extrabold text-kka-primary mb-3">Halaman Tidak Ditemukan</h1>
+      <p class="text-secondary lead mb-3">
+        Mohon maaf, halaman yang Anda cari mungkin telah dipindahkan, dihapus, atau alamat URL yang dimasukkan kurang tepat.
+      </p>
+
+      <div class="mb-4">
+        <Breadcrumb items={[{ label: 'Halaman Tidak Ditemukan (404)', active: true }]} theme="light" />
+      </div>
+
+      <div class="d-flex justify-content-center gap-3 flex-wrap">
+        <a href="/" class="btn btn-kka-primary px-4 py-2">
+          ← Kembali ke Beranda
+        </a>
+        <a href="/daftar/status" class="btn btn-outline-secondary px-4 py-2">
+          Cek Status Pendaftaran
+        </a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .max-w-md { max-width: 540px; }
+  .fs-7 { font-size: 0.85rem; }
+  .fw-extrabold { font-weight: 800; }
+</style>

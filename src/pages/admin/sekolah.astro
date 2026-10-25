@@ -1,0 +1,916 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { SCHOOL_DATABASE } from '../../data/schools';
+---
+
+<AdminLayout title="CMS Kelola Data Sekolah" activeMenu="sekolah">
+  <div class="page-dashboard">
+    <!-- PAGE HERO BANNER -->
+    <div class="dashboard-hero mb-4">
+      <div class="dashboard-hero-copy">
+        <span class="dashboard-eyebrow">MASTER DATA PENDIDIKAN &bull; KKA 2026</span>
+        <h1>CMS Kelola Data Sekolah</h1>
+        <p>
+          Kelola basis data sekolah/madrasah jenjang SD/MI, SMP/MTs, dan SMA/MA/SMK untuk 7 Kabupaten/Kota se-Karesidenan Kediri. Perubahan otomatis disinkronkan ke opsi formulir pendaftaran.
+        </p>
+      </div>
+
+      <div class="dashboard-hero-actions">
+        <button type="button" class="btn btn-primary" id="btnOpenAddSchoolModal">
+          <i class="bi bi-plus-circle"></i>
+          <span>Tambah Sekolah Baru</span>
+        </button>
+        <button type="button" class="btn btn-light border" id="btnSyncSchools">
+          <i class="bi bi-arrow-repeat"></i>
+          <span>Sinkronkan Data</span>
+        </button>
+        <a href="/daftar/mandiri" target="_blank" class="btn btn-light border">
+          <i class="bi bi-box-arrow-up-right"></i>
+          <span>Form Pendaftaran</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- STATISTIK RINGKAS CARDS -->
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-lg-3">
+        <div class="dashboard-panel stat-card-panel h-100 p-4">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="fs-9 text-muted text-uppercase fw-bold">Total Sekolah</span>
+            <span class="badge bg-primary-subtle text-primary rounded-pill px-2.5 py-1 fs-9">Database</span>
+          </div>
+          <div class="h3 fw-bold text-dark mb-0" id="statTotalSchools">350+</div>
+          <div class="fs-9 text-muted mt-1">7 Kab/Kota Karesidenan Kediri</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="dashboard-panel stat-card-panel h-100 p-4">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="fs-9 text-muted text-uppercase fw-bold">Jenjang SD / MI</span>
+            <span class="badge bg-primary-subtle text-primary rounded-pill px-2.5 py-1 fs-9">SD</span>
+          </div>
+          <div class="h3 fw-bold text-primary mb-0" id="statTotalSd">0</div>
+          <div class="fs-9 text-muted mt-1">Sekolah Dasar & Madrasah</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="dashboard-panel stat-card-panel h-100 p-4">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="fs-9 text-muted text-uppercase fw-bold">Jenjang SMP / MTs</span>
+            <span class="badge bg-info-subtle text-info rounded-pill px-2.5 py-1 fs-9">SMP</span>
+          </div>
+          <div class="h3 fw-bold text-info mb-0" id="statTotalSmp">0</div>
+          <div class="fs-9 text-muted mt-1">Sekolah Menengah Pertama</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="dashboard-panel stat-card-panel h-100 p-4">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="fs-9 text-muted text-uppercase fw-bold">Jenjang SMA / SMK / MA</span>
+            <span class="badge bg-danger-subtle text-danger rounded-pill px-2.5 py-1 fs-9">SMA</span>
+          </div>
+          <div class="h3 fw-bold text-danger mb-0" id="statTotalSma">0</div>
+          <div class="fs-9 text-muted mt-1">Sekolah Menengah Atas / Kejuruan</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL FILTER & PENCARIAN -->
+    <div class="dashboard-panel mb-4">
+      <div class="dashboard-panel-header px-4 py-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-2">
+          <span class="dashboard-section-kicker">PENCARIAN & FILTER</span>
+          <h2 class="fs-6 mb-0">Daftar Sekolah Terdaftar</h2>
+        </div>
+        <div class="fs-9 text-muted" id="schoolSummaryText">
+          Memuat data sekolah...
+        </div>
+      </div>
+
+      <div class="dashboard-panel-body border-bottom bg-light bg-opacity-50 p-4">
+        <div class="row g-3 align-items-end">
+          <!-- Filter Wilayah -->
+          <div class="col-12 col-md-3">
+            <label class="form-label fs-9 fw-bold text-muted mb-1">WILAYAH (KAB/KOTA)</label>
+            <select class="form-select form-select-sm fs-8 rounded-3" id="filterWilayah">
+              <option value="all">Semua Wilayah (7 Daerah)</option>
+              <option value="kabupaten-nganjuk">Kabupaten Nganjuk</option>
+              <option value="kota-kediri">Kota Kediri</option>
+              <option value="kabupaten-kediri">Kabupaten Kediri</option>
+              <option value="kota-blitar">Kota Blitar</option>
+              <option value="kabupaten-blitar">Kabupaten Blitar</option>
+              <option value="kabupaten-tulungagung">Kabupaten Tulungagung</option>
+              <option value="kabupaten-trenggalek">Kabupaten Trenggalek</option>
+            </select>
+          </div>
+
+          <!-- Filter Kecamatan (Dinamis) -->
+          <div class="col-12 col-md-3">
+            <label class="form-label fs-9 fw-bold text-muted mb-1">KECAMATAN</label>
+            <select class="form-select form-select-sm fs-8 rounded-3" id="filterKecamatan">
+              <option value="all">Semua Kecamatan</option>
+            </select>
+          </div>
+
+          <!-- Filter Jenjang Pills -->
+          <div class="col-12 col-md-3">
+            <label class="form-label fs-9 fw-bold text-muted mb-1">JENJANG PENDIDIKAN</label>
+            <div class="d-flex align-items-center gap-1" id="filterJenjangGroup">
+              <button type="button" class="btn btn-sm btn-primary active fs-9 px-3 py-1 rounded-pill" data-jenjang="all">Semua</button>
+              <button type="button" class="btn btn-sm btn-light border fs-9 px-3 py-1 rounded-pill" data-jenjang="sd">SD/MI</button>
+              <button type="button" class="btn btn-sm btn-light border fs-9 px-3 py-1 rounded-pill" data-jenjang="smp">SMP/MTs</button>
+              <button type="button" class="btn btn-sm btn-light border fs-9 px-3 py-1 rounded-pill" data-jenjang="sma">SMA/SMK</button>
+            </div>
+          </div>
+
+          <!-- Input Pencarian Teks -->
+          <div class="col-12 col-md-3">
+            <label class="form-label fs-9 fw-bold text-muted mb-1">CARI NAMA SEKOLAH</label>
+            <div class="input-group input-group-sm">
+              <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+              <input type="text" class="form-control border-start-0 fs-8 ps-0" id="searchSchoolInput" placeholder="Ketik nama sekolah..." />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TABEL DAFTAR SEKOLAH -->
+      <div class="table-responsive p-0">
+        <table class="table table-hover align-middle mb-0 fs-8">
+          <thead class="table-light text-uppercase text-secondary fs-9">
+            <tr>
+              <th class="ps-4 py-3 text-nowrap" style="width: 60px;">No</th>
+              <th class="py-3 text-nowrap">Nama Sekolah / Madrasah</th>
+              <th class="py-3 text-nowrap" style="width: 120px;">Jenjang</th>
+              <th class="py-3 text-nowrap">Wilayah</th>
+              <th class="py-3 text-nowrap">Kecamatan</th>
+              <th class="py-3 text-nowrap" style="width: 140px;">Status</th>
+              <th class="pe-4 text-end py-3 text-nowrap" style="width: 120px;">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="schoolTableBody">
+            <!-- Populated via JavaScript -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- PAGINASI TABLE -->
+      <div class="dashboard-panel-footer px-4 py-3 border-top d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="fs-9 text-muted" id="paginationInfo">
+          Menampilkan 1 - 25
+        </div>
+        <div class="d-flex align-items-center gap-2" id="paginationControls">
+          <!-- Populated via JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL CREATE & EDIT SEKOLAH -->
+  <div class="modal fade" id="schoolModal" tabindex="-1" aria-labelledby="schoolModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+      <div class="modal-content border-0 rounded-4 shadow-2xl overflow-hidden">
+        <div class="modal-header bg-dark text-white px-4 py-3">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-mortarboard-fill text-warning fs-5"></i>
+            <h5 class="modal-title fw-bold fs-6 text-white mb-0" id="schoolModalTitle">Tambah Sekolah Baru</h5>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" id="schoolModalCloseBtn"></button>
+        </div>
+
+        <form id="formSchool">
+          <div class="modal-body p-4">
+            <input type="hidden" id="modalSchoolId" />
+
+            <div class="row g-3">
+              <!-- Wilayah -->
+              <div class="col-12">
+                <label class="form-label fw-bold fs-8 text-dark">Wilayah Kabupaten / Kota <span class="text-danger">*</span></label>
+                <select class="form-select fs-8" id="modalSchoolRegion" required>
+                  <option value="">-- Pilih Wilayah --</option>
+                  <option value="kabupaten-nganjuk" data-name="Kabupaten Nganjuk">Kabupaten Nganjuk</option>
+                  <option value="kota-kediri" data-name="Kota Kediri">Kota Kediri</option>
+                  <option value="kabupaten-kediri" data-name="Kabupaten Kediri">Kabupaten Kediri</option>
+                  <option value="kota-blitar" data-name="Kota Blitar">Kota Blitar</option>
+                  <option value="kabupaten-blitar" data-name="Kabupaten Blitar">Kabupaten Blitar</option>
+                  <option value="kabupaten-tulungagung" data-name="Kabupaten Tulungagung">Kabupaten Tulungagung</option>
+                  <option value="kabupaten-trenggalek" data-name="Kabupaten Trenggalek">Kabupaten Trenggalek</option>
+                </select>
+              </div>
+
+              <!-- Kecamatan -->
+              <div class="col-12">
+                <label class="form-label fw-bold fs-8 text-dark">Kecamatan <span class="text-danger">*</span></label>
+                <div class="input-group input-group-sm">
+                  <select class="form-select fs-8" id="modalSchoolKecamatanSelect">
+                    <option value="">-- Pilih Kecamatan Terdaftar --</option>
+                  </select>
+                  <button type="button" class="btn btn-outline-secondary fs-9" id="btnToggleNewKecamatan" title="Ketik nama kecamatan baru jika belum ada">
+                    + Ketik Baru
+                  </button>
+                </div>
+                <input type="text" class="form-control fs-8 mt-2 d-none" id="modalSchoolKecamatanManual" placeholder="Ketik nama kecamatan baru..." />
+                <div class="form-text fs-9 text-muted">Pilih dari kecamatan yang ada atau ketik kecamatan baru.</div>
+              </div>
+
+              <!-- Jenjang Pendidikan -->
+              <div class="col-12">
+                <label class="form-label fw-bold fs-8 text-dark">Jenjang Sekolah <span class="text-danger">*</span></label>
+                <select class="form-select fs-8" id="modalSchoolJenjang" required>
+                  <option value="sd">Jenjang SD / MI</option>
+                  <option value="smp">Jenjang SMP / MTs</option>
+                  <option value="sma">Jenjang SMA / SMK / MA</option>
+                </select>
+              </div>
+
+              <!-- Nama Sekolah -->
+              <div class="col-12">
+                <label class="form-label fw-bold fs-8 text-dark">Nama Resmi Sekolah / Madrasah <span class="text-danger">*</span></label>
+                <input type="text" class="form-control fs-8 py-2" id="modalSchoolName" placeholder="Contoh: SDN Burengan 1, SMPN 1 Kediri, SMAN 2 Nganjuk" required />
+                <div class="form-text fs-9 text-muted">Gunakan penulisan baku sesuai data pokok pendidikan (Dapodik / EMIS).</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer bg-light px-4 py-3 d-flex align-items-center justify-content-between">
+            <button type="button" class="btn btn-light btn-sm border fs-8" id="schoolModalCancelBtn">Batal</button>
+            <button type="submit" class="btn btn-primary btn-sm fw-bold px-3.5 py-1.5 fs-8" id="btnSubmitSchool">
+              <i class="bi bi-check-circle me-1"></i>
+              <span>Simpan Sekolah</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL KONFIRMASI HAPUS -->
+  <div class="modal fade" id="deleteSchoolModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+      <div class="modal-content border-0 rounded-4 shadow-2xl overflow-hidden text-center p-4">
+        <div class="rounded-circle bg-danger-subtle text-danger d-inline-flex p-3 mx-auto mb-3" style="width: 54px; height: 54px; align-items: center; justify-content: center;">
+          <i class="bi bi-trash3-fill fs-4"></i>
+        </div>
+        <h5 class="fw-bold text-dark fs-6 mb-1">Hapus Data Sekolah?</h5>
+        <p class="text-muted fs-8 mb-4" id="deleteSchoolNameText">
+          Sekolah ini akan dihapus dari basis data dropdown form pendaftaran.
+        </p>
+        <div class="d-flex align-items-center justify-content-center gap-2">
+          <button type="button" class="btn btn-light btn-sm border px-3 fs-8" id="btnCancelDeleteSchool">Batal</button>
+          <button type="button" class="btn btn-danger btn-sm px-3 fs-8 fw-semibold" id="btnConfirmDeleteSchool">Ya, Hapus</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style is:global>
+    .fs-7 { font-size: 0.9rem !important; }
+    .fs-8 { font-size: 0.82rem !important; }
+    .fs-9 { font-size: 0.72rem !important; }
+
+    .stat-card-panel {
+      padding: 1.25rem 1.5rem !important;
+    }
+
+    .dashboard-panel-header {
+      padding: 1rem 1.5rem !important;
+    }
+
+    .dashboard-panel-body {
+      padding: 1.25rem 1.5rem !important;
+    }
+
+    .dashboard-panel-footer {
+      padding: 1rem 1.5rem !important;
+    }
+
+    .table > :not(caption) > * > * {
+      padding: 0.85rem 1rem !important;
+    }
+
+    .table thead th {
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid #eef2f6;
+    }
+
+    .shadow-2xl {
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+    }
+
+    .modal-backdrop.show {
+      opacity: 0.5;
+    }
+  </style>
+
+  <script>
+    import { SCHOOL_DATABASE } from '../../data/schools';
+    import { supabase } from '../../lib/supabase';
+
+    interface SchoolItem {
+      id: string;
+      regionSlug: string;
+      regionName: string;
+      kecamatan: string;
+      jenjang: 'sd' | 'smp' | 'sma';
+      namaSekolah: string;
+      isCustom?: boolean;
+    }
+
+    const REGION_MAP: Record<string, string> = {
+      'kabupaten-nganjuk': 'Kabupaten Nganjuk',
+      'kota-kediri': 'Kota Kediri',
+      'kabupaten-kediri': 'Kabupaten Kediri',
+      'kota-blitar': 'Kota Blitar',
+      'kabupaten-blitar': 'Kabupaten Blitar',
+      'kabupaten-tulungagung': 'Kabupaten Tulungagung',
+      'kabupaten-trenggalek': 'Kabupaten Trenggalek'
+    };
+
+    // Flatten database sekolah bawaan dari schools.ts
+    function getInitialSchools(): SchoolItem[] {
+      const items: SchoolItem[] = [];
+      let count = 1;
+
+      Object.keys(SCHOOL_DATABASE).forEach((rSlug) => {
+        const reg = SCHOOL_DATABASE[rSlug];
+        const rName = reg.name || REGION_MAP[rSlug] || rSlug;
+        const districts = reg.districts || {};
+
+        Object.keys(districts).forEach((kec) => {
+          const dist = districts[kec];
+          ['sd', 'smp', 'sma'].forEach((j) => {
+            const list = (dist as any)[j] || [];
+            list.forEach((name: string) => {
+              items.push({
+                id: `init-${count++}`,
+                regionSlug: rSlug,
+                regionName: rName,
+                kecamatan: kec,
+                jenjang: j as 'sd' | 'smp' | 'sma',
+                namaSekolah: name,
+                isCustom: false
+              });
+            });
+          });
+        });
+      });
+
+      return items;
+    }
+
+    let allSchools: SchoolItem[] = [];
+    let filterRegion = 'all';
+    let filterKec = 'all';
+    let filterJenjang = 'all';
+    let searchQuery = '';
+    let currentPage = 1;
+    const pageSize = 25;
+    let pendingDeleteId: string | null = null;
+    let isManualKecamatan = false;
+
+    // Load data sekolah dari Supabase dan LocalStorage
+    async function loadSchools() {
+      const initial = getInitialSchools();
+
+      try {
+        const stored = localStorage.getItem('kka_custom_schools');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            allSchools = parsed;
+          } else {
+            allSchools = initial;
+            localStorage.setItem('kka_custom_schools', JSON.stringify(initial));
+          }
+        } else {
+          allSchools = initial;
+          localStorage.setItem('kka_custom_schools', JSON.stringify(initial));
+        }
+      } catch (e) {
+        allSchools = initial;
+      }
+
+      updateStatistics();
+      populateKecamatanFilter();
+      renderTable();
+
+      // Sinkronkan dengan Supabase Cloud jika tabel public.schools tersedia
+      try {
+        const { data, error } = await supabase
+          .from('schools')
+          .select('*')
+          .order('nama_sekolah', { ascending: true });
+
+        if (!error && data && data.length > 0) {
+          const customSupabaseItems: SchoolItem[] = data.map((d: any) => ({
+            id: d.id,
+            regionSlug: d.region_slug,
+            regionName: d.region_name || REGION_MAP[d.region_slug] || '',
+            kecamatan: d.kecamatan,
+            jenjang: d.jenjang,
+            namaSekolah: d.nama_sekolah,
+            isCustom: d.is_custom !== false
+          }));
+
+          // Merge: pertahankan item yang diubah/ditambah
+          const mergedMap = new Map<string, SchoolItem>();
+          allSchools.forEach(s => mergedMap.set(s.id, s));
+          customSupabaseItems.forEach(s => mergedMap.set(s.id, s));
+
+          allSchools = Array.from(mergedMap.values());
+          localStorage.setItem('kka_custom_schools', JSON.stringify(allSchools));
+          updateStatistics();
+          populateKecamatanFilter();
+          renderTable();
+        }
+      } catch (err) {
+        console.warn('[Supabase] Gagal mengambil data schools:', err);
+      }
+    }
+
+    function saveSchoolsToLocal() {
+      localStorage.setItem('kka_custom_schools', JSON.stringify(allSchools));
+      updateStatistics();
+    }
+
+    function updateStatistics() {
+      const elTotal = document.getElementById('statTotalSchools');
+      const elSd = document.getElementById('statTotalSd');
+      const elSmp = document.getElementById('statTotalSmp');
+      const elSma = document.getElementById('statTotalSma');
+
+      let sdCount = 0;
+      let smpCount = 0;
+      let smaCount = 0;
+
+      allSchools.forEach(s => {
+        if (s.jenjang === 'sd') sdCount++;
+        else if (s.jenjang === 'smp') smpCount++;
+        else if (s.jenjang === 'sma') smaCount++;
+      });
+
+      if (elTotal) elTotal.textContent = allSchools.length.toString();
+      if (elSd) elSd.textContent = sdCount.toString();
+      if (elSmp) elSmp.textContent = smpCount.toString();
+      if (elSma) elSma.textContent = smaCount.toString();
+    }
+
+    function populateKecamatanFilter() {
+      const selectKec = document.getElementById('filterKecamatan') as HTMLSelectElement;
+      if (!selectKec) return;
+
+      const currentSelected = selectKec.value;
+      const kecSet = new Set<string>();
+
+      allSchools.forEach(s => {
+        if (filterRegion === 'all' || s.regionSlug === filterRegion) {
+          if (s.kecamatan) kecSet.add(s.kecamatan);
+        }
+      });
+
+      const sortedKec = Array.from(kecSet).sort();
+      selectKec.innerHTML = '<option value="all">Semua Kecamatan</option>';
+
+      sortedKec.forEach(k => {
+        const opt = document.createElement('option');
+        opt.value = k;
+        opt.textContent = k;
+        if (k === currentSelected) opt.selected = true;
+        selectKec.appendChild(opt);
+      });
+    }
+
+    function getFilteredSchools(): SchoolItem[] {
+      return allSchools.filter(item => {
+        if (filterRegion !== 'all' && item.regionSlug !== filterRegion) return false;
+        if (filterKec !== 'all' && item.kecamatan !== filterKec) return false;
+        if (filterJenjang !== 'all' && item.jenjang !== filterJenjang) return false;
+
+        if (searchQuery.trim() !== '') {
+          const q = searchQuery.toLowerCase();
+          const matchName = item.namaSekolah.toLowerCase().includes(q);
+          const matchKec = item.kecamatan.toLowerCase().includes(q);
+          const matchReg = item.regionName.toLowerCase().includes(q);
+          if (!matchName && !matchKec && !matchReg) return false;
+        }
+
+        return true;
+      });
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('schoolTableBody');
+      const summaryText = document.getElementById('schoolSummaryText');
+      const pageInfo = document.getElementById('paginationInfo');
+      const paginationControls = document.getElementById('paginationControls');
+
+      if (!tbody) return;
+
+      const filtered = getFilteredSchools();
+      const total = filtered.length;
+      const totalPages = Math.ceil(total / pageSize) || 1;
+
+      if (currentPage > totalPages) currentPage = totalPages;
+      if (currentPage < 1) currentPage = 1;
+
+      const startIdx = (currentPage - 1) * pageSize;
+      const endIdx = Math.min(startIdx + pageSize, total);
+      const pageItems = filtered.slice(startIdx, endIdx);
+
+      if (summaryText) {
+        summaryText.textContent = `Menampilkan ${filtered.length} dari total ${allSchools.length} sekolah`;
+      }
+      if (pageInfo) {
+        pageInfo.textContent = total > 0 ? `Menampilkan ${startIdx + 1} - ${endIdx} dari ${total} sekolah` : 'Tidak ada sekolah ditemukan';
+      }
+
+      if (pageItems.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="text-center py-5 text-muted">
+              <i class="bi bi-search fs-3 text-secondary d-block mb-2"></i>
+              Tidak ada data sekolah yang sesuai dengan filter atau kata kunci pencarian.
+            </td>
+          </tr>
+        `;
+        if (paginationControls) paginationControls.innerHTML = '';
+        return;
+      }
+
+      tbody.innerHTML = '';
+      pageItems.forEach((item, index) => {
+        const rowNo = startIdx + index + 1;
+        const tr = document.createElement('tr');
+
+        let jenjangBadge = '';
+        if (item.jenjang === 'sd') {
+          jenjangBadge = '<span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2 py-0.5 fs-9 fw-bold">SD / MI</span>';
+        } else if (item.jenjang === 'smp') {
+          jenjangBadge = '<span class="badge bg-info-subtle text-info border border-info-subtle rounded-pill px-2 py-0.5 fs-9 fw-bold">SMP / MTs</span>';
+        } else {
+          jenjangBadge = '<span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2 py-0.5 fs-9 fw-bold">SMA / SMK / MA</span>';
+        }
+
+        const statusBadge = item.isCustom
+          ? '<span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0.5 fs-9">Admin Added</span>'
+          : '<span class="badge bg-light text-muted border rounded-pill px-2 py-0.5 fs-9">Bawaan Sistem</span>';
+
+        tr.innerHTML = `
+          <td class="ps-4 text-muted fs-9">${rowNo}</td>
+          <td>
+            <div class="fw-bold text-dark">${item.namaSekolah}</div>
+          </td>
+          <td>${jenjangBadge}</td>
+          <td>
+            <span class="text-secondary">${item.regionName}</span>
+          </td>
+          <td>
+            <span class="text-secondary">${item.kecamatan}</span>
+          </td>
+          <td>${statusBadge}</td>
+          <td class="pe-4 text-end">
+            <div class="btn-group btn-group-sm">
+              <button class="btn btn-light border btn-edit-school" data-id="${item.id}" title="Edit Sekolah">
+                <i class="bi bi-pencil-square text-primary"></i>
+              </button>
+              <button class="btn btn-light border btn-delete-school" data-id="${item.id}" data-name="${item.namaSekolah}" title="Hapus Sekolah">
+                <i class="bi bi-trash3 text-danger"></i>
+              </button>
+            </div>
+          </td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+
+      // Render Pagination Buttons
+      if (paginationControls) {
+        paginationControls.innerHTML = '';
+
+        const prevBtn = document.createElement('button');
+        prevBtn.className = `btn btn-sm btn-light border fs-9 px-3 py-1 rounded-2 ${currentPage === 1 ? 'disabled' : ''}`;
+        prevBtn.innerHTML = '<i class="bi bi-chevron-left"></i>';
+        prevBtn.addEventListener('click', () => {
+          if (currentPage > 1) {
+            currentPage--;
+            renderTable();
+          }
+        });
+        paginationControls.appendChild(prevBtn);
+
+        const pageLabel = document.createElement('span');
+        pageLabel.className = 'fs-9 text-muted px-2';
+        pageLabel.textContent = `Hal ${currentPage} / ${totalPages}`;
+        paginationControls.appendChild(pageLabel);
+
+        const nextBtn = document.createElement('button');
+        nextBtn.className = `btn btn-sm btn-light border fs-9 px-3 py-1 rounded-2 ${currentPage === totalPages ? 'disabled' : ''}`;
+        nextBtn.innerHTML = '<i class="bi bi-chevron-right"></i>';
+        nextBtn.addEventListener('click', () => {
+          if (currentPage < totalPages) {
+            currentPage++;
+            renderTable();
+          }
+        });
+        paginationControls.appendChild(nextBtn);
+      }
+
+      // Pasang event listener edit & delete
+      document.querySelectorAll('.btn-edit-school').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const id = (e.currentTarget as HTMLElement).getAttribute('data-id');
+          const found = allSchools.find(s => s.id === id);
+          if (found) openSchoolModal(found);
+        });
+      });
+
+      document.querySelectorAll('.btn-delete-school').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const id = (e.currentTarget as HTMLElement).getAttribute('data-id');
+          const name = (e.currentTarget as HTMLElement).getAttribute('data-name');
+          if (id) promptDeleteSchool(id, name || '');
+        });
+      });
+    }
+
+    // Modal Helper
+    function openSchoolModal(item?: SchoolItem) {
+      const modalEl = document.getElementById('schoolModal');
+      const modalTitle = document.getElementById('schoolModalTitle');
+      const inputId = document.getElementById('modalSchoolId') as HTMLInputElement;
+      const selectRegion = document.getElementById('modalSchoolRegion') as HTMLSelectElement;
+      const selectKec = document.getElementById('modalSchoolKecamatanSelect') as HTMLSelectElement;
+      const inputKecManual = document.getElementById('modalSchoolKecamatanManual') as HTMLInputElement;
+      const selectJenjang = document.getElementById('modalSchoolJenjang') as HTMLSelectElement;
+      const inputName = document.getElementById('modalSchoolName') as HTMLInputElement;
+
+      isManualKecamatan = false;
+      if (inputKecManual) {
+        inputKecManual.classList.add('d-none');
+        inputKecManual.value = '';
+      }
+      if (selectKec) selectKec.classList.remove('d-none');
+
+      if (item) {
+        if (modalTitle) modalTitle.textContent = 'Edit Data Sekolah';
+        if (inputId) inputId.value = item.id;
+        if (selectRegion) selectRegion.value = item.regionSlug;
+        populateModalKecamatan(item.regionSlug, item.kecamatan);
+        if (selectJenjang) selectJenjang.value = item.jenjang;
+        if (inputName) inputName.value = item.namaSekolah;
+      } else {
+        if (modalTitle) modalTitle.textContent = 'Tambah Sekolah Baru';
+        if (inputId) inputId.value = '';
+        if (selectRegion) {
+          selectRegion.value = filterRegion !== 'all' ? filterRegion : 'kabupaten-nganjuk';
+          populateModalKecamatan(selectRegion.value);
+        }
+        if (selectJenjang) selectJenjang.value = filterJenjang !== 'all' ? filterJenjang : 'sd';
+        if (inputName) inputName.value = '';
+      }
+
+      if (modalEl) {
+        modalEl.classList.add('show');
+        modalEl.style.display = 'block';
+        document.body.classList.add('modal-open');
+        createCustomBackdrop('schoolModalBackdrop');
+      }
+    }
+
+    function closeSchoolModal() {
+      const modalEl = document.getElementById('schoolModal');
+      if (modalEl) {
+        modalEl.classList.remove('show');
+        modalEl.style.display = 'none';
+        document.body.classList.remove('modal-open');
+      }
+      removeCustomBackdrop('schoolModalBackdrop');
+    }
+
+    function populateModalKecamatan(regionSlug: string, selectedKec?: string) {
+      const selectKec = document.getElementById('modalSchoolKecamatanSelect') as HTMLSelectElement;
+      if (!selectKec) return;
+
+      const kecSet = new Set<string>();
+      allSchools.forEach(s => {
+        if (s.regionSlug === regionSlug && s.kecamatan) {
+          kecSet.add(s.kecamatan);
+        }
+      });
+
+      selectKec.innerHTML = '<option value="">-- Pilih Kecamatan Terdaftar --</option>';
+      Array.from(kecSet).sort().forEach(k => {
+        const opt = document.createElement('option');
+        opt.value = k;
+        opt.textContent = k;
+        if (selectedKec && k === selectedKec) opt.selected = true;
+        selectKec.appendChild(opt);
+      });
+    }
+
+    function promptDeleteSchool(id: string, name: string) {
+      pendingDeleteId = id;
+      const modalEl = document.getElementById('deleteSchoolModal');
+      const textEl = document.getElementById('deleteSchoolNameText');
+      if (textEl) textEl.textContent = `Apakah Anda yakin ingin menghapus "${name}" dari database sekolah?`;
+
+      if (modalEl) {
+        modalEl.classList.add('show');
+        modalEl.style.display = 'block';
+        document.body.classList.add('modal-open');
+        createCustomBackdrop('deleteSchoolBackdrop');
+      }
+    }
+
+    function closeDeleteModal() {
+      const modalEl = document.getElementById('deleteSchoolModal');
+      if (modalEl) {
+        modalEl.classList.remove('show');
+        modalEl.style.display = 'none';
+        document.body.classList.remove('modal-open');
+      }
+      removeCustomBackdrop('deleteSchoolBackdrop');
+      pendingDeleteId = null;
+    }
+
+    function createCustomBackdrop(id: string) {
+      if (!document.getElementById(id)) {
+        const back = document.createElement('div');
+        back.id = id;
+        back.className = 'modal-backdrop fade show';
+        document.body.appendChild(back);
+      }
+    }
+
+    function removeCustomBackdrop(id: string) {
+      const back = document.getElementById(id);
+      if (back) back.remove();
+    }
+
+    function setupSchoolPage() {
+      loadSchools();
+
+      // Filter events
+      document.getElementById('filterWilayah')?.addEventListener('change', (e) => {
+        filterRegion = (e.target as HTMLSelectElement).value;
+        filterKec = 'all';
+        populateKecamatanFilter();
+        currentPage = 1;
+        renderTable();
+      });
+
+      document.getElementById('filterKecamatan')?.addEventListener('change', (e) => {
+        filterKec = (e.target as HTMLSelectElement).value;
+        currentPage = 1;
+        renderTable();
+      });
+
+      const jenjangBtns = document.querySelectorAll('#filterJenjangGroup button');
+      jenjangBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          jenjangBtns.forEach(b => {
+            b.classList.remove('btn-primary', 'active');
+            b.classList.add('btn-light', 'border');
+          });
+          const target = e.currentTarget as HTMLButtonElement;
+          target.classList.remove('btn-light', 'border');
+          target.classList.add('btn-primary', 'active');
+          filterJenjang = target.getAttribute('data-jenjang') || 'all';
+          currentPage = 1;
+          renderTable();
+        });
+      });
+
+      document.getElementById('searchSchoolInput')?.addEventListener('input', (e) => {
+        searchQuery = (e.target as HTMLInputElement).value;
+        currentPage = 1;
+        renderTable();
+      });
+
+      // Actions
+      document.getElementById('btnOpenAddSchoolModal')?.addEventListener('click', () => openSchoolModal());
+      document.getElementById('schoolModalCloseBtn')?.addEventListener('click', closeSchoolModal);
+      document.getElementById('schoolModalCancelBtn')?.addEventListener('click', closeSchoolModal);
+
+      document.getElementById('modalSchoolRegion')?.addEventListener('change', (e) => {
+        const val = (e.target as HTMLSelectElement).value;
+        populateModalKecamatan(val);
+      });
+
+      // Toggle Kecamatan Manual
+      document.getElementById('btnToggleNewKecamatan')?.addEventListener('click', () => {
+        isManualKecamatan = !isManualKecamatan;
+        const selectKec = document.getElementById('modalSchoolKecamatanSelect');
+        const inputKec = document.getElementById('modalSchoolKecamatanManual');
+        const btnToggle = document.getElementById('btnToggleNewKecamatan');
+
+        if (isManualKecamatan) {
+          selectKec?.classList.add('d-none');
+          inputKec?.classList.remove('d-none');
+          inputKec?.focus();
+          if (btnToggle) btnToggle.textContent = 'Pilih List';
+        } else {
+          selectKec?.classList.remove('d-none');
+          inputKec?.classList.add('d-none');
+          if (btnToggle) btnToggle.textContent = '+ Ketik Baru';
+        }
+      });
+
+      // Submit Form Tambah / Edit
+      document.getElementById('formSchool')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = (document.getElementById('modalSchoolId') as HTMLInputElement).value;
+        const regionSlug = (document.getElementById('modalSchoolRegion') as HTMLSelectElement).value;
+        const selectRegion = document.getElementById('modalSchoolRegion') as HTMLSelectElement;
+        const regionName = selectRegion.options[selectRegion.selectedIndex]?.getAttribute('data-name') || REGION_MAP[regionSlug] || regionSlug;
+        
+        const selectKec = document.getElementById('modalSchoolKecamatanSelect') as HTMLSelectElement;
+        const inputKecManual = document.getElementById('modalSchoolKecamatanManual') as HTMLInputElement;
+        const kecamatan = (isManualKecamatan && inputKecManual.value.trim() !== '')
+          ? inputKecManual.value.trim()
+          : selectKec.value.trim();
+
+        const jenjang = (document.getElementById('modalSchoolJenjang') as HTMLSelectElement).value as 'sd' | 'smp' | 'sma';
+        const namaSekolah = (document.getElementById('modalSchoolName') as HTMLInputElement).value.trim();
+
+        if (!regionSlug || !kecamatan || !namaSekolah) {
+          alert('Mohon lengkapi seluruh kolom formulir sekolah!');
+          return;
+        }
+
+        const targetId = id || ('sch-' + Date.now());
+        const newItem: SchoolItem = {
+          id: targetId,
+          regionSlug,
+          regionName,
+          kecamatan,
+          jenjang,
+          namaSekolah,
+          isCustom: true
+        };
+
+        // 1. Simpan ke Supabase Cloud jika tabel tersedia
+        try {
+          await supabase.from('schools').upsert({
+            id: targetId,
+            region_slug: regionSlug,
+            region_name: regionName,
+            kecamatan: kecamatan,
+            jenjang: jenjang,
+            nama_sekolah: namaSekolah,
+            is_custom: true
+          });
+        } catch (dbErr) {
+          console.warn('[Supabase] Gagal menyimpan sekolah:', dbErr);
+        }
+
+        // 2. Perbarui state lokal
+        const existingIdx = allSchools.findIndex(s => s.id === targetId);
+        if (existingIdx >= 0) {
+          allSchools[existingIdx] = newItem;
+        } else {
+          allSchools.unshift(newItem);
+        }
+
+        saveSchoolsToLocal();
+        populateKecamatanFilter();
+        renderTable();
+        closeSchoolModal();
+      });
+
+      // Confirm Delete
+      document.getElementById('btnConfirmDeleteSchool')?.addEventListener('click', async () => {
+        if (!pendingDeleteId) return;
+
+        // 1. Hapus dari Supabase jika ada
+        try {
+          await supabase.from('schools').delete().eq('id', pendingDeleteId);
+        } catch (dbErr) {
+          console.warn('[Supabase] Gagal menghapus sekolah:', dbErr);
+        }
+
+        // 2. Hapus dari state lokal
+        allSchools = allSchools.filter(s => s.id !== pendingDeleteId);
+        saveSchoolsToLocal();
+        populateKecamatanFilter();
+        renderTable();
+        closeDeleteModal();
+      });
+
+      document.getElementById('btnCancelDeleteSchool')?.addEventListener('click', closeDeleteModal);
+
+      // Sinkronkan Data
+      document.getElementById('btnSyncSchools')?.addEventListener('click', () => {
+        loadSchools();
+        alert('Data sekolah berhasil disinkronkan!');
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', setupSchoolPage);
+    } else {
+      setupSchoolPage();
+    }
+    document.addEventListener('astro:page-load', setupSchoolPage);
+  </script>
+</AdminLayout>

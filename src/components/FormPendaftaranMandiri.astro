@@ -1,0 +1,1019 @@
+---
+import { SCHOOL_DATABASE } from '../data/schools';
+import { DISTRICTS, WAVES } from '../data/competition';
+import { getActiveWave, formatRupiah } from '../lib/pricing';
+
+interface Props {
+  defaultDistrictSlug?: string;
+}
+
+const { defaultDistrictSlug = '' } = Astro.props;
+const currentWave = getActiveWave();
+const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
+  slug,
+  name: SCHOOL_DATABASE[slug].name
+}));
+---
+
+<div class="form-mandiri-wrapper max-w-4xl mx-auto">
+  <!-- Closed State Notice if Mandiri Disabled by Admin -->
+  <div id="mandiriClosedNotice" class="card border-0 shadow-sm rounded-4 p-5 text-center bg-white mb-4 d-none">
+    <div class="mb-3">
+      <div class="rounded-circle bg-danger-subtle text-danger d-inline-flex p-3">
+        <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+        </svg>
+      </div>
+    </div>
+    <span class="badge bg-danger rounded-pill px-3 py-1 fs-8 fw-bold mb-2 w-fit mx-auto" id="mandiriClosedBadge">PENDAFTARAN MANDIRI DITUTUP</span>
+    <h2 class="h3 fw-bold text-dark mb-2" id="mandiriClosedTitle">Pendaftaran Telah Ditutup</h2>
+    <p class="text-secondary lead fs-6 max-w-xl mx-auto mb-4" id="mandiriClosedMessage">
+      Pendaftaran peserta mandiri KKA 2026 telah resmi ditutup karena telah mencapai kuota maksimal atau periode pendaftaran telah berakhir.
+    </p>
+    <div class="d-flex flex-wrap justify-content-center gap-3">
+      <a href="/cek-status" class="btn btn-primary px-4 py-2.5 rounded-pill fw-semibold shadow-sm">
+        Cek Status Pendaftaran Anda
+      </a>
+      <a href="/daftar" class="btn btn-outline-secondary px-4 py-2.5 rounded-pill fw-semibold">
+        Kembali ke Portal
+      </a>
+    </div>
+  </div>
+
+  <div class="card border rounded-4 p-4 p-md-5 bg-white shadow-sm mb-4" id="mandiriFormCard">
+    
+    <!-- Header Form -->
+    <div class="form-header-box mb-4">
+      <h2 class="h3 fw-bold text-dark mb-1">Form Pendaftaran KKA 2026</h2>
+      <p class="text-secondary small mb-0">
+        Lengkapi seluruh data diri dengan benar. Data ini akan digunakan untuk validasi kartu ujian.
+      </p>
+    </div>
+
+    <form id="formKkaMandiri" class="needs-validation" novalidate>
+      
+      <!-- 1. Data Sekolah & Penanggung Jawab -->
+      <div class="form-section mb-4 pb-2">
+        <h3 class="h5 fw-bold text-dark mb-3">1. Data Sekolah & Penanggung Jawab</h3>
+        
+        <div class="row g-3">
+          <!-- Wilayah Sekolah -->
+          <div class="col-md-6">
+            <label for="selectWilayah" class="form-label small fw-semibold text-dark">
+              Wilayah Sekolah <span class="text-danger">*</span>
+            </label>
+            <select id="selectWilayah" class="form-select py-2.5 rounded-3" required>
+              <option value="">-- Pilih Wilayah / Kabupaten / Kota --</option>
+              {regionsList.map(r => (
+                <option value={r.slug} selected={r.slug === defaultDistrictSlug}>
+                  {r.name}
+                </option>
+              ))}
+            </select>
+            <div class="invalid-feedback">Silakan pilih wilayah sekolah.</div>
+          </div>
+
+          <!-- Kecamatan Sekolah -->
+          <div class="col-md-6">
+            <label for="selectKecamatan" class="form-label small fw-semibold text-dark">
+              Kecamatan Sekolah <span class="text-danger">*</span>
+            </label>
+            <select id="selectKecamatan" class="form-select py-2.5 rounded-3" disabled required>
+              <option value="">-- Pilih Kecamatan --</option>
+            </select>
+            <div class="invalid-feedback">Silakan pilih kecamatan sekolah.</div>
+          </div>
+
+          <!-- Jenjang Pendidikan -->
+          <div class="col-md-6">
+            <label for="selectJenjang" class="form-label small fw-semibold text-dark">
+              Jenjang Pendidikan <span class="text-danger">*</span>
+            </label>
+            <select id="selectJenjang" class="form-select py-2.5 rounded-3" required>
+              <option value="">-- Pilih Jenjang --</option>
+              <option value="sd">SD / MI Sederajat (Kelas 4, 5, 6)</option>
+              <option value="smp">SMP / MTs Sederajat (Kelas 7, 8, 9)</option>
+              <option value="sma">SMA / MA / SMK Sederajat (Kelas 10, 11, 12)</option>
+            </select>
+            <div class="invalid-feedback">Silakan pilih jenjang pendidikan.</div>
+          </div>
+
+          <!-- Asal Sekolah / Madrasah -->
+          <div class="col-md-6">
+            <label for="selectSekolah" class="form-label small fw-semibold text-dark">
+              Asal Sekolah / Madrasah <span class="text-danger">*</span>
+            </label>
+            <select id="selectSekolah" class="form-select py-2.5 rounded-3" disabled required>
+              <option value="">-- Pilih Kecamatan & Jenjang Terlebih Dahulu --</option>
+            </select>
+            <div class="invalid-feedback">Silakan pilih atau ketik asal sekolah.</div>
+            
+            <!-- Manual input if school not listed -->
+            <div id="manualSchoolBox" class="mt-2 d-none">
+              <input 
+                type="text" 
+                id="manualSchoolName" 
+                class="form-control form-control-sm py-2 rounded-3" 
+                placeholder="Ketik nama lengkap sekolah / madrasah Anda..."
+              />
+              <span class="fs-8 text-muted">Contoh: SDIT Al-Ikhlas / SMP Plus Darussalam</span>
+            </div>
+          </div>
+
+          <!-- Nomor WhatsApp Aktif -->
+          <div class="col-12">
+            <label for="whatsappNumber" class="form-label small fw-semibold text-dark">
+              Nomor WhatsApp Aktif (Siswa/Wali/Penanggung Jawab) <span class="text-danger">*</span>
+            </label>
+            <input 
+              type="tel" 
+              id="whatsappNumber" 
+              class="form-control py-2.5 rounded-3" 
+              placeholder="cth: 08123456789" 
+              required 
+            />
+            <div class="form-text fs-8 text-muted">
+              Nomor ini akan digunakan panitia untuk pengiriman kartu tanda ujian dan verifikasi.
+            </div>
+            <div class="invalid-feedback">Nomor WhatsApp aktif wajib diisi dengan benar.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Data Peserta -->
+      <div class="form-section mb-4 pb-2">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h3 class="h5 fw-bold text-dark mb-0">2. Data Peserta</h3>
+          <button 
+            type="button" 
+            id="btnAddStudent" 
+            class="btn btn-sm btn-light border text-dark fw-semibold d-flex align-items-center gap-1.5 px-3 py-1.5 rounded-3 shadow-2xs hover-btn"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="16"/>
+              <line x1="8" y1="12" x2="16" y2="12"/>
+            </svg>
+            Tambah Siswa
+          </button>
+        </div>
+
+        <!-- Student Cards Container -->
+        <div id="studentsContainer" class="d-flex flex-column gap-3">
+          
+          <!-- Template Initial Student #1 -->
+          <div class="student-item-card border rounded-3 p-3 p-md-4 bg-white" data-index="1">
+            <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+              <span class="student-title-badge fw-bold text-dark small">Peserta #1</span>
+              <button 
+                type="button" 
+                class="btn btn-link text-danger text-decoration-none p-0 small btn-remove-student d-none"
+                title="Hapus peserta ini"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-1">
+                  <polyline points="3 6 5 6 21 6"/>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                </svg>
+                Hapus
+              </button>
+            </div>
+
+            <div class="row g-3">
+              <!-- Nama Siswa -->
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold text-dark">Nama Siswa <span class="text-danger">*</span></label>
+                <input 
+                  type="text" 
+                  class="form-control student-name py-2 rounded-3" 
+                  placeholder="Nama Lengkap" 
+                  required 
+                />
+                <div class="invalid-feedback">Nama siswa wajib diisi.</div>
+              </div>
+
+              <!-- NISN -->
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold text-dark">NISN <span class="text-danger">*</span></label>
+                <input 
+                  type="text" 
+                  class="form-control student-nisn py-2 rounded-3" 
+                  placeholder="10-Digit NISN" 
+                  maxlength="10" 
+                  pattern="[0-9]{10}"
+                  required 
+                />
+                <div class="invalid-feedback">NISN wajib 10 digit angka.</div>
+              </div>
+
+              <!-- Gender -->
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold text-dark">Gender <span class="text-danger">*</span></label>
+                <select class="form-select student-gender py-2 rounded-3" required>
+                  <option value="">-- Gender --</option>
+                  <option value="Laki-laki">Laki-laki</option>
+                  <option value="Perempuan">Perempuan</option>
+                </select>
+                <div class="invalid-feedback">Pilih jenis kelamin.</div>
+              </div>
+
+              <!-- Kelas -->
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold text-dark">Kelas <span class="text-danger">*</span></label>
+                <select class="form-select student-class py-2 rounded-3" required>
+                  <option value="">-- Kelas --</option>
+                </select>
+                <div class="invalid-feedback">Pilih kelas siswa.</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 3. Pembayaran -->
+      <div class="form-section mb-4">
+        <h3 class="h5 fw-bold text-dark mb-3">3. Pembayaran</h3>
+
+        <!-- Info Pembayaran Box -->
+        <div class="payment-info-box p-3 rounded-3 mb-3 d-flex align-items-center gap-2 small">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1d72f2" stroke-width="2.5" class="shrink-0">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+          <div class="text-dark lh-sm">
+            <strong>Info Pembayaran:</strong> Silakan transfer biaya pendaftaran ke <strong>Bank BRI 0109-01-001555-30-8 a.n. PT Kediri Intermedia Pers (Radar Kediri)</strong> atau <strong>Bank BCA 1400892211 a.n. Panitia KKA</strong>.
+          </div>
+        </div>
+
+        <!-- Biaya & Rincian Tagihan -->
+        <div class="bg-light p-3.5 rounded-3 border mb-3">
+          <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+              <span class="text-muted small d-block">Tarif Gelombang I (Early Bird):</span>
+              <span id="ratePerStudentText" class="fw-bold text-dark fs-6">Pilih jenjang terlebih dahulu</span>
+            </div>
+            <div class="text-md-end">
+              <span class="text-muted small d-block">
+                Total Tagihan (<span id="totalStudentsCount" class="fw-bold">1</span> Siswa):
+              </span>
+              <span id="totalPaymentDisplay" class="h4 fw-bold text-primary mb-0">Rp 0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upload Bukti Transfer -->
+        <div class="mb-4">
+          <label class="form-label small fw-semibold text-dark">
+            Bukti Transfer (Format Gambar, max 2MB) <span class="text-danger">*</span>
+          </label>
+          <div class="upload-box-wrapper border rounded-3 p-3 bg-light">
+            <input 
+              type="file" 
+              id="transferProof" 
+              class="form-control" 
+              accept="image/png, image/jpeg, image/jpg, image/webp, application/pdf" 
+              required 
+            />
+            <div class="form-text fs-8 text-muted mt-1.5">
+              Lampirkan struk ATM / mutasi m-banking / bukti setor tunai. Maks. 2MB.
+            </div>
+            <div class="invalid-feedback">Bukti transfer pembayaran wajib dilampirkan.</div>
+          </div>
+        </div>
+
+        <!-- Tombol Daftar -->
+        <button 
+          type="submit" 
+          id="btnSubmitDaftar" 
+          class="btn btn-primary btn-lg w-100 fw-bold py-3 rounded-3 shadow-sm d-flex align-items-center justify-content-center gap-2 hover-scale"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          Daftar
+        </button>
+
+      </div>
+
+    </form>
+
+    <!-- Success Confirmation Receipt Card (Hidden by default) -->
+    <div id="successConfirmationCard" class="d-none">
+      <div class="text-center py-4 border-bottom mb-4">
+        <div class="success-icon-badge bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 64px; height: 64px;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <h3 class="fw-bold text-dark mb-1">Pendaftaran Berhasil Dikirim!</h3>
+        <p class="text-secondary small mb-3">
+          Terima kasih telah mendaftar di Kompetisi Kompetensi Akademik (KKA) 2026 Jawa Pos Radar Kediri.
+        </p>
+        <div class="p-3 bg-light rounded-3 border d-inline-block px-4">
+          <span class="fs-8 text-muted text-uppercase fw-semibold d-block">Kode Registrasi Pendaftaran</span>
+          <span id="resultRegCode" class="h4 fw-black text-primary font-monospace mb-0">-</span>
+        </div>
+      </div>
+
+      <!-- Detail Rangkuman -->
+      <div class="receipt-summary bg-light p-4 rounded-3 border mb-4">
+        <h5 class="fw-bold text-dark mb-3 fs-6">Rincian Data Pendaftaran:</h5>
+        <div class="row g-2 small">
+          <div class="col-sm-4 text-muted">Wilayah & Kecamatan:</div>
+          <div class="col-sm-8 fw-semibold text-dark" id="resultWilayahKec">-</div>
+
+          <div class="col-sm-4 text-muted">Asal Sekolah:</div>
+          <div class="col-sm-8 fw-semibold text-dark" id="resultSekolah">-</div>
+
+          <div class="col-sm-4 text-muted">Jenjang Pendidikan:</div>
+          <div class="col-sm-8 fw-semibold text-dark" id="resultJenjang">-</div>
+
+          <div class="col-sm-4 text-muted">No. WhatsApp PJ:</div>
+          <div class="col-sm-8 fw-semibold text-dark" id="resultWa">-</div>
+
+          <div class="col-sm-4 text-muted">Daftar Siswa Peserta:</div>
+          <div class="col-sm-8">
+            <ol id="resultStudentsList" class="ps-3 mb-0 fw-semibold text-dark"></ol>
+          </div>
+
+          <div class="col-sm-4 text-muted pt-2 border-top">Total Biaya:</div>
+          <div class="col-sm-8 pt-2 border-top h5 fw-bold text-primary mb-0" id="resultTotalBiaya">-</div>
+        </div>
+      </div>
+
+      <!-- Action Button WhatsApp -->
+      <div class="d-flex flex-column gap-2">
+        <a 
+          id="btnWaPanitiaDirect" 
+          href="#" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          class="btn btn-success btn-lg fw-bold py-3 rounded-3 shadow-sm d-flex align-items-center justify-content-center gap-2"
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.099.824z"/>
+          </svg>
+          Kirim Konfirmasi ke WhatsApp Panitia
+        </a>
+
+        <div class="row g-2">
+          <div class="col-sm-6">
+            <a 
+              id="btnCheckStatusDirectMandiri" 
+              href="/daftar/status" 
+              class="btn btn-outline-primary w-100 py-2.5 rounded-3 fw-bold d-flex align-items-center justify-content-center gap-2"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              Cek Status Live
+            </a>
+          </div>
+          <div class="col-sm-6">
+            <a 
+              id="btnCetakBuktiDirectMandiri" 
+              href="/daftar/cetak" 
+              target="_blank" 
+              class="btn btn-dark w-100 py-2.5 rounded-3 fw-bold d-flex align-items-center justify-content-center gap-2"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 6 2 18 2 18 9"/>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                <rect x="6" y="14" width="12" height="8"/>
+              </svg>
+              Cetak Bukti Resmi (PDF)
+            </a>
+          </div>
+        </div>
+
+        <button 
+          type="button" 
+          id="btnResetForm" 
+          class="btn btn-outline-secondary py-2.5 rounded-3 fw-semibold"
+        >
+          Daftarkan Peserta / Sekolah Lainnya
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  import { SCHOOL_DATABASE } from '../data/schools';
+  import { processRegistration } from '../lib/registrationService';
+  import { getActiveWave } from '../lib/pricing';
+  import { supabase } from '../lib/supabase';
+
+  const schoolDb = SCHOOL_DATABASE;
+  const activePrices = getActiveWave().prices;
+
+  function applyMandiriClose(regCfg: any) {
+    if (regCfg && regCfg.mandiri && regCfg.mandiri.enabled === false) {
+      const formCard = document.getElementById('mandiriFormCard');
+      const closedNotice = document.getElementById('mandiriClosedNotice');
+      const closedTitle = document.getElementById('mandiriClosedTitle');
+      const closedMsg = document.getElementById('mandiriClosedMessage');
+      const closedBadge = document.getElementById('mandiriClosedBadge');
+
+      if (formCard) formCard.classList.add('d-none');
+      if (closedNotice) closedNotice.classList.remove('d-none');
+      if (closedTitle && regCfg.mandiri.closedTitle) closedTitle.textContent = regCfg.mandiri.closedTitle;
+      if (closedMsg && regCfg.mandiri.closedMsg) closedMsg.textContent = regCfg.mandiri.closedMsg;
+      if (closedBadge) {
+        closedBadge.textContent = regCfg.mandiri.condition === 'kuota_penuh' ? 'KUOTA PENUH' : 'PENDAFTARAN DITUTUP';
+      }
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('formKkaMandiri');
+    const selectWilayah = document.getElementById('selectWilayah');
+    const selectKecamatan = document.getElementById('selectKecamatan');
+    const selectJenjang = document.getElementById('selectJenjang');
+    const selectSekolah = document.getElementById('selectSekolah');
+    const manualSchoolBox = document.getElementById('manualSchoolBox');
+    const manualSchoolName = document.getElementById('manualSchoolName');
+    const whatsappNumber = document.getElementById('whatsappNumber');
+
+    const btnAddStudent = document.getElementById('btnAddStudent');
+    const studentsContainer = document.getElementById('studentsContainer');
+
+    const ratePerStudentText = document.getElementById('ratePerStudentText');
+    const totalStudentsCount = document.getElementById('totalStudentsCount');
+    const totalPaymentDisplay = document.getElementById('totalPaymentDisplay');
+
+    const successCard = document.getElementById('successConfirmationCard');
+    const btnResetForm = document.getElementById('btnResetForm');
+
+    // 0. Check if Mandiri registration is closed by Admin
+    try {
+      const storedReg = localStorage.getItem('kka_registration_status_control');
+      if (storedReg) applyMandiriClose(JSON.parse(storedReg));
+    } catch (e) {}
+
+    // Async check to Cloud Supabase
+    (async () => {
+      try {
+        const { data, error } = await supabase
+          .from('app_settings')
+          .select('value')
+          .eq('key', 'registration_control')
+          .single();
+
+        if (!error && data && data.value) {
+          applyMandiriClose(data.value);
+          localStorage.setItem('kka_registration_status_control', JSON.stringify(data.value));
+        }
+      } catch (err) {}
+    })();
+
+    // 1. Helper Format Rupiah
+    function formatRp(val) {
+      return 'Rp ' + Number(val).toLocaleString('id-ID');
+    }
+
+    // 2. Class Options Generator based on Jenjang
+    function getClassOptionsHtml(jenjang) {
+      if (jenjang === 'sd') {
+        return `
+          <option value="">-- Kelas --</option>
+          <option value="Kelas 4">Kelas 4</option>
+          <option value="Kelas 5" selected>Kelas 5</option>
+          <option value="Kelas 6">Kelas 6</option>
+        `;
+      } else if (jenjang === 'smp') {
+        return `
+          <option value="">-- Kelas --</option>
+          <option value="Kelas 7">Kelas 7</option>
+          <option value="Kelas 8" selected>Kelas 8</option>
+          <option value="Kelas 9">Kelas 9</option>
+        `;
+      } else if (jenjang === 'sma') {
+        return `
+          <option value="">-- Kelas --</option>
+          <option value="Kelas 10">Kelas 10</option>
+          <option value="Kelas 11" selected>Kelas 11</option>
+          <option value="Kelas 12">Kelas 12</option>
+        `;
+      }
+      return '<option value="">-- Kelas --</option>';
+    }
+
+    // 3. Recalculate Pricing
+    function updatePricing() {
+      const jenjang = selectJenjang.value;
+      const count = studentsContainer.querySelectorAll('.student-item-card').length;
+      totalStudentsCount.textContent = count;
+
+      if (!jenjang || !activePrices[jenjang]) {
+        ratePerStudentText.textContent = 'Pilih jenjang terlebih dahulu';
+        totalPaymentDisplay.textContent = 'Rp 0';
+        return 0;
+      }
+
+      const rate = activePrices[jenjang];
+      ratePerStudentText.textContent = `${formatRp(rate)} / siswa`;
+      const total = rate * count;
+      totalPaymentDisplay.textContent = formatRp(total);
+      return total;
+    }
+
+    // 4. Update All Student Cards with new Jenjang classes
+    function refreshAllStudentClasses() {
+      const jenjang = selectJenjang.value;
+      const classSelects = studentsContainer.querySelectorAll('.student-class');
+      classSelects.forEach(sel => {
+        const curVal = sel.value;
+        sel.innerHTML = getClassOptionsHtml(jenjang);
+        if (curVal && Array.from(sel.options).some(o => o.value === curVal)) {
+          sel.value = curVal;
+        }
+      });
+      updatePricing();
+    }
+
+    // Background sync custom schools from Supabase Cloud
+    try {
+      supabase
+        .from('schools')
+        .select('*')
+        .then(({ data, error }) => {
+          if (!error && data && data.length > 0) {
+            const currentLocal = localStorage.getItem('kka_custom_schools');
+            let merged = currentLocal ? JSON.parse(currentLocal) : [];
+            const map = new Map();
+            merged.forEach((s: any) => map.set(s.id, s));
+            data.forEach((d: any) => {
+              map.set(d.id, {
+                id: d.id,
+                regionSlug: d.region_slug,
+                regionName: d.region_name,
+                kecamatan: d.kecamatan,
+                jenjang: d.jenjang,
+                namaSekolah: d.nama_sekolah,
+                isCustom: d.is_custom !== false
+              });
+            });
+            localStorage.setItem('kka_custom_schools', JSON.stringify(Array.from(map.values())));
+          }
+        });
+    } catch (err) {}
+
+    // 5. Cascade Wilayah -> Kecamatan
+    function handleWilayahChange() {
+      const regionSlug = selectWilayah.value;
+      selectKecamatan.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
+      selectSekolah.innerHTML = '<option value="">-- Pilih Kecamatan & Jenjang Terlebih Dahulu --</option>';
+      selectSekolah.disabled = true;
+      manualSchoolBox.classList.add('d-none');
+      manualSchoolName.required = false;
+      manualSchoolName.value = '';
+
+      if (!regionSlug || !schoolDb[regionSlug]) {
+        selectKecamatan.disabled = true;
+        return;
+      }
+
+      const districts = schoolDb[regionSlug].districts || {};
+      const kecSet = new Set<string>(Object.keys(districts));
+
+      // Masukkan juga kecamatan kustom jika ada penambahan baru dari Admin CMS
+      try {
+        const stored = localStorage.getItem('kka_custom_schools');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed)) {
+            parsed.forEach((item: any) => {
+              if (item.regionSlug === regionSlug && item.kecamatan) {
+                kecSet.add(item.kecamatan);
+              }
+            });
+          }
+        }
+      } catch (e) {}
+
+      Array.from(kecSet).sort().forEach(kec => {
+        const opt = document.createElement('option');
+        opt.value = kec;
+        opt.textContent = `Kecamatan ${kec}`;
+        selectKecamatan.appendChild(opt);
+      });
+
+      selectKecamatan.disabled = false;
+    }
+
+    selectWilayah.addEventListener('change', handleWilayahChange);
+
+    // 6. Cascade Kecamatan & Jenjang -> Asal Sekolah
+    function handleKecamatanOrJenjangChange() {
+      const regionSlug = selectWilayah.value;
+      const kec = selectKecamatan.value;
+      const jenjang = selectJenjang.value;
+
+      refreshAllStudentClasses();
+
+      manualSchoolBox.classList.add('d-none');
+      manualSchoolName.required = false;
+      manualSchoolName.value = '';
+
+      if (!regionSlug || !kec || !jenjang) {
+        selectSekolah.innerHTML = '<option value="">-- Pilih Kecamatan & Jenjang Terlebih Dahulu --</option>';
+        selectSekolah.disabled = true;
+        return;
+      }
+
+      const districtData = (schoolDb[regionSlug] && schoolDb[regionSlug].districts) 
+        ? schoolDb[regionSlug].districts[kec] 
+        : null;
+      let schools: string[] = (districtData && districtData[jenjang]) ? [...districtData[jenjang]] : [];
+
+      // Merge dengan data sekolah kustom dari CMS Admin (Supabase / LocalStorage)
+      try {
+        const stored = localStorage.getItem('kka_custom_schools');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed)) {
+            parsed.forEach((item: any) => {
+              if (
+                item.regionSlug === regionSlug &&
+                item.kecamatan.toLowerCase() === kec.toLowerCase() &&
+                item.jenjang === jenjang &&
+                item.namaSekolah
+              ) {
+                if (!schools.includes(item.namaSekolah)) {
+                  schools.push(item.namaSekolah);
+                }
+              }
+            });
+          }
+        }
+      } catch (e) {}
+
+      // Urutkan alfabetis
+      schools.sort((a, b) => a.localeCompare(b, 'id'));
+
+      selectSekolah.innerHTML = '<option value="">-- Pilih Asal Sekolah / Madrasah --</option>';
+      
+      schools.forEach(sch => {
+        const opt = document.createElement('option');
+        opt.value = sch;
+        opt.textContent = sch;
+        selectSekolah.appendChild(opt);
+      });
+
+      // Add Manual Input Option
+      const manualOpt = document.createElement('option');
+      manualOpt.value = '__manual__';
+      manualOpt.textContent = '+ Sekolah Lainnya (Ketik Manual)';
+      selectSekolah.appendChild(manualOpt);
+
+      selectSekolah.disabled = false;
+    }
+
+    selectKecamatan.addEventListener('change', handleKecamatanOrJenjangChange);
+    selectJenjang.addEventListener('change', handleKecamatanOrJenjangChange);
+
+    // 7. Handle Manual School Option
+    selectSekolah.addEventListener('change', () => {
+      if (selectSekolah.value === '__manual__') {
+        manualSchoolBox.classList.remove('d-none');
+        manualSchoolName.required = true;
+        manualSchoolName.focus();
+      } else {
+        manualSchoolBox.classList.add('d-none');
+        manualSchoolName.required = false;
+      }
+    });
+
+    // 8. Re-index Student Cards
+    function reindexStudents() {
+      const cards = studentsContainer.querySelectorAll('.student-item-card');
+      cards.forEach((card, idx) => {
+        const index = idx + 1;
+        card.setAttribute('data-index', String(index));
+        const badge = card.querySelector('.student-title-badge');
+        if (badge) badge.textContent = `Peserta #${index}`;
+
+        const removeBtn = card.querySelector('.btn-remove-student');
+        if (removeBtn) {
+          if (cards.length > 1) {
+            removeBtn.classList.remove('d-none');
+          } else {
+            removeBtn.classList.add('d-none');
+          }
+        }
+      });
+      updatePricing();
+    }
+
+    // 9. Add Student Card
+    btnAddStudent.addEventListener('click', () => {
+      const currentCards = studentsContainer.querySelectorAll('.student-item-card');
+      const newIndex = currentCards.length + 1;
+      const jenjang = selectJenjang.value;
+
+      const newCard = document.createElement('div');
+      newCard.className = 'student-item-card border rounded-3 p-3 p-md-4 bg-white';
+      newCard.setAttribute('data-index', String(newIndex));
+      newCard.innerHTML = `
+        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+          <span class="student-title-badge fw-bold text-dark small">Peserta #${newIndex}</span>
+          <button 
+            type="button" 
+            class="btn btn-link text-danger text-decoration-none p-0 small btn-remove-student"
+            title="Hapus peserta ini"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-1">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+            </svg>
+            Hapus
+          </button>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label small fw-semibold text-dark">Nama Siswa <span class="text-danger">*</span></label>
+            <input 
+              type="text" 
+              class="form-control student-name py-2 rounded-3" 
+              placeholder="Nama Lengkap" 
+              required 
+            />
+            <div class="invalid-feedback">Nama siswa wajib diisi.</div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label small fw-semibold text-dark">NISN <span class="text-danger">*</span></label>
+            <input 
+              type="text" 
+              class="form-control student-nisn py-2 rounded-3" 
+              placeholder="10-Digit NISN" 
+              maxlength="10" 
+              pattern="[0-9]{10}"
+              required 
+            />
+            <div class="invalid-feedback">NISN wajib 10 digit angka.</div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label small fw-semibold text-dark">Gender <span class="text-danger">*</span></label>
+            <select class="form-select student-gender py-2 rounded-3" required>
+              <option value="">-- Gender --</option>
+              <option value="Laki-laki">Laki-laki</option>
+              <option value="Perempuan">Perempuan</option>
+            </select>
+            <div class="invalid-feedback">Pilih jenis kelamin.</div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label small fw-semibold text-dark">Kelas <span class="text-danger">*</span></label>
+            <select class="form-select student-class py-2 rounded-3" required>
+              ${getClassOptionsHtml(jenjang)}
+            </select>
+            <div class="invalid-feedback">Pilih kelas siswa.</div>
+          </div>
+        </div>
+      `;
+
+      // Attach remove handler
+      const removeBtn = newCard.querySelector('.btn-remove-student');
+      removeBtn.addEventListener('click', () => {
+        newCard.remove();
+        reindexStudents();
+      });
+
+      studentsContainer.appendChild(newCard);
+      reindexStudents();
+
+      // Scroll smoothly to newly added card
+      newCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+
+    // Attach remove handler to existing cards
+    studentsContainer.addEventListener('click', (e) => {
+      const btn = e.target.closest('.btn-remove-student');
+      if (btn) {
+        const card = btn.closest('.student-item-card');
+        if (card) {
+          card.remove();
+          reindexStudents();
+        }
+      }
+    });
+
+    // 10. Form Submit Handler
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      if (!form.checkValidity()) {
+        form.classList.add('was-validated');
+        const firstInvalid = form.querySelector(':invalid');
+        if (firstInvalid) firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      // Check Proof Upload Size (< 2MB)
+      const fileInput = document.getElementById('transferProof');
+      if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        if (file.size > 2 * 1024 * 1024) {
+          alert('Ukuran file bukti transfer melebihi 2MB. Silakan kompres atau pilih file lain.');
+          return;
+        }
+      }
+
+      // Show Loading Spinner on Submit Button
+      const btnSubmit = document.getElementById('btnSubmitDaftar');
+      const originalBtnText = btnSubmit.innerHTML;
+      btnSubmit.disabled = true;
+      btnSubmit.innerHTML = `
+        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+        Menyimpan ke Database & Spreadsheet...
+      `;
+
+      try {
+        // Gather Data
+        const regionSlug = selectWilayah.value;
+        const regionName = selectWilayah.options[selectWilayah.selectedIndex].text;
+        const kec = selectKecamatan.value;
+        const jenjangVal = selectJenjang.value;
+        const jenjangText = selectJenjang.options[selectJenjang.selectedIndex].text;
+        const schoolName = selectSekolah.value === '__manual__' ? manualSchoolName.value : selectSekolah.value;
+        const waPJ = whatsappNumber.value;
+
+        const studentCards = studentsContainer.querySelectorAll('.student-item-card');
+        const studentsData = [];
+        studentCards.forEach((card, idx) => {
+          const name = card.querySelector('.student-name').value;
+          const nisn = card.querySelector('.student-nisn').value;
+          const gender = card.querySelector('.student-gender').value;
+          const sClass = card.querySelector('.student-class').value;
+          studentsData.push({
+            no: idx + 1,
+            name,
+            nisn,
+            gender,
+            sClass
+          });
+        });
+
+        const totalBiayaVal = updatePricing();
+        const randomCode = Math.floor(1000 + Math.random() * 9000);
+        const regCode = `KKA26-M-${regionSlug.substring(0, 3).toUpperCase()}-${randomCode}`;
+
+        // Send to Supabase & Google Apps Script
+        await processRegistration({
+          kode: regCode,
+          tipe: 'mandiri',
+          wilayah: regionName,
+          kecamatan: kec,
+          sekolah: schoolName,
+          jenjang: jenjangText,
+          namaKontak: studentsData[0]?.name || schoolName,
+          hpKontak: waPJ,
+          totalBiaya: totalBiayaVal,
+          students: studentsData.map(s => ({
+            nama: s.name,
+            nisn: s.nisn,
+            gender: s.gender,
+            kelas: s.sClass
+          })),
+          proofFile: fileInput.files.length > 0 ? fileInput.files[0] : null
+        });
+
+        // Populate Success Card
+        document.getElementById('resultRegCode').textContent = regCode;
+        document.getElementById('resultWilayahKec').textContent = `${regionName} (Kec. ${kec})`;
+        document.getElementById('resultSekolah').textContent = schoolName;
+        document.getElementById('resultJenjang').textContent = jenjangText;
+        document.getElementById('resultWa').textContent = waPJ;
+        document.getElementById('resultTotalBiaya').textContent = `${formatRp(totalBiayaVal)} (${studentsData.length} Siswa)`;
+
+        const listContainer = document.getElementById('resultStudentsList');
+        listContainer.innerHTML = '';
+        studentsData.forEach(s => {
+          const li = document.createElement('li');
+          li.className = 'mb-1';
+          li.textContent = `${s.name} (NISN: ${s.nisn}, ${s.sClass}, ${s.gender})`;
+          listContainer.appendChild(li);
+        });
+
+        // Generate WhatsApp Link
+        let waMessage = `*KONFIRMASI PENDAFTARAN MANDIRI KKA 2026*\n`;
+        waMessage += `Halo Panitia KKA Radar Kediri,\nSaya mengonfirmasi pendaftaran mandiri dengan rincian berikut:\n\n`;
+        waMessage += `*Kode Registrasi*: ${regCode}\n`;
+        waMessage += `*Wilayah*: ${regionName}\n`;
+        waMessage += `*Kecamatan*: Kecamatan ${kec}\n`;
+        waMessage += `*Jenjang*: ${jenjangText}\n`;
+        waMessage += `*Asal Sekolah*: ${schoolName}\n`;
+        waMessage += `*WhatsApp PJ*: ${waPJ}\n\n`;
+        waMessage += `*Daftar Siswa Peserta (${studentsData.length} Orang)*:\n`;
+        studentsData.forEach(s => {
+          waMessage += `${s.no}. ${s.name} | NISN: ${s.nisn} | ${s.sClass} (${s.gender})\n`;
+        });
+        waMessage += `\n*Total Biaya*: ${formatRp(totalBiayaVal)}\n`;
+        waMessage += `*Bukti Transfer*: Telah dilampirkan via web.\n\n`;
+        waMessage += `Mohon segera diverifikasi untuk penerbitan kartu ujian. Terima kasih.`;
+
+        const waUrl = `https://wa.me/6281235508957?text=${encodeURIComponent(waMessage)}`;
+        document.getElementById('btnWaPanitiaDirect').href = waUrl;
+        const btnCheckStatus = document.getElementById('btnCheckStatusDirectMandiri');
+        if (btnCheckStatus) {
+          btnCheckStatus.href = `/daftar/status?kode=${encodeURIComponent(regCode)}`;
+        }
+        const btnCetakDoc = document.getElementById('btnCetakBuktiDirectMandiri');
+        if (btnCetakDoc) {
+          btnCetakDoc.href = `/daftar/cetak?kode=${encodeURIComponent(regCode)}`;
+        }
+
+        // Switch to Success View
+        form.classList.add('d-none');
+        successCard.classList.remove('d-none');
+        window.scrollTo({ top: successCard.offsetTop - 80, behavior: 'smooth' });
+      } catch (submitErr) {
+        console.error('Submit error:', submitErr);
+      } finally {
+        btnSubmit.disabled = false;
+        btnSubmit.innerHTML = originalBtnText;
+      }
+    });
+
+    // Reset Form
+    btnResetForm.addEventListener('click', () => {
+      form.reset();
+      form.classList.remove('was-validated');
+      selectKecamatan.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
+      selectKecamatan.disabled = true;
+      selectSekolah.innerHTML = '<option value="">-- Pilih Kecamatan & Jenjang Terlebih Dahulu --</option>';
+      selectSekolah.disabled = true;
+      manualSchoolBox.classList.add('d-none');
+      manualSchoolName.required = false;
+
+      // Keep only 1 student card
+      const cards = studentsContainer.querySelectorAll('.student-item-card');
+      cards.forEach((c, idx) => {
+        if (idx > 0) c.remove();
+      });
+      reindexStudents();
+
+      successCard.classList.add('d-none');
+      form.classList.remove('d-none');
+      window.scrollTo({ top: form.offsetTop - 80, behavior: 'smooth' });
+    });
+
+    // Trigger Initial State if defaultDistrictSlug is provided
+    if (selectWilayah.value) {
+      handleWilayahChange();
+    }
+  });
+</script>
+
+<style>
+  .fs-8 { font-size: 0.78rem; }
+  .max-w-4xl { max-width: 860px; }
+  .py-2\.5 { padding-top: 0.65rem; padding-bottom: 0.65rem; }
+  
+  .form-mandiri-wrapper .form-select,
+  .form-mandiri-wrapper .form-control {
+    border-color: #cbd5e1;
+    font-size: 0.95rem;
+  }
+
+  .form-mandiri-wrapper .form-select:focus,
+  .form-mandiri-wrapper .form-control:focus {
+    border-color: #1d72f2;
+    box-shadow: 0 0 0 3px rgba(29, 114, 242, 0.15);
+  }
+
+  .student-item-card {
+    border-color: #e2e8f0 !important;
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  }
+
+  .payment-info-box {
+    background-color: #f0f7ff;
+    border: 1px solid #dbeafe;
+  }
+
+  .hover-btn {
+    transition: all 0.2s ease;
+  }
+  .hover-btn:hover {
+    background-color: #f1f5f9 !important;
+    border-color: #94a3b8 !important;
+  }
+
+  .hover-scale {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .hover-scale:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(29, 114, 242, 0.25) !important;
+  }
+</style>

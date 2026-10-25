@@ -1,0 +1,112 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../../components/Breadcrumb.astro';
+import { DISTRICTS } from '../../../data/competition';
+---
+
+<BaseLayout 
+  title="Pilih Wilayah Pendaftaran Mandiri - KKA 2026 Radar Kediri"
+  description="Pilih wilayah kabupaten atau kota tempat asal sekolah Anda untuk memulai proses pendaftaran mandiri Kompetisi Kompetensi Akademik (KKA) 2026."
+>
+  <!-- Header Banner -->
+  <section class="bg-gradient-navy text-white py-5">
+    <div class="container text-center py-2">
+      <span class="badge bg-primary rounded-pill px-3 py-1 mb-2">JALUR MANDIRI</span>
+      <h1 class="display-6 fw-bold mb-2">Pendaftaran Mandiri Peserta KKA 2026</h1>
+      <p class="lead text-white-50 max-w-xl mx-auto mb-1">
+        Pilih wilayah kabupaten atau kota sekolah Anda untuk melanjutkan ke formulir pendaftaran perorangan.
+      </p>
+      <Breadcrumb items={[
+        { label: 'Pendaftaran', href: '/daftar' },
+        { label: 'Pendaftaran Mandiri', active: true }
+      ]} />
+    </div>
+  </section>
+
+  <!-- 7 Region Cards Grid -->
+  <section class="py-5 bg-white">
+    <div class="container py-3">
+      <!-- Global Closed Notice if Mandiri Disabled -->
+      <div id="mandiriGlobalAlert" class="alert alert-danger border-danger-subtle shadow-sm rounded-4 p-4 mb-4 d-none text-center">
+        <h4 class="fw-bold mb-2 text-danger" id="mandiriAlertTitle">Pendaftaran Mandiri Telah Ditutup</h4>
+        <p class="mb-3 text-secondary" id="mandiriAlertMsg">Pendaftaran peserta mandiri KKA 2026 telah resmi ditutup karena telah mencapai kuota maksimal atau periode pendaftaran telah berakhir.</p>
+        <div class="d-flex justify-content-center gap-2">
+          <a href="/cek-status" class="btn btn-primary btn-sm px-4 py-2 rounded-pill fw-semibold">Cek Status Pendaftaran Anda</a>
+          <a href="/daftar" class="btn btn-outline-secondary btn-sm px-4 py-2 rounded-pill fw-semibold">Kembali ke Portal</a>
+        </div>
+      </div>
+
+      <div class="row g-4 justify-content-center">
+        {DISTRICTS.map((district) => (
+          <div class="col-md-6 col-lg-4 col-xl-3">
+            <div class="card h-100 p-4 border rounded-4 shadow-sm d-flex flex-column justify-content-between text-center hover-card">
+              <div>
+                <div class="emblem-box mx-auto mb-3 p-2 bg-light rounded-3 border d-flex align-items-center justify-content-center" style="width: 64px; height: 64px;">
+                  <img 
+                    src={district.logoUrl || '/images/logo-kka.webp'} 
+                    alt={`Logo ${district.name}`} 
+                    width="50" 
+                    height="50" 
+                    style="object-fit: contain;" 
+                  />
+                </div>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2.5 py-1 fs-8 fw-bold mb-2">
+                  {district.regionName}
+                </span>
+                <h5 class="fw-bold text-kka-primary mb-2">{district.name}</h5>
+                <p class="text-secondary small mb-3">{district.description}</p>
+              </div>
+
+              <a 
+                href={`/daftar/mandiri/${district.slug}`} 
+                class="btn btn-primary fw-bold py-2 rounded-3 w-100 shadow-sm btn-district-mandiri"
+              >
+                Daftar Mandiri {district.badge}
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    try {
+      const stored = localStorage.getItem('kka_registration_status_control');
+      if (stored) {
+        const regCfg = JSON.parse(stored);
+        if (regCfg.mandiri && regCfg.mandiri.enabled === false) {
+          const banner = document.getElementById('mandiriGlobalAlert');
+          if (banner) {
+            banner.classList.remove('d-none');
+            const bTitle = document.getElementById('mandiriAlertTitle');
+            const bMsg = document.getElementById('mandiriAlertMsg');
+            if (bTitle && regCfg.mandiri.closedTitle) bTitle.textContent = regCfg.mandiri.closedTitle;
+            if (bMsg && regCfg.mandiri.closedMsg) bMsg.textContent = regCfg.mandiri.closedMsg;
+          }
+          document.querySelectorAll('.btn-district-mandiri').forEach((btn: any) => {
+            btn.classList.remove('btn-primary');
+            btn.classList.add('btn-secondary');
+            btn.textContent = regCfg.mandiri.condition === 'kuota_penuh' ? 'Kuota Penuh' : 'Ditutup';
+          });
+        }
+      }
+    } catch (e) {
+      console.warn('Error reading reg control:', e);
+    }
+  });
+</script>
+
+<style>
+  .fs-8 { font-size: 0.78rem; }
+  .max-w-xl { max-width: 600px; }
+  .hover-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .hover-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08) !important;
+  }
+</style>

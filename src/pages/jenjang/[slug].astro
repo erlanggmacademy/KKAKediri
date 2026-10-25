@@ -1,0 +1,115 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import { LEVELS, type Level, WAVES } from '../../data/competition';
+import { formatRupiah } from '../../lib/pricing';
+
+export function getStaticPaths() {
+  return LEVELS.map((level) => ({
+    params: { slug: level.id },
+    props: { level }
+  }));
+}
+
+interface Props {
+  level: Level;
+}
+
+const { level } = Astro.props;
+const currentWave = WAVES.find((w) => w.isActive) || WAVES[0];
+const currentPrice = currentWave.prices[level.id as 'sd' | 'smp' | 'sma'];
+---
+
+<BaseLayout
+  title={`Kompetisi KKA Jenjang ${level.name} - Radar Kediri`}
+  description={`Ketentuan, silabus mata pelajaran, dan pendaftaran KKA 2026 jenjang ${level.name} (${level.classes}).`}
+>
+  <section class="bg-gradient-navy text-white py-5">
+    <div class="container py-3 text-center">
+      <span class="badge bg-danger rounded-pill px-3 py-1 mb-2">{level.classes}</span>
+      <h1 class="display-5 fw-bold mb-2">Jenjang {level.name}</h1>
+      <p class="lead text-white-50 max-w-xl mx-auto mb-1">
+        Uji kompetensi akademik siswa dengan soal analitis berstandar TKA Neutron Yogyakarta.
+      </p>
+      <Breadcrumb items={[
+        { label: 'Jenjang Pendidikan', href: '/#jenjang' },
+        { label: level.name, active: true }
+      ]} />
+    </div>
+  </section>
+
+  <section class="py-5 bg-white">
+    <div class="container py-3">
+      <div class="row g-5 align-items-center">
+        <div class="col-lg-7">
+          <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-1 fs-8 fw-bold mb-2">
+            RINCIAN TINGKAT PENDIDIKAN
+          </span>
+          <h2 class="fw-bold text-kka-primary mb-3">
+            Standar Soal & Persyaratan Peserta
+          </h2>
+          <p class="text-secondary mb-4">
+            {level.description} Peserta diperbolehkan mendaftar secara individu (mandiri) maupun melalui utusan resmi perwakilan sekolah (kolektif).
+          </p>
+
+          <div class="card p-4 bg-light border-0 rounded-4 mb-4">
+            <h5 class="fw-bold text-kka-primary mb-3">Mata Pelajaran yang Diujikan</h5>
+            <div class="d-flex flex-wrap gap-2 mb-3">
+              {level.subjects.map((sub) => (
+                <span class="badge bg-white text-dark border p-2 px-3 rounded-3 shadow-sm fw-semibold">
+                  {sub}
+                </span>
+              ))}
+            </div>
+
+            {level.electiveOptions && (
+              <div class="pt-2 border-top">
+                <span class="fs-8 text-muted fw-bold d-block mb-2">Pilihan Mata Pelajaran Peminatan (Pilih {level.electiveCount}):</span>
+                <div class="d-flex flex-wrap gap-1">
+                  {level.electiveOptions.map((opt) => (
+                    <span class="badge bg-secondary-subtle text-secondary px-2 py-1 fs-8">
+                      {opt}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div class="d-flex flex-wrap gap-3">
+            <a href={`/daftar/mandiri?jenjang=${level.id}`} class="btn btn-kka-primary px-4 py-2">
+              Daftar Mandiri Jenjang {level.shortName}
+            </a>
+            <a href={`/daftar/kolektif`} class="btn btn-outline-secondary px-4 py-2">
+              Daftar Kolektif Sekolah
+            </a>
+          </div>
+        </div>
+
+        <div class="col-lg-5">
+          <div class="kka-card p-4 p-xl-5 bg-white border-2">
+            <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 rounded-pill fs-8 fw-bold mb-2">
+              Tarif Pendaftaran
+            </span>
+            <h3 class="fw-bold text-kka-primary mb-1">{formatRupiah(currentPrice)}</h3>
+            <p class="text-muted small mb-4">Biaya {currentWave.name}</p>
+
+            <h6 class="fw-bold text-dark fs-8 text-uppercase tracking-wider mb-2">Fasilitas Peserta:</h6>
+            <ul class="list-unstyled d-flex flex-column gap-2 small text-secondary mb-0">
+              <li>✓ Akses simulasi & ujian CBT serentak</li>
+              <li>✓ Sertifikat resmi Jawa Pos Radar Kediri</li>
+              <li>✓ Lembar evaluasi pemetaan akademik TKA</li>
+              <li>✓ Kesempatan lolos ke Babak Grand Final</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .max-w-xl { max-width: 600px; }
+  .fs-8 { font-size: 0.78rem; }
+  .tracking-wider { letter-spacing: 0.08em; }
+</style>

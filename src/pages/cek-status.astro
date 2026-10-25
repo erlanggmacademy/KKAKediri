@@ -1,0 +1,5 @@
+---
+// Redirect shortcut to /daftar/status
+const search = Astro.url.search || '';
+return Astro.redirect(`/daftar/status${search}`);
+---
