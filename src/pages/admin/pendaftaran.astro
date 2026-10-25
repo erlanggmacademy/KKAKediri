@@ -888,6 +888,29 @@ import { DISTRICTS, LEVELS } from '../../data/competition';
           if (newStatus === 'ditolak') found.catatan = rejectionNote;
         }
 
+        // 3. Sinkronkan Pembaruan Status ke Google Apps Script (Google Spreadsheet)
+        const appsScriptUrl = import.meta.env.PUBLIC_APPS_SCRIPT_URL;
+        if (appsScriptUrl && appsScriptUrl.startsWith('http')) {
+          try {
+            const statusLabel = newStatus === 'lunas' ? 'LUNAS' : 'DITOLAK';
+            await fetch(appsScriptUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                action: 'update_status',
+                kode: currentViewingReg.kode,
+                status: statusLabel,
+                statusBayar: statusLabel,
+                catatan: rejectionNote || ''
+              }),
+              mode: 'no-cors'
+            });
+            console.log(`[Google Apps Script] Status ${currentViewingReg.kode} berhasil dikirim ke Spreadsheet: ${statusLabel}`);
+          } catch (gasErr) {
+            console.warn('[Google Apps Script] Gagal sinkronisasi status:', gasErr);
+          }
+        }
+
         applyFilters();
         closeRejectModal();
         closeModal();
