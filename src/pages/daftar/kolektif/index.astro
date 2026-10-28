@@ -6,14 +6,14 @@ import { DISTRICTS } from '../../../data/competition';
 
 <BaseLayout 
   title="Pilih Wilayah Pendaftaran Kolektif Sekolah - KKA 2026 Radar Kediri"
-  description="Pendaftaran kolektif rombongan siswa sekolah untuk ajang KKA 2026 Jawa Pos Radar Kediri. Unduh template Excel dan pilih wilayah sekolah Anda."
+  description="Pendaftaran kolektif rombongan siswa sekolah untuk ajang KKA 2026 Jawa Pos Radar Kediri. Pilih wilayah sekolah Anda untuk mengunduh template resmi dan mengunggah data peserta."
 >
   <section class="bg-gradient-navy text-white py-5">
     <div class="container text-center py-2">
       <span class="badge bg-warning text-dark fw-bold rounded-pill px-3 py-1 mb-2">JALUR KOLEKTIF SEKOLAH</span>
       <h1 class="display-6 fw-bold mb-2">Pendaftaran Kolektif Peserta KKA 2026</h1>
       <p class="lead text-white-50 max-w-xl mx-auto mb-1">
-        Khusus guru pembina dan koordinator sekolah. Unduh format spreadsheet Excel resmi, isi daftar nama siswa, dan pilih wilayah sekolah Anda.
+        Khusus guru pembina dan koordinator sekolah. Pilih wilayah sekolah Anda untuk mengunduh template Excel resmi dan mendaftarkan rombongan peserta.
       </p>
       <Breadcrumb items={[
         { label: 'Pendaftaran', href: '/daftar' },
@@ -22,42 +22,7 @@ import { DISTRICTS } from '../../../data/competition';
     </div>
   </section>
 
-  <!-- Download Banner -->
-  <section class="py-4 bg-light border-bottom">
-    <div class="container">
-      <div class="p-4 rounded-4 bg-white border shadow-sm d-flex align-items-center justify-content-between flex-wrap gap-3">
-        <div class="d-flex align-items-center gap-3">
-          <div class="p-3 bg-success-subtle text-success rounded-3">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-              <polyline points="14 2 14 8 20 8"></polyline>
-              <line x1="8" y1="13" x2="16" y2="13"></line>
-              <line x1="8" y1="17" x2="16" y2="17"></line>
-              <polyline points="10 9 9 9 8 9"></polyline>
-            </svg>
-          </div>
-          <div>
-            <h5 class="fw-bold text-dark mb-1">Unduh Template Excel Pendaftaran Kolektif</h5>
-            <p class="text-secondary small mb-0">
-              Format resmi .xlsx dengan kolom Nama Siswa, NISN, Jenjang, Kelas, dan Pilihan Mapel Peminatan SMA.
-            </p>
-          </div>
-        </div>
-        <a 
-          href="/templates/template-pendaftaran-kolektif-kka-2026.xlsx" 
-          download="template-pendaftaran-kolektif-kka-2026.xlsx" 
-          class="btn btn-success fw-bold px-4 py-2.5 rounded-3 d-inline-flex align-items-center gap-2 shadow-sm"
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="7 10 12 15 17 10"></polyline>
-            <line x1="12" y1="15" x2="12" y2="3"></line>
-          </svg>
-          <span>Unduh Template (.xlsx)</span>
-        </a>
-      </div>
-    </div>
-  </section>
+
 
   <!-- Region Selection Cards -->
   <section class="py-5 bg-white">

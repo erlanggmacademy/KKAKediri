@@ -1,0 +1,43 @@
+PANDUAN PENYIMPANAN TEMPLATE EXCEL PENDAFTARAN KOLEKTIF KKA 2026
+========================================================================
+
+Folder ini disiapkan untuk menampung file-file template Excel pendaftaran kolektif Anda.
+
+Anda dapat menaruh file template Excel (.xlsx) dengan 2 cara mudah:
+
+CARA 1: MENGIKUTI STRUKTUR FOLDER SESUAI WILAYAH & JENJANG (DIREKOMENDASIKAN)
+Contoh penempatan file:
+  public/templates/kolektif/Kolektif Kabupaten Kediri/Jenjang SMA-MA-SMK Kabupaten Kediri/KKA Kolektif SMA-MA-SMK Kecamatan Kayen Kidul.xlsx
+
+Struktur folder yang telah dibuatkan otomatis:
+- Kolektif Kabupaten Kediri/
+    ├── Jenjang SD-MI Kabupaten Kediri/
+    ├── Jenjang SMP-MTs Kabupaten Kediri/
+    └── Jenjang SMA-MA-SMK Kabupaten Kediri/
+- Kolektif Kota Kediri/
+    ├── Jenjang SD-MI Kota Kediri/
+    ├── Jenjang SMP-MTs Kota Kediri/
+    └── Jenjang SMA-MA-SMK Kota Kediri/
+- Kolektif Kabupaten Nganjuk/
+    ...
+- Kolektif Kabupaten Blitar/
+    ...
+- Kolektif Kota Blitar/
+    ...
+- Kolektif Kabupaten Tulungagung/
+    ...
+- Kolektif Kabupaten Trenggalek/
+    ...
+
+CARA 2: LANGSUNG TARUH DI DALAM FOLDER INI (FLAT)
+Jika Anda memiliki semua file .xlsx tanpa subfolder, Anda juga bisa langsung menaruh file .xlsx di dalam folder:
+  public/templates/kolektif/
+dengan nama file:
+  KKA Kolektif [Jenjang] Kecamatan [Nama Kecamatan].xlsx
+  Contoh: KKA Kolektif SMA-MA-SMK Kecamatan Kayen Kidul.xlsx
+
+CATATAN SISTEM:
+Sistem website telah diprogram secara cerdas:
+1. Ketika peserta mengklik "Unduh File Excel", sistem akan memeriksa apakah file template fisik Anda sudah tersedia di folder ini.
+2. Jika file Anda tersedia, sistem langsung mengunduhkan file resmi asli dari Anda.
+3. Jika file di kecamatan tertentu belum sempat ditaruh, sistem secara otomatis akan membuatkan (generate) file template resmi dengan format kolom dan metadata yang sama persis secara instan.

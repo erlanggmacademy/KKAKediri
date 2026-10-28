@@ -11,11 +11,11 @@ const queryKode = Astro.url.searchParams.get('kode') || '';
   description="Layanan pengecekan status pendaftaran mandiri dan kolektif Kompetisi Kompetensi Akademik (KKA) 2026 Jawa Pos Radar Kediri menggunakan kode registrasi."
 >
   <!-- Header Banner -->
-  <section class="bg-gradient-navy text-white py-4 py-lg-5">
+  <section class="bg-gradient-navy text-white py-3 py-sm-4 py-lg-5">
     <div class="container text-center py-2">
-      <span class="badge bg-primary rounded-pill px-3 py-1 mb-2">LAYANAN PESERTA</span>
+      <span class="badge bg-warning text-dark fw-bold rounded-pill px-3 py-1 mb-2">LAYANAN PESERTA</span>
       <h1 class="display-6 fw-bold mb-2">Cek Status Pendaftaran KKA 2026</h1>
-      <p class="lead text-white-50 max-w-2xl mx-auto mb-1">
+      <p class="lead text-white-50 max-w-2xl mx-auto mb-1 fs-6 fs-sm-5">
         Periksa status verifikasi pembayaran, data rombongan peserta, dan konfirmasi panitia menggunakan kode registrasi Anda.
       </p>
       <Breadcrumb items={[
@@ -26,29 +26,29 @@ const queryKode = Astro.url.searchParams.get('kode') || '';
   </section>
 
   <!-- Search & Result Section -->
-  <section class="py-5 bg-light min-vh-50">
+  <section class="py-3 py-sm-4 py-md-5 bg-light min-vh-50 mobile-status-section">
     <div class="container py-2">
       
       <!-- Search Input Card -->
-      <div class="card border rounded-4 p-4 p-md-5 bg-white shadow-sm mb-4 max-w-3xl mx-auto">
-        <div class="text-center mb-4">
-          <div class="search-icon-badge bg-primary-subtle text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 52px; height: 52px;">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+      <div class="card border rounded-4 p-3.5 p-sm-4 p-md-5 bg-white shadow-sm mb-4 max-w-3xl mx-auto search-card-wrapper">
+        <div class="text-center mb-3 mb-sm-4">
+          <div class="search-icon-badge rounded-circle d-inline-flex align-items-center justify-content-center mb-2">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
               <circle cx="11" cy="11" r="8"/>
               <line x1="21" y1="21" x2="16.65" y2="16.65"/>
             </svg>
           </div>
-          <h2 class="h4 fw-bold text-dark mb-1">Cari Data Pendaftaran Anda</h2>
-          <p class="text-muted small mb-3" id="searchDescText">
+          <h2 class="h5 fw-bold text-dark mb-1">Cari Data Pendaftaran Anda</h2>
+          <p class="text-muted small mb-3 max-w-xl mx-auto search-desc" id="searchDescText">
             Masukkan Kode Registrasi yang Anda dapatkan saat mendaftar (cth: <strong>KKA26-M-NGJ-8841</strong> atau <strong>KKA26-K-NGJ-9124</strong>).
           </p>
 
           <!-- Toggle Mode Tabs -->
-          <div class="d-inline-flex p-1 bg-light rounded-pill border mx-auto">
+          <div class="mode-tabs-wrapper d-inline-flex p-1 bg-light rounded-pill border mx-auto flex-wrap justify-content-center gap-1">
             <button 
               type="button" 
               id="tabSearchKode" 
-              class="btn btn-sm rounded-pill fw-semibold px-3 py-1.5 btn-primary d-inline-flex align-items-center gap-1.5 shadow-2xs"
+              class="btn btn-sm rounded-pill fw-semibold px-3 py-1.5 fs-8 btn-primary d-inline-flex align-items-center gap-1.5 shadow-2xs"
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                 <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
@@ -59,7 +59,7 @@ const queryKode = Astro.url.searchParams.get('kode') || '';
             <button 
               type="button" 
               id="tabSearchWa" 
-              class="btn btn-sm rounded-pill fw-semibold px-3 py-1.5 text-secondary d-inline-flex align-items-center gap-1.5"
+              class="btn btn-sm rounded-pill fw-semibold px-3 py-1.5 fs-8 text-secondary d-inline-flex align-items-center gap-1.5"
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
@@ -70,21 +70,24 @@ const queryKode = Astro.url.searchParams.get('kode') || '';
         </div>
 
         <form id="formSearchStatus" class="mb-3">
-          <div class="input-group input-group-lg shadow-2xs">
-            <input 
-              type="text" 
-              id="inputKodeReg" 
-              class="form-control text-uppercase font-monospace fw-bold fs-6" 
-              placeholder="Contoh: KKA26-M-NGJ-8841" 
-              value={queryKode}
-              required 
-            />
+          <div class="search-input-group d-flex flex-column flex-sm-row gap-2">
+            <div class="position-relative flex-grow-1">
+              <input 
+                type="text" 
+                id="inputKodeReg" 
+                class="form-control text-uppercase font-monospace fw-bold py-2.5 px-3 rounded-3 shadow-2xs search-main-input" 
+                placeholder="Contoh: KKA26-M-NGJ-8841" 
+                value={queryKode}
+                required 
+                autocomplete="off"
+              />
+            </div>
             <button 
               type="submit" 
               id="btnCariStatus" 
-              class="btn btn-primary fw-bold px-4 d-flex align-items-center gap-2"
+              class="btn btn-primary fw-bold px-4 py-2.5 rounded-3 d-inline-flex align-items-center justify-content-center gap-2 shadow-2xs text-nowrap search-submit-btn"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <circle cx="11" cy="11" r="8"/>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"/>
               </svg>
@@ -93,9 +96,9 @@ const queryKode = Astro.url.searchParams.get('kode') || '';
           </div>
         </form>
 
-        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 text-muted small fs-8">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-1 text-muted small fs-8">
           <span id="searchHelperFormat">Format kode: <code>KKA26-[M/K]-[WILAYAH]-[KODE]</code></span>
-          <span class="text-secondary" id="searchHelperRight">Lupa kode? Gunakan pencarian via No. WhatsApp di atas</span>
+          <span class="text-secondary" id="searchHelperRight">Lupa kode? Gunakan No. WhatsApp di atas</span>
         </div>
       </div>
 
@@ -149,131 +152,154 @@ const queryKode = Astro.url.searchParams.get('kode') || '';
       </div>
 
       <!-- Result Card (Found) -->
-      <div id="resultStatusCard" class="d-none max-w-3xl mx-auto">
+      <div id="resultStatusCard" class="d-none max-w-3xl mx-auto mt-4">
         
-        <!-- Status Banner -->
-        <div id="statusBannerBox" class="p-4 rounded-4 mb-4 border d-flex align-items-center gap-3 shadow-sm">
-          <div id="statusIconBox" class="rounded-circle d-flex align-items-center justify-content-center shrink-0" style="width: 48px; height: 48px;">
+        <!-- Status Banner (Hanya Tampil Saat Menunggu / Lunas, Tidak Duplikat Saat Ditolak) -->
+        <div id="statusBannerBox" class="p-3.5 p-sm-4 rounded-4 mb-3 mb-sm-4 border d-flex align-items-center gap-3 shadow-sm overflow-hidden">
+          <div id="statusIconBox" class="rounded-circle d-flex align-items-center justify-content-center shrink-0" style="width: 44px; height: 44px;">
             <!-- Injected via JS -->
           </div>
-          <div>
+          <div class="min-w-0 flex-grow-1">
             <div class="fs-8 text-uppercase fw-bold text-muted mb-0.5" id="statusHeaderSubtitle">Status Pendaftaran</div>
             <h4 class="h5 fw-bold mb-1" id="statusHeaderTitle">-</h4>
-            <p class="small mb-0 opacity-85" id="statusHeaderDesc">-</p>
+            <p class="small mb-0 opacity-85 lh-base" id="statusHeaderDesc">-</p>
           </div>
         </div>
 
-        <!-- Section Khusus Jika Pendaftaran Ditolak / Butuh Revisi -->
-        <div id="rejectionSectionAlert" class="card border-danger border-2 rounded-4 p-4 p-md-4 bg-danger-subtle shadow-sm mb-4 d-none">
-          <div class="d-flex align-items-start gap-3">
-            <div class="p-2.5 rounded-circle bg-danger text-white shrink-0 mt-0.5">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <!-- Section Khusus Jika Pendaftaran Ditolak / Butuh Revisi (Single Unified Red Card) -->
+        <div id="rejectionSectionAlert" class="card rejection-custom-card rounded-4 p-4 p-sm-4 p-md-5 bg-white shadow-sm mb-4 d-none">
+          <!-- Header Bar: Icon, Title & Badge -->
+          <div class="d-flex align-items-start gap-3 mb-3 pb-3 border-bottom border-danger-subtle">
+            <div class="rejection-icon-badge shrink-0 mt-0.5">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
                 <line x1="15" y1="9" x2="9" y2="15"></line>
                 <line x1="9" y1="9" x2="15" y2="15"></line>
               </svg>
             </div>
-            <div class="flex-grow-1">
-              <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
-                <span class="badge bg-danger text-white rounded-pill px-2.5 py-1 fs-8 fw-bold">PENDAFTARAN BUTUH REVISI</span>
-                <span class="fs-8 text-danger fw-semibold">Pemberitahuan Resmi Panitia KKA</span>
-              </div>
-              <h5 class="fw-bold text-danger mb-2">Pendaftaran Anda Belum Dapat Diverifikasi</h5>
-              <p class="text-dark small mb-3">
-                Panitia KKA 2026 telah memeriksa data pendaftaran Anda, namun terdapat kendala pada verifikasi dengan rincian catatan sebagai berikut:
-              </p>
-
-              <!-- Kotak Catatan Resmi Admin -->
-              <div class="p-3 bg-white rounded-3 border border-danger-subtle mb-3 shadow-2xs">
-                <span class="fs-8 text-uppercase text-danger fw-bold d-block mb-1">
-                  Catatan & Alasan dari Admin Panitia:
+            <div class="flex-grow-1 min-w-0">
+              <div class="d-flex align-items-center gap-2 mb-1.5 flex-wrap">
+                <span class="badge bg-danger text-white rounded-pill px-2.5 py-1 fs-8 fw-bold">PENDAFTARAN BUTUH PERBAIKAN</span>
+                <span class="fs-8 text-danger fw-semibold d-inline-flex align-items-center gap-1.5">
+                  <span class="pulse-red-dot"></span>
+                  Pemberitahuan Resmi Panitia
                 </span>
-                <div class="fs-7 text-dark fw-bold lh-base" id="rejectionNoteText">
-                  -
-                </div>
               </div>
-
-              <!-- Langkah Tindak Lanjut -->
-              <div class="bg-white bg-opacity-75 p-3 rounded-3 border border-danger-subtle mb-3 small">
-                <strong class="text-dark d-block mb-1">Langkah Selanjutnya untuk Anda:</strong>
-                <ol class="mb-0 ps-3 text-secondary">
-                  <li>Jangan khawatir, pendaftaran Anda <strong>tidak otomatis hangus</strong>.</li>
-                  <li>Segera hubungi tim verifikasi panitia melalui tombol WhatsApp di bawah ini.</li>
-                  <li>Sampaikan <strong>Kode Registrasi (<span id="rejectionCodeMention" class="font-monospace fw-bold text-dark">-</span>)</strong> dan kirimkan bukti transfer yang valid atau perbaikan data yang diminta.</li>
-                </ol>
-              </div>
-
-              <!-- Tombol Aksi Re-konfirmasi WA -->
-              <div class="d-flex flex-wrap gap-2">
-                <a id="btnRejectionWaHelp" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-danger fw-bold px-4 py-2.5 rounded-3 d-inline-flex align-items-center gap-2 shadow-sm">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.099.824z"/>
-                  </svg>
-                  <span>Kirim Perbaikan via WhatsApp Panitia</span>
-                </a>
-              </div>
+              <h4 class="h5 fw-bold text-danger mb-0 lh-sm">Status: Pendaftaran Belum Terverifikasi</h4>
             </div>
+          </div>
+
+          <!-- Description -->
+          <p class="text-secondary small mb-3.5 lh-base">
+            Panitia KKA 2026 telah memeriksa data pendaftaran Anda, namun terdapat kendala pada verifikasi dengan rincian catatan sebagai berikut:
+          </p>
+
+          <!-- Kotak Catatan Resmi Admin Panitia -->
+          <div class="rejection-note-box p-3.5 rounded-3 mb-3.5">
+            <div class="d-flex align-items-center gap-1.5 text-danger fw-bold fs-8 text-uppercase mb-2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+              </svg>
+              <span>Catatan & Alasan dari Admin Panitia:</span>
+            </div>
+            <div class="fs-6 fw-bold text-dark lh-base" id="rejectionNoteText">
+              -
+            </div>
+          </div>
+
+          <!-- Panduan Langkah Tindak Lanjut -->
+          <div class="p-3.5 rounded-3 mb-4 bg-light border small">
+            <strong class="text-dark d-block mb-2 fs-7">
+              Langkah Penyelesaian untuk Anda:
+            </strong>
+            <ol class="mb-0 ps-3 text-secondary lh-lg">
+              <li class="mb-1.5">Jangan khawatir, pendaftaran Anda <strong class="text-dark">tidak otomatis hangus / batal</strong>.</li>
+              <li class="mb-1.5">Hubungi tim verifikasi panitia melalui tombol WhatsApp di bawah ini.</li>
+              <li>Sampaikan <strong class="text-dark">Kode Registrasi (<span id="rejectionCodeMention" class="font-monospace fw-bold text-danger">-</span>)</strong> dan kirimkan bukti transfer valid atau perbaikan data yang diminta.</li>
+            </ol>
+          </div>
+
+          <!-- Tombol Aksi Re-konfirmasi WA -->
+          <div>
+            <a id="btnRejectionWaHelp" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-rejection-whatsapp fw-bold px-4 py-3 rounded-3 d-inline-flex align-items-center justify-content-center gap-2 shadow-sm w-100 text-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.364 2.76 1.057 3.96L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.016-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.707 1.916.807 2.05c.099.133 1.39 2.123 3.368 2.975.47.203.837.325 1.123.415.472.15.902.13 1.242.078.379-.058 1.17-.478 1.336-.94.166-.462.166-.86.116-.94-.05-.08-.182-.133-.38-.232"/>
+              </svg>
+              <span>Kirim Perbaikan via WhatsApp Panitia</span>
+            </a>
           </div>
         </div>
 
         <!-- Detail Information Box -->
-        <div class="card border rounded-4 p-4 p-md-5 bg-white shadow-sm mb-4">
+        <div class="card border rounded-4 p-4 p-sm-4 p-md-5 bg-white shadow-sm mb-4">
           
-          <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom flex-wrap gap-2">
+          <div class="d-flex justify-content-between align-items-start mb-4 pb-3 border-bottom flex-wrap gap-2">
             <div>
-              <span class="fs-8 text-muted d-block text-uppercase fw-semibold">Kode Registrasi</span>
+              <span class="fs-8 text-muted d-block text-uppercase fw-semibold mb-1">Kode Registrasi</span>
               <h3 class="h4 fw-black text-primary font-monospace mb-0" id="detailKode">-</h3>
             </div>
-            <div class="text-md-end">
+            <div class="text-sm-end">
               <span class="badge rounded-pill px-3 py-1.5 fw-bold text-uppercase fs-8" id="detailTipeBadge">-</span>
-              <div class="text-muted fs-8 mt-1" id="detailWaktuDaftar">-</div>
+              <div class="text-muted fs-8 mt-1.5" id="detailWaktuDaftar">-</div>
             </div>
           </div>
 
-          <!-- 2 Columns Grid -->
-          <div class="row g-3 small mb-4">
-            <div class="col-md-6">
-              <div class="p-3 bg-light rounded-3 border h-100">
-                <span class="text-muted d-block fs-8 mb-1">ASAL SEKOLAH</span>
-                <strong class="text-dark fs-6 d-block mb-2" id="detailSekolah">-</strong>
-                <span class="text-muted d-block fs-8 mb-1">WILAYAH & KECAMATAN</span>
-                <span class="text-dark fw-semibold" id="detailWilayah">-</span>
-              </div>
-            </div>
-
-            <div class="col-md-6">
-              <div class="p-3 bg-light rounded-3 border h-100">
-                <span class="text-muted d-block fs-8 mb-1">JENJANG PENDIDIKAN</span>
-                <strong class="text-dark fs-6 d-block mb-2" id="detailJenjang">-</strong>
-                <span class="text-muted d-block fs-8 mb-1">NO. WHATSAPP PJ / SISWA</span>
-                <span class="text-dark fw-semibold" id="detailWa">-</span>
-              </div>
-            </div>
-
-            <div class="col-12">
-              <div class="p-3 bg-light rounded-3 border d-flex justify-content-between align-items-center flex-wrap gap-3">
+          <!-- Structured Information Sheet (Spacious, clean, professional for teachers) -->
+          <div class="p-3.5 p-sm-4 rounded-3 bg-light border mb-4">
+            <div class="row gy-3.5 gx-4">
+              <div class="col-12 col-sm-6">
                 <div>
-                  <span class="text-muted d-block fs-8">TOTAL BIAYA PENDAFTARAN</span>
-                  <strong class="text-primary fs-5 mb-0" id="detailTotalBiaya">Rp 0</strong>
+                  <span class="text-muted text-uppercase fw-semibold fs-8 d-block mb-1">Asal Sekolah</span>
+                  <div class="text-dark fw-bold fs-6 mb-1.5 lh-sm" id="detailSekolah">-</div>
+                  <div class="text-secondary small d-flex align-items-center gap-1.5">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted shrink-0"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <span id="detailWilayah">-</span>
+                  </div>
                 </div>
-                <div id="buktiTransferActionBox">
-                  <a id="btnLihatBukti" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1.5 rounded-3">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                      <circle cx="8.5" cy="8.5" r="1.5"/>
-                      <polyline points="21 15 16 10 5 21"/>
-                    </svg>
-                    Lihat Bukti Transfer
-                  </a>
+              </div>
+
+              <div class="col-12 col-sm-6">
+                <div>
+                  <span class="text-muted text-uppercase fw-semibold fs-8 d-block mb-1">Jenjang Pendidikan</span>
+                  <div class="text-dark fw-bold fs-6 mb-1.5 lh-sm" id="detailJenjang">-</div>
+                  <div class="text-secondary small d-flex align-items-center gap-1.5">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted shrink-0"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    <span class="font-monospace fw-semibold" id="detailWa">-</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12 pt-3 border-top">
+                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2.5">
+                  <div>
+                    <span class="text-muted text-uppercase fw-semibold fs-8 d-block mb-0.5">Total Biaya Pendaftaran</span>
+                    <div class="text-primary fw-black fs-4 mb-0" id="detailTotalBiaya">Rp 0</div>
+                  </div>
+                  <div id="buktiTransferActionBox">
+                    <a id="btnLihatBukti" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1.5 rounded-3 py-1.5 px-3">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                        <circle cx="8.5" cy="8.5" r="1.5"/>
+                        <polyline points="21 15 16 10 5 21"/>
+                      </svg>
+                      <span>Lihat Bukti Transfer</span>
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
           <!-- Participants Table -->
-          <h5 class="fw-bold text-dark mb-3 fs-6">
-            Daftar Peserta Terdaftar (<span id="detailCountSiswa">0</span> Siswa)
-          </h5>
+          <div class="d-flex justify-content-between align-items-center mb-2.5">
+            <h5 class="fw-bold text-dark mb-0 fs-6">
+              Daftar Peserta Terdaftar (<span id="detailCountSiswa">0</span> Siswa)
+            </h5>
+            <span class="badge bg-light text-muted border fw-normal fs-9 d-sm-none">Geser tabel &rarr;</span>
+          </div>
 
           <div class="table-responsive border rounded-3 bg-white mb-4">
             <table class="table table-hover align-middle mb-0 small text-nowrap">
@@ -292,20 +318,20 @@ const queryKode = Astro.url.searchParams.get('kode') || '';
             </table>
           </div>
 
-          <!-- Action Buttons -->
-          <div class="d-flex flex-wrap gap-2 pt-2 border-top">
+          <!-- Action Buttons (Responsive Clean Stack on Mobile, Inline on Desktop) -->
+          <div class="d-flex flex-column flex-sm-row gap-2.5 pt-4 border-top">
             <a 
               id="btnCetakBuktiResmi" 
               href="/daftar/cetak" 
               target="_blank" 
-              class="btn btn-outline-dark fw-bold px-4 py-2.5 rounded-3 d-inline-flex align-items-center gap-2"
+              class="btn btn-outline-dark fw-bold px-4 py-2.5 rounded-3 d-inline-flex align-items-center justify-content-center gap-2 text-center w-100 w-sm-auto shadow-2xs"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="6 9 6 2 18 2 18 9"/>
                 <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
                 <rect x="6" y="14" width="12" height="8"/>
               </svg>
-              Cetak Lembar Bukti Resmi (PDF)
+              <span>Cetak Lembar Bukti (PDF)</span>
             </a>
 
             <a 
@@ -313,20 +339,20 @@ const queryKode = Astro.url.searchParams.get('kode') || '';
               href="#" 
               target="_blank" 
               rel="noopener noreferrer" 
-              class="btn btn-success fw-bold px-4 py-2.5 rounded-3 d-inline-flex align-items-center gap-2"
+              class="btn btn-success fw-bold px-4 py-2.5 rounded-3 d-inline-flex align-items-center justify-content-center gap-2 text-center w-100 w-sm-auto shadow-2xs"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.099.824z"/>
+              <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.364 2.76 1.057 3.96L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.016-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.707 1.916.807 2.05c.099.133 1.39 2.123 3.368 2.975.47.203.837.325 1.123.415.472.15.902.13 1.242.078.379-.058 1.17-.478 1.336-.94.166-.462.166-.86.116-.94-.05-.08-.182-.133-.38-.232"/>
               </svg>
-              Konfirmasi ke Panitia
+              <span>Konfirmasi ke Panitia</span>
             </a>
 
             <button 
               type="button" 
               id="btnResetSearch" 
-              class="btn btn-outline-secondary px-3 py-2.5 rounded-3 ms-auto"
+              class="btn btn-outline-secondary px-4 py-2.5 rounded-3 w-100 w-sm-auto text-center"
             >
-              Cari Kode Lain
+              <span>Cari Kode Lain</span>
             </button>
           </div>
 
@@ -364,6 +390,7 @@ const queryKode = Astro.url.searchParams.get('kode') || '';
 
     const statusBannerBox = document.getElementById('statusBannerBox') as HTMLElement;
     const statusIconBox = document.getElementById('statusIconBox') as HTMLElement;
+    const statusHeaderSubtitle = document.getElementById('statusHeaderSubtitle') as HTMLElement;
     const statusHeaderTitle = document.getElementById('statusHeaderTitle') as HTMLElement;
     const statusHeaderDesc = document.getElementById('statusHeaderDesc') as HTMLElement;
 
@@ -465,44 +492,48 @@ const queryKode = Astro.url.searchParams.get('kode') || '';
 
         // Apply Status Styling
         const st = (reg.status || 'menunggu').toLowerCase();
-        if (st === 'lunas') {
-          statusBannerBox.className = 'p-4 rounded-4 mb-4 border d-flex align-items-center gap-3 shadow-sm bg-success-subtle border-success text-success-emphasis';
-          statusIconBox.className = 'bg-success text-white rounded-circle d-flex align-items-center justify-content-center shrink-0';
-          statusIconBox.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
-          statusHeaderTitle.textContent = 'STATUS: PEMBAYARAN TERVERIFIKASI (LUNAS)';
-          statusHeaderDesc.textContent = 'Pembayaran telah disetujui resmi oleh panitia. Data peserta valid untuk mengikuti Kompetisi Kompetensi Akademik 2026.';
-        } else if (st === 'ditolak') {
-          statusBannerBox.className = 'p-4 rounded-4 mb-4 border d-flex align-items-center gap-3 shadow-sm bg-danger-subtle border-danger text-danger-emphasis';
-          statusIconBox.className = 'bg-danger text-white rounded-circle d-flex align-items-center justify-content-center shrink-0';
-          statusIconBox.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
-          statusHeaderTitle.textContent = 'STATUS: PENDAFTARAN DITOLAK / BUTUH PERBAIKAN';
-          statusHeaderDesc.textContent = reg.catatan || 'Terdapat kendala pada berkas atau bukti transfer. Silakan periksa catatan admin di bawah ini.';
-        } else {
-          // Menunggu
-          statusBannerBox.className = 'p-4 rounded-4 mb-4 border d-flex align-items-center gap-3 shadow-sm bg-warning-subtle border-warning text-dark';
-          statusIconBox.className = 'bg-warning text-dark rounded-circle d-flex align-items-center justify-content-center shrink-0';
-          statusIconBox.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
-          statusHeaderTitle.textContent = 'STATUS: MENUNGGU VERIFIKASI PEMBAYARAN';
-          statusHeaderDesc.textContent = 'Data pendaftaran telah tersimpan. Panitia sedang mencocokkan mutasi bank rekening resmi (proses verifikasi maksimal 1x24 jam).';
-        }
-
-        // Section Khusus Catatan Penolakan Admin
         const rejBox = document.getElementById('rejectionSectionAlert');
         const rejNote = document.getElementById('rejectionNoteText');
         const rejCode = document.getElementById('rejectionCodeMention');
         const rejWaBtn = document.getElementById('btnRejectionWaHelp') as HTMLAnchorElement;
 
-        if (rejBox && rejNote && rejCode && rejWaBtn) {
-          if (st === 'ditolak') {
+        if (st === 'ditolak') {
+          // Hide redundant statusBannerBox so user only sees the single comprehensive Red Notice Card
+          statusBannerBox.classList.add('d-none');
+
+          if (rejBox && rejNote && rejCode && rejWaBtn) {
             rejBox.classList.remove('d-none');
-            const noteContent = reg.catatan || 'Bukti transfer tidak terbaca atau nominal tidak sesuai dengan ketentuan. Silakan hubungi admin panitia melalui WhatsApp.';
+            const noteContent = reg.catatan || 'Data peserta atau bukti transfer belum lengkap/valid. Silakan hubungi tim verifikasi panitia.';
             rejNote.textContent = noteContent;
             rejCode.textContent = reg.kode;
 
-            const cleanWaText = `Halo Tim Verifikasi Panitia KKA 2026 Radar Kediri,\nSaya ingin mengonfirmasi perbaikan berkas pendaftaran saya:\n\n*Kode Registrasi*: ${reg.kode}\n*Asal Sekolah*: ${reg.sekolah || '-'}\n*Alasan / Catatan Penolakan*: "${noteContent}"\n\nBerikut saya kirimkan bukti/data perbaikan yang valid. Mohon bantuan verifikasinya kembali. Terima kasih.`;
+            const cleanWaText = `Halo Tim Verifikasi Panitia KKA 2026 Radar Kediri,\nSaya ingin mengonfirmasi perbaikan berkas pendaftaran saya:\n\n*Kode Registrasi*: ${reg.kode}\n*Asal Sekolah*: ${reg.sekolah || '-'}\n*Alasan / Catatan Penolakan*: "${noteContent}"\n\nBerikut saya lampirkan berkas perbaikan yang valid. Mohon bantuan verifikasinya kembali. Terima kasih.`;
             rejWaBtn.href = `https://wa.me/6281235508957?text=${encodeURIComponent(cleanWaText)}`;
+          }
+        } else {
+          // Show standard statusBannerBox and hide rejection notice
+          statusBannerBox.classList.remove('d-none');
+          if (rejBox) rejBox.classList.add('d-none');
+
+          if (st === 'lunas') {
+            statusBannerBox.className = 'p-3.5 p-sm-4 rounded-4 mb-3 mb-sm-4 border d-flex align-items-center gap-3 shadow-sm bg-success-subtle border-success text-success-emphasis';
+            statusIconBox.className = 'bg-success text-white rounded-circle d-flex align-items-center justify-content-center shrink-0';
+            statusIconBox.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+            statusHeaderSubtitle.className = 'fs-8 text-uppercase fw-bold text-success mb-0.5';
+            statusHeaderTitle.className = 'h5 fw-bold mb-1 text-success';
+            statusHeaderTitle.textContent = 'STATUS: PEMBAYARAN TERVERIFIKASI (LUNAS)';
+            statusHeaderDesc.className = 'small mb-0 text-success-emphasis';
+            statusHeaderDesc.textContent = 'Pembayaran telah disetujui resmi oleh panitia. Data peserta valid untuk mengikuti Kompetisi Kompetensi Akademik 2026.';
           } else {
-            rejBox.classList.add('d-none');
+            // Menunggu
+            statusBannerBox.className = 'p-3.5 p-sm-4 rounded-4 mb-3 mb-sm-4 border d-flex align-items-center gap-3 shadow-sm bg-warning-subtle border-warning text-dark';
+            statusIconBox.className = 'bg-warning text-dark rounded-circle d-flex align-items-center justify-content-center shrink-0';
+            statusIconBox.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+            statusHeaderSubtitle.className = 'fs-8 text-uppercase fw-bold text-muted mb-0.5';
+            statusHeaderTitle.className = 'h5 fw-bold mb-1 text-dark';
+            statusHeaderTitle.textContent = 'STATUS: MENUNGGU VERIFIKASI PEMBAYARAN';
+            statusHeaderDesc.className = 'small mb-0 text-secondary';
+            statusHeaderDesc.textContent = 'Data pendaftaran telah tersimpan. Panitia sedang mencocokkan mutasi bank rekening resmi (proses verifikasi maksimal 1x24 jam).';
           }
         }
 
@@ -556,10 +587,14 @@ const queryKode = Astro.url.searchParams.get('kode') || '';
         newUrl.searchParams.set('kode', reg.kode);
         window.history.replaceState({}, '', newUrl);
 
-        // Show Result
+        // Show Result with navbar offset
         loadingBox.classList.add('d-none');
         resultCard.classList.remove('d-none');
-        resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setTimeout(() => {
+          const yOffset = -80;
+          const y = resultCard.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+        }, 60);
       } catch (err) {
         console.error('Error fetching detail:', err);
         loadingBox.classList.add('d-none');
@@ -707,8 +742,13 @@ const queryKode = Astro.url.searchParams.get('kode') || '';
     });
 
     // Auto search if query param provided in URL
-    if (inputSearch.value.trim()) {
-      executeSearch(inputSearch.value);
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramKode = urlParams.get('kode');
+    if (paramKode && paramKode.trim()) {
+      inputSearch.value = paramKode.trim();
+      executeSearch(paramKode.trim());
+    } else if (inputSearch.value.trim()) {
+      executeSearch(inputSearch.value.trim());
     }
   });
 </script>
@@ -719,6 +759,118 @@ const queryKode = Astro.url.searchParams.get('kode') || '';
   .max-w-3xl { max-width: 820px; }
   .min-vh-50 { min-height: 55vh; }
   
+  /* Mobile and Responsive Polish */
+  .search-card-wrapper {
+    box-shadow: 0 4px 20px rgba(15, 45, 89, 0.06);
+  }
+  .search-icon-badge {
+    width: 44px;
+    height: 44px;
+    background: rgba(15, 82, 186, 0.08);
+    color: var(--kka-primary);
+  }
+  .search-desc {
+    font-size: 0.85rem;
+    line-height: 1.55;
+  }
+  .search-main-input {
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+    border-color: #cbd5e1;
+    min-height: 44px;
+  }
+  .search-main-input:focus {
+    border-color: #0f52ba;
+    box-shadow: 0 0 0 3px rgba(15, 82, 186, 0.12);
+  }
+  .search-submit-btn {
+    min-height: 44px;
+  }
+
+  /* Red Theme for Rejected Status */
+  .status-banner-red {
+    background-color: #fef2f2 !important;
+    border: 1.5px solid #fecaca !important;
+    color: #991b1b !important;
+  }
+  .status-icon-red {
+    width: 44px;
+    height: 44px;
+    background-color: #dc2626 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 10px rgba(220, 38, 38, 0.25) !important;
+  }
+
+  .rejection-custom-card {
+    border: 1.5px solid #fecaca !important;
+    border-left: 5px solid #dc2626 !important;
+    box-shadow: 0 8px 24px -4px rgba(220, 38, 38, 0.08) !important;
+    overflow: hidden !important;
+  }
+
+  .rejection-icon-badge {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1.5px solid #fecaca;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .badge-rejection-red {
+    background-color: #dc2626 !important;
+    color: #ffffff !important;
+    letter-spacing: 0.3px;
+  }
+
+  .pulse-red-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #dc2626;
+    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7);
+    animation: pulse-red 1.8s infinite;
+  }
+
+  @keyframes pulse-red {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(220, 38, 38, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+  }
+
+  .rejection-note-box {
+    background: #fff5f5;
+    border: 1px solid #fecaca;
+    border-left: 4px solid #dc2626;
+  }
+
+  .btn-rejection-whatsapp {
+    background-color: #dc2626 !important;
+    border: 1px solid #b91c1c !important;
+    color: #ffffff !important;
+    transition: all 0.2s ease;
+  }
+  .btn-rejection-whatsapp:hover {
+    background-color: #b91c1c !important;
+    color: #ffffff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3) !important;
+  }
+
+  @media (max-width: 768px) {
+    .mobile-status-section {
+      padding-bottom: 160px !important;
+    }
+    .rejection-custom-card {
+      border-left-width: 4px !important;
+      padding: 1.25rem !important;
+    }
+  }
+
   @media print {
     /* Hide search form, headers, footer when printing */
     header, footer, #formSearchStatus, .btn, .breadcrumb-nav {

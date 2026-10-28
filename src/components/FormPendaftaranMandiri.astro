@@ -60,10 +60,25 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
         <div class="row g-3">
           <!-- Wilayah Sekolah -->
           <div class="col-md-6">
-            <label for="selectWilayah" class="form-label small fw-semibold text-dark">
-              Wilayah Sekolah <span class="text-danger">*</span>
-            </label>
-            <select id="selectWilayah" class="form-select py-2.5 rounded-3" required>
+            <div class="d-flex align-items-center justify-content-between mb-1">
+              <label for="selectWilayah" class="form-label small fw-semibold text-dark mb-0">
+                Wilayah Sekolah <span class="text-danger">*</span>
+              </label>
+              {defaultDistrictSlug && (
+                <a href="/daftar/mandiri" class="text-decoration-none small text-primary fw-semibold d-inline-flex align-items-center gap-1" title="Pilih wilayah kabupaten/kota lain">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M7 16l-4-4m0 0l4-4m-4 4h18m-7 4l4-4m0 0l-4-4"/>
+                  </svg>
+                  Ganti Wilayah
+                </a>
+              )}
+            </div>
+            <select 
+              id="selectWilayah" 
+              class={`form-select py-2.5 rounded-3 ${defaultDistrictSlug ? 'bg-light text-dark fw-semibold' : ''}`}
+              disabled={Boolean(defaultDistrictSlug)}
+              required
+            >
               <option value="">-- Pilih Wilayah / Kabupaten / Kota --</option>
               {regionsList.map(r => (
                 <option value={r.slug} selected={r.slug === defaultDistrictSlug}>
@@ -71,6 +86,16 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
                 </option>
               ))}
             </select>
+            {defaultDistrictSlug && (
+              <input type="hidden" id="hiddenWilayahValue" value={defaultDistrictSlug} />
+              <div class="form-text text-muted d-flex align-items-center gap-1 mt-1" style="font-size: 0.78rem;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-primary flex-shrink-0">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+                <span>Terkunci sesuai wilayah pendaftaran terpilih.</span>
+              </div>
+            )}
             <div class="invalid-feedback">Silakan pilih wilayah sekolah.</div>
           </div>
 
@@ -235,30 +260,89 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
       <div class="form-section mb-4">
         <h3 class="h5 fw-bold text-dark mb-3">3. Pembayaran</h3>
 
-        <!-- Info Pembayaran Box -->
-        <div class="payment-info-box p-3 rounded-3 mb-3 d-flex align-items-center gap-2 small">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1d72f2" stroke-width="2.5" class="shrink-0">
-            <circle cx="12" cy="12" r="10"/>
-            <line x1="12" y1="16" x2="12" y2="12"/>
-            <line x1="12" y1="8" x2="12.01" y2="8"/>
-          </svg>
-          <div class="text-dark lh-sm">
-            <strong>Info Pembayaran:</strong> Silakan transfer biaya pendaftaran ke <strong>Bank BRI 0109-01-001555-30-8 a.n. PT Kediri Intermedia Pers (Radar Kediri)</strong> atau <strong>Bank BCA 1400892211 a.n. Panitia KKA</strong>.
+        <!-- Rekening Pembayaran Resmi -->
+        <div class="payment-accounts-wrapper mb-4">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1d72f2" stroke-width="2.5" class="flex-shrink-0">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="16" x2="12" y2="12"/>
+              <line x1="12" y1="8" x2="12.01" y2="8"/>
+            </svg>
+            <span class="small fw-bold text-dark">
+              Rekening Resmi Pembayaran Panitia:
+            </span>
+          </div>
+
+          <div class="bank-account-card p-3.5 p-md-4 rounded-4 border bg-white shadow-2xs">
+            <!-- Header Kartu: Logo BRI & Nama Bank -->
+            <div class="d-flex align-items-center mb-3 pb-2.5 border-bottom">
+              <div class="d-flex align-items-center gap-3">
+                <img 
+                  src="/images/bri.webp" 
+                  alt="Logo Bank BRI" 
+                  width="36" 
+                  height="36" 
+                  style="object-fit: contain;"
+                  loading="lazy"
+                />
+                <span class="fs-5 fw-bold text-dark mb-0">Bank BRI</span>
+              </div>
+            </div>
+
+            <!-- Bagian Nomor Rekening Panjang & Tombol Salin -->
+            <div class="p-3 bg-light rounded-3 border mb-2.5">
+              <span class="text-muted small d-block mb-1" style="font-size: 0.78rem;">Nomor Rekening BRI:</span>
+              <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2.5">
+                <div class="account-number font-monospace fw-bold text-primary fs-3 text-nowrap" style="letter-spacing: 1px;">
+                  0033-0100-3455-560
+                </div>
+                <div>
+                  <button 
+                    type="button" 
+                    class="btn btn-primary btn-sm px-3.5 py-1.5 rounded-pill fw-semibold btn-copy-account d-inline-flex align-items-center gap-1.5 shadow-2xs hover-scale" 
+                    data-copy="003301003455560" 
+                    title="Salin nomor rekening BRI"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                    </svg>
+                    <span>Salin No. Rekening</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Footer: Pemilik Rekening -->
+            <div class="d-flex align-items-center justify-content-between text-muted small px-1 flex-wrap gap-1" style="font-size: 0.82rem;">
+              <span>Atas Nama (Penerima):</span>
+              <strong class="text-dark fs-6">Heri Muda Setiawan</strong>
+            </div>
           </div>
         </div>
 
-        <!-- Biaya & Rincian Tagihan -->
-        <div class="bg-light p-3.5 rounded-3 border mb-3">
-          <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
-            <div>
-              <span class="text-muted small d-block">Tarif Gelombang I (Early Bird):</span>
-              <span id="ratePerStudentText" class="fw-bold text-dark fs-6">Pilih jenjang terlebih dahulu</span>
+        <!-- Biaya & Rincian Tagihan Card -->
+        <div class="pricing-summary-card rounded-4 border mb-4">
+          <div class="row align-items-center g-3">
+            <div class="col-12 col-md-7">
+              <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-1 fs-8 fw-semibold">
+                  {currentWave.name}
+                </span>
+                <span class="text-secondary small fw-medium">Tarif Pendaftaran:</span>
+              </div>
+              <div id="ratePerStudentText" class="fw-bold text-dark fs-5">
+                Pilih jenjang terlebih dahulu
+              </div>
             </div>
-            <div class="text-md-end">
-              <span class="text-muted small d-block">
-                Total Tagihan (<span id="totalStudentsCount" class="fw-bold">1</span> Siswa):
+            
+            <div class="col-12 col-md-5 text-md-end pt-3 pt-md-0 pricing-total-col">
+              <span class="text-secondary small d-block mb-1.5 fw-medium">
+                Total Tagihan (<span id="totalStudentsCount" class="fw-bold text-dark">1</span> Siswa):
               </span>
-              <span id="totalPaymentDisplay" class="h4 fw-bold text-primary mb-0">Rp 0</span>
+              <div id="totalPaymentDisplay" class="h3 fw-bolder text-primary mb-0">
+                Rp 0
+              </div>
             </div>
           </div>
         </div>
@@ -541,6 +625,7 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
       supabase
         .from('schools')
         .select('*')
+        .eq('is_custom', true)
         .then(({ data, error }) => {
           if (!error && data && data.length > 0) {
             const currentLocal = localStorage.getItem('kka_custom_schools');
@@ -563,9 +648,48 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
         });
     } catch (err) {}
 
-    // 5. Cascade Wilayah -> Kecamatan
-    function handleWilayahChange() {
-      const regionSlug = selectWilayah.value;
+    // Helper render pilihan kecamatan
+    function renderKecamatanOptions(kecList: string[]) {
+      const curVal = selectKecamatan.value;
+      selectKecamatan.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
+      kecList.sort((a, b) => a.localeCompare(b, 'id')).forEach(kec => {
+        const opt = document.createElement('option');
+        opt.value = kec;
+        opt.textContent = `Kecamatan ${kec}`;
+        if (curVal === kec) opt.selected = true;
+        selectKecamatan.appendChild(opt);
+      });
+      selectKecamatan.disabled = false;
+    }
+
+    // Helper render pilihan sekolah
+    function renderSchoolOptions(schoolsList: string[]) {
+      const curVal = selectSekolah.value;
+      schoolsList.sort((a, b) => a.localeCompare(b, 'id'));
+
+      selectSekolah.innerHTML = '<option value="">-- Pilih Asal Sekolah / Madrasah --</option>';
+      schoolsList.forEach(sch => {
+        const opt = document.createElement('option');
+        opt.value = sch;
+        opt.textContent = sch;
+        if (curVal === sch) opt.selected = true;
+        selectSekolah.appendChild(opt);
+      });
+
+      // Pilihan Input Manual jika sekolah belum terdata
+      const manualOpt = document.createElement('option');
+      manualOpt.value = '__manual__';
+      manualOpt.textContent = '+ Sekolah Lainnya (Ketik Manual)';
+      if (curVal === '__manual__') manualOpt.selected = true;
+      selectSekolah.appendChild(manualOpt);
+
+      selectSekolah.disabled = false;
+    }
+
+    // 5. Cascade Wilayah -> Kecamatan (Live Supabase & Database Lokal)
+    async function handleWilayahChange() {
+      const hiddenEl = document.getElementById('hiddenWilayahValue') as HTMLInputElement | null;
+      const regionSlug = hiddenEl?.value || selectWilayah.value;
       selectKecamatan.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
       selectSekolah.innerHTML = '<option value="">-- Pilih Kecamatan & Jenjang Terlebih Dahulu --</option>';
       selectSekolah.disabled = true;
@@ -578,39 +702,35 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
         return;
       }
 
+      // 1. Ambil instan dari database lokal
       const districts = schoolDb[regionSlug].districts || {};
       const kecSet = new Set<string>(Object.keys(districts));
+      renderKecamatanOptions(Array.from(kecSet));
 
-      // Masukkan juga kecamatan kustom jika ada penambahan baru dari Admin CMS
+      // 2. Query Supabase Cloud live untuk menyinkronkan kecamatan terbaru
       try {
-        const stored = localStorage.getItem('kka_custom_schools');
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          if (Array.isArray(parsed)) {
-            parsed.forEach((item: any) => {
-              if (item.regionSlug === regionSlug && item.kecamatan) {
-                kecSet.add(item.kecamatan);
-              }
-            });
-          }
+        const { data, error } = await supabase
+          .from('schools')
+          .select('kecamatan')
+          .eq('region_slug', regionSlug);
+
+        if (!error && data && data.length > 0) {
+          data.forEach(d => {
+            if (d.kecamatan) kecSet.add(d.kecamatan);
+          });
+          renderKecamatanOptions(Array.from(kecSet));
         }
-      } catch (e) {}
-
-      Array.from(kecSet).sort().forEach(kec => {
-        const opt = document.createElement('option');
-        opt.value = kec;
-        opt.textContent = `Kecamatan ${kec}`;
-        selectKecamatan.appendChild(opt);
-      });
-
-      selectKecamatan.disabled = false;
+      } catch (err) {
+        console.warn('[Supabase] Live kecamatan check:', err);
+      }
     }
 
     selectWilayah.addEventListener('change', handleWilayahChange);
 
-    // 6. Cascade Kecamatan & Jenjang -> Asal Sekolah
-    function handleKecamatanOrJenjangChange() {
-      const regionSlug = selectWilayah.value;
+    // 6. Cascade Kecamatan & Jenjang -> Asal Sekolah (Live Supabase & Database Lokal)
+    async function handleKecamatanOrJenjangChange() {
+      const hiddenEl = document.getElementById('hiddenWilayahValue') as HTMLInputElement | null;
+      const regionSlug = hiddenEl?.value || selectWilayah.value;
       const kec = selectKecamatan.value;
       const jenjang = selectJenjang.value;
 
@@ -626,52 +746,37 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
         return;
       }
 
+      // 1. Ambil instan dari database lokal terkini (5.598 sekolah resmi)
       const districtData = (schoolDb[regionSlug] && schoolDb[regionSlug].districts) 
         ? schoolDb[regionSlug].districts[kec] 
         : null;
-      let schools: string[] = (districtData && districtData[jenjang]) ? [...districtData[jenjang]] : [];
+      const schoolSet = new Set<string>();
+      if (districtData && districtData[jenjang]) {
+        districtData[jenjang].forEach((name: string) => schoolSet.add(name));
+      }
 
-      // Merge dengan data sekolah kustom dari CMS Admin (Supabase / LocalStorage)
+      // Render awal langsung (0ms delay)
+      renderSchoolOptions(Array.from(schoolSet));
+
+      // 2. Query LIVE ke Supabase Cloud (tabel schools) untuk memastikan sinkronisasi data cloud
       try {
-        const stored = localStorage.getItem('kka_custom_schools');
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          if (Array.isArray(parsed)) {
-            parsed.forEach((item: any) => {
-              if (
-                item.regionSlug === regionSlug &&
-                item.kecamatan.toLowerCase() === kec.toLowerCase() &&
-                item.jenjang === jenjang &&
-                item.namaSekolah
-              ) {
-                if (!schools.includes(item.namaSekolah)) {
-                  schools.push(item.namaSekolah);
-                }
-              }
-            });
-          }
+        const { data: cloudSchools, error } = await supabase
+          .from('schools')
+          .select('nama_sekolah')
+          .eq('region_slug', regionSlug)
+          .eq('kecamatan', kec)
+          .eq('jenjang', jenjang)
+          .order('nama_sekolah', { ascending: true });
+
+        if (!error && cloudSchools && cloudSchools.length > 0) {
+          cloudSchools.forEach(d => {
+            if (d.nama_sekolah) schoolSet.add(d.nama_sekolah);
+          });
+          renderSchoolOptions(Array.from(schoolSet));
         }
-      } catch (e) {}
-
-      // Urutkan alfabetis
-      schools.sort((a, b) => a.localeCompare(b, 'id'));
-
-      selectSekolah.innerHTML = '<option value="">-- Pilih Asal Sekolah / Madrasah --</option>';
-      
-      schools.forEach(sch => {
-        const opt = document.createElement('option');
-        opt.value = sch;
-        opt.textContent = sch;
-        selectSekolah.appendChild(opt);
-      });
-
-      // Add Manual Input Option
-      const manualOpt = document.createElement('option');
-      manualOpt.value = '__manual__';
-      manualOpt.textContent = '+ Sekolah Lainnya (Ketik Manual)';
-      selectSekolah.appendChild(manualOpt);
-
-      selectSekolah.disabled = false;
+      } catch (cloudErr) {
+        console.warn('[Supabase] Live school fetch:', cloudErr);
+      }
     }
 
     selectKecamatan.addEventListener('change', handleKecamatanOrJenjangChange);
@@ -838,8 +943,11 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
 
       try {
         // Gather Data
-        const regionSlug = selectWilayah.value;
-        const regionName = selectWilayah.options[selectWilayah.selectedIndex].text;
+        const hiddenEl = document.getElementById('hiddenWilayahValue') as HTMLInputElement | null;
+        const regionSlug = hiddenEl?.value || selectWilayah.value;
+        const regionName = (selectWilayah.selectedIndex >= 0 && selectWilayah.options[selectWilayah.selectedIndex]?.text)
+          ? selectWilayah.options[selectWilayah.selectedIndex].text
+          : (schoolDb[regionSlug]?.name || regionSlug);
         const kec = selectKecamatan.value;
         const jenjangVal = selectJenjang.value;
         const jenjangText = selectJenjang.options[selectJenjang.selectedIndex].text;
@@ -961,13 +1069,45 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
       });
       reindexStudents();
 
+      // If wilayah is locked, repopulate kecamatan options
+      const hiddenRegion = (document.getElementById('hiddenWilayahValue') as HTMLInputElement)?.value;
+      if (hiddenRegion) {
+        selectWilayah.value = hiddenRegion;
+        handleWilayahChange();
+      }
+
       successCard.classList.add('d-none');
       form.classList.remove('d-none');
       window.scrollTo({ top: form.offsetTop - 80, behavior: 'smooth' });
     });
 
+    // Copy account number handler
+    document.querySelectorAll('.btn-copy-account').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const textToCopy = btn.getAttribute('data-copy');
+        if (textToCopy) {
+          navigator.clipboard.writeText(textToCopy).then(() => {
+            const span = btn.querySelector('span');
+            if (span) {
+              const origText = span.textContent;
+              span.textContent = 'Tersalin!';
+              btn.classList.remove('btn-light', 'text-secondary');
+              btn.classList.add('btn-success', 'text-white');
+              setTimeout(() => {
+                span.textContent = origText;
+                btn.classList.remove('btn-success', 'text-white');
+                btn.classList.add('btn-light', 'text-secondary');
+              }, 2000);
+            }
+          }).catch(() => {});
+        }
+      });
+    });
+
     // Trigger Initial State if defaultDistrictSlug is provided
-    if (selectWilayah.value) {
+    const initRegion = (document.getElementById('hiddenWilayahValue') as HTMLInputElement)?.value || selectWilayah.value;
+    if (initRegion) {
+      selectWilayah.value = initRegion;
       handleWilayahChange();
     }
   });
@@ -996,9 +1136,42 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
   }
 
+  .bank-account-card {
+    background-color: #fbfcfe;
+    border-color: #e2e8f0;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  }
+  .bank-account-card:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+  }
+
   .payment-info-box {
     background-color: #f0f7ff;
     border: 1px solid #dbeafe;
+    padding: 1rem 1.25rem;
+  }
+
+  .pricing-summary-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border: 1px solid #e2e8f0;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  }
+
+  .pricing-total-col {
+    border-top: 1px dashed #e2e8f0;
+  }
+
+  @media (min-width: 768px) {
+    .pricing-summary-card {
+      padding: 1.5rem 1.75rem;
+    }
+    .pricing-total-col {
+      border-top: none;
+      border-left: 1px dashed #e2e8f0;
+      padding-left: 1.75rem !important;
+    }
   }
 
   .hover-btn {

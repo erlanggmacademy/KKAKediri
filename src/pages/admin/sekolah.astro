@@ -368,54 +368,73 @@ import { SCHOOL_DATABASE } from '../../data/schools';
     let pendingDeleteId: string | null = null;
     let isManualKecamatan = false;
 
+    function getSchoolKey(regionSlug: string, kecamatan: string, jenjang: string, namaSekolah: string): string {
+      return `${regionSlug}|${kecamatan}|${jenjang}|${namaSekolah}`.toLowerCase().trim();
+    }
+
     // Load data sekolah dari Supabase dan LocalStorage
     async function loadSchools() {
       const initial = getInitialSchools();
+      const mergedMap = new Map<string, SchoolItem>();
 
+      // 1. Masukkan semua data sekolah terkini dari database lokal schools.ts dengan key unik
+      initial.forEach(s => {
+        const key = getSchoolKey(s.regionSlug, s.kecamatan, s.jenjang, s.namaSekolah);
+        mergedMap.set(key, s);
+      });
+
+      // 2. Ambil penambahan/perubahan sekolah kustom yang pernah dibuat admin
       try {
         const stored = localStorage.getItem('kka_custom_schools');
         if (stored) {
           const parsed = JSON.parse(stored);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            allSchools = parsed;
-          } else {
-            allSchools = initial;
-            localStorage.setItem('kka_custom_schools', JSON.stringify(initial));
+          if (Array.isArray(parsed)) {
+            parsed.forEach((s: SchoolItem) => {
+              if (s.isCustom) {
+                const key = getSchoolKey(s.regionSlug, s.kecamatan, s.jenjang, s.namaSekolah);
+                mergedMap.set(key, s);
+              }
+            });
           }
-        } else {
-          allSchools = initial;
-          localStorage.setItem('kka_custom_schools', JSON.stringify(initial));
         }
-      } catch (e) {
-        allSchools = initial;
-      }
+      } catch (e) {}
 
+      allSchools = Array.from(mergedMap.values());
       updateStatistics();
       populateKecamatanFilter();
       renderTable();
 
-      // Sinkronkan dengan Supabase Cloud jika tabel public.schools tersedia
+      // 3. Sinkronkan dengan Supabase Cloud (ambil SEMUA baris dengan pagination range)
       try {
-        const { data, error } = await supabase
-          .from('schools')
-          .select('*')
-          .order('nama_sekolah', { ascending: true });
+        let allCloudRows: any[] = [];
+        let from = 0;
+        const step = 1000;
+        while (true) {
+          const { data, error } = await supabase
+            .from('schools')
+            .select('*')
+            .range(from, from + step - 1);
 
-        if (!error && data && data.length > 0) {
-          const customSupabaseItems: SchoolItem[] = data.map((d: any) => ({
-            id: d.id,
-            regionSlug: d.region_slug,
-            regionName: d.region_name || REGION_MAP[d.region_slug] || '',
-            kecamatan: d.kecamatan,
-            jenjang: d.jenjang,
-            namaSekolah: d.nama_sekolah,
-            isCustom: d.is_custom !== false
-          }));
+          if (error || !data || data.length === 0) break;
+          allCloudRows.push(...data);
+          if (data.length < step) break;
+          from += step;
+        }
 
-          // Merge: pertahankan item yang diubah/ditambah
-          const mergedMap = new Map<string, SchoolItem>();
-          allSchools.forEach(s => mergedMap.set(s.id, s));
-          customSupabaseItems.forEach(s => mergedMap.set(s.id, s));
+        if (allCloudRows.length > 0) {
+          allCloudRows.forEach((d: any) => {
+            const key = getSchoolKey(d.region_slug, d.kecamatan, d.jenjang, d.nama_sekolah);
+            // Timpa data init dengan data resmi dari Supabase (termasuk ID sch_ aslinya)
+            mergedMap.set(key, {
+              id: d.id,
+              regionSlug: d.region_slug,
+              regionName: d.region_name || REGION_MAP[d.region_slug] || '',
+              kecamatan: d.kecamatan,
+              jenjang: d.jenjang,
+              namaSekolah: d.nama_sekolah,
+              isCustom: d.is_custom !== false
+            });
+          });
 
           allSchools = Array.from(mergedMap.values());
           localStorage.setItem('kka_custom_schools', JSON.stringify(allSchools));

@@ -1,26 +1,48 @@
 # 📘 Jurnal Dokumentasi Pengerjaan Website KKA Jawa Pos Radar Kediri
-**Mata Kuliah / Tugas**: Project MKI  
-**Teknologi**: Astro 5 · Bootstrap 5.3 · Supabase (PostgreSQL, Auth, Storage) · Google Apps Script  
+**Mata Kuliah / Tugas**: Project MKI / Laporan Akhir & Magang Industri  
+**Mitra / Industri**: PT Kediri Media Grafika (Jawa Pos Radar Kediri)  
+**Teknologi Utama**: Astro 5 · TypeScript · Bootstrap 5.3 · Supabase (PostgreSQL, Storage, RLS) · Google Apps Script · SheetJS  
 **Domain Target**: `kkaradarkediri.com`  
-**Status**: Milestone 1 (Fondasi UI, Komponen & 17 Halaman Publik Selesai)
+**Status**: Milestone Akhir (Fondasi UI/UX, 46 Halaman Publik, Sistem Registrasi Mandiri & Kolektif 321 Template Excel, Database 3.000+ Sekolah Kemendikbud, Dual-Sync Database & Spreadsheet, Portal Admin Suite Lengkap)
 
 ---
 
-## 🎬 Panduan Narasi untuk Pembuatan Video Dokumentasi
+## 🎬 Panduan Narasi & Alur Presentasi (Video Dokumentasi & Laporan Magang)
 
-Saat Anda merekam video presentasi / demo aplikasi, Anda dapat menggunakan urutan pembahasan berikut:
-1. **Latar Belakang & Masalah**: 
-   - Website KKA sebelumnya berbasis Blogspot yang kaku, memiliki form eksternal yang terpisah, dan tombol-tombol yang belum terintegrasi.
-   - Rebuild ini memodernisasi performa, SEO, dan sistem registrasi terpusat.
-2. **Arsitektur Stack**:
-   - **Astro 5**: Menghasilkan HTML statis murni yang sangat cepat (target Lighthouse 90+ mobile & 100 SEO).
-   - **Bootstrap 5.3**: Grid responsif dan styling komponen dengan palet warna resmi korporat Jawa Pos Radar Kediri.
-   - **Supabase**: Penyimpanan data pendaftar terlindungi RLS, autentikasi admin panitia, dan bucket bukti transfer.
-   - **Google Apps Script**: Sinkronisasi otomatis data pendaftaran ke Google Spreadsheet untuk kebutuhan operasional guru/panitia.
-3. **Demo Fitur & Halaman yang Sudah Jadi**:
-   - Beranda (Landing Page lengkap dengan 8 section: Hero, Counter Statistik, Mengapa KKA, 7 Wilayah, Jenjang Soal, Tabel 3 Gelombang Biaya, Testimoni, Banner CTA).
-   - Halaman detail profil KKA, Regulasi juknis CBT, Informasi rekening dan FAQ, Galeri dokumentasi kilas balik, dan Kontak resmi sekretariat Radar Kediri.
-   - Dynamic routing otomatis untuk 7 wilayah dan 3 jenjang pendidikan.
+Panduan ini disusun terstruktur untuk kebutuhan rekaman video presentasi (*screen recording walkthrough*) serta bab implementasi & pengujian pada laporan akhir / laporan magang:
+
+### 1. Latar Belakang & Identifikasi Masalah
+- **Kondisi Awal**: Website KKA Radar Kediri sebelumnya menggunakan platform Blogspot yang statis dan kaku, formulir pendaftaran dialihkan ke Google Forms pihak ketiga yang terpisah, serta rentan kesalahan pengisian data manual dari ratusan sekolah.
+- **Tuntutan Proyek**: Membangun portal web modern berperforma tinggi (Google Lighthouse 90+ mobile & 100 SEO), aman (UU PDP), memiliki sistem pendaftaran terpusat mandiri dan kolektif berbasis Excel, integrasi database sekolah resmi Kemendikbud, sinkronisasi otomatis ganda (*dual-sync*) ke database PostgreSQL Supabase dan Google Spreadsheet, serta portal dashboard admin interaktif.
+
+### 2. Arsitektur Teknologi & Desain Sistem
+- **Astro 5 (Islands Architecture)**: Menghasilkan HTML statis murni yang dimuat dalam milidetik, hanya memuat JavaScript interaktif pada komponen yang memerlukannya (*zero-JS by default*).
+- **Bootstrap 5.3 + Custom Corporate Tokens**: Desain responsif dengan identitas resmi Radar Kediri (*Deep Navy* `#0f2d59`, *Gold/Amber* `#f59e0b`, *Emerald* `#10b981`), tipografi *Plus Jakarta Sans*, dan elemen grafis profesional (tanpa emoji AI).
+- **Supabase Cloud**: Backend-as-a-Service untuk PostgreSQL transaksional (`registrations`, `participants`, `app_settings`), bucket penyimpanan bukti transfer dengan public URL, serta Row Level Security (RLS).
+- **Google Apps Script & Webhook**: Sinkronisasi real-time instan ke Google Sheets operasional panitia, terbagi otomatis per tab wilayah dengan mekanisme locking transaksi anti-bentrok (*concurrency lock*).
+- **SheetJS (xlsx)**: Parser spreadsheet client-side di browser pengguna yang membaca ratusan baris data siswa seketika tanpa beban server.
+
+### 3. Skenario Demo Fitur (Urutan Rekaman Video)
+1. **Beranda & Profil Publik**:
+   - Hero banner sinematik dengan navbar transparan adaptif (berubah putih bersih saat digulir).
+   - Counter statistik dinamis (5.633+ peserta, 7 wilayah, 350+ sekolah).
+   - Direktori 7 wilayah karesidenan Kediri berdesain modern (grid 4-3 simetris).
+   - Rincian jenjang pendidikan, tabel 3 gelombang tarif dinamis, FAQ interaktif Schema.org, dan Floating WhatsApp Hub (3 PIC wilayah).
+2. **Alur Pendaftaran Kolektif Sekolah (Fitur Unggulan Proyek)**:
+   - Akses `/daftar/kolektif` -> Pilih kartu wilayah (misal *Kabupaten Kediri*).
+   - **Bagian 1 (Filter Terpandu)**: Pilih Jenjang (*SMA-MA-SMK*) & Kecamatan (*Kayen Kidul*) -> Box template resmi otomatis muncul -> Unduh file Excel khusus kecamatan bersangkutan (`KKA Kolektif SMA-MA-SMK Kecamatan Kayen Kidul.xlsx`).
+   - **Pengisian & Unggah**: Drag & drop file Excel -> Parser membaca metadata dan memunculkan tabel pratinjau peserta siswa (NISN, Nama, Gender, Kelas).
+   - **Bagian 2 (Sinkronisasi Data Sekolah & PIC)**: Dropdown sekolah otomatis terfilter menampilkan daftar SMA/SMK se-Kecamatan Kayen Kidul dari database Kemendikbud (dengan opsi input manual cadangan) -> Pengisian nama, WA aktif, dan jabatan guru pembina / PIC.
+   - **Bagian 3 (Pembayaran Tunggal BRI)**: Rincian biaya otomatis terkalkulasi -> Salin nomor rekening resmi **Bank BRI 0033-0100-3455-560 a.n. Heri Muda Setiawan** -> Unggah struk transfer -> Kirim Pendaftaran.
+   - **Konfirmasi**: Penerbitan kode registrasi kolektif, struk transaksi, tautan kirim pesan WhatsApp otomatis, dan tombol cek status.
+3. **Cek Status & Lembar Bukti Resmi Cetak A4**:
+   - Pencarian via Kode Registrasi atau Nomor WhatsApp.
+   - Buka lembar bukti pendaftaran berstandar surat resmi A4 lengkap dengan kop Radar Kediri, stempel status, barcode/QR validasi, dan tanda tangan digital Ketua Panitia.
+4. **Portal Dashboard Admin Panitia (`/admin`)**:
+   - Login autentikasi panitia -> Tinjauan KPI ringkasan pendaftar, grafik wilayah, dan estimasi kas.
+   - Manajemen Verifikasi: Buka modal pendaftaran, periksa bukti transfer, lihat daftar siswa, setujui lunas atau tolak revisi dengan template alasan cepat terintegrasi pesan WhatsApp otomatis.
+   - Pusat Kontrol Saklar Status Pendaftaran (Mandiri/Kolektif on/off real-time).
+   - CMS Berita, CMS Galeri Foto, dan Pengaturan Wilayah & Kuota.
 
 ---
 
@@ -612,32 +634,84 @@ Saat Anda merekam video presentasi / demo aplikasi, Anda dapat menggunakan uruta
 
 ---
 
+### Tahap 4: Standardisasi Rekening Resmi BRI, Integrasi 321 Template Excel Kecamatan & Transformasi Dropdown Sekolah Kemendikbud
+
+* **Pembaruan Sistem Pembayaran & Redesain Kartu Transfer Bank (Khusus BRI Tunggal)**:
+  - **Penetapan Rekening Resmi Tunggal**: Menghapus opsi rekening sekunder (Bank BCA) dan memusatkan transaksi pendaftaran ke satu-satunya rekening resmi panitia pelaksana:
+    - **Bank BRI**: `0033-0100-3455-560` (a.n. **Heri Muda Setiawan**)
+  - **Redesain Kartu Pembayaran Bank (`FormPendaftaranMandiri.astro` & `FormPendaftaranKolektif.astro`)**:
+    - **Pembersihan Elemen Visual**: Menghapus badge-badge berlebih (*"Cabang Kediri"*, *"Rekening Resmi"*) agar tampilan kartu lebih lapang, elegan, dan fokus.
+    - **Proporsi Logo Bank**: Menata ulang logo resmi Bank BRI dengan rasio proporsional (`height: 38px`, padding seimbang) tanpa menempel ke batas tepi kartu.
+    - **Format Nomor Rekening Tanpa Putus (*Unbroken Format*)**: Memperpanjang wadah nomor rekening dan menempatkan tombol **"Salin No Rekening"** secara ergonomis dengan feedback visual instan (*"Tersalin!"*).
+    - **Konsistensi Data**: Menyelaraskan seluruh data rekening di `src/data/competition.ts`, halaman informasi, serta sistem validasi admin.
+
+* **Infrastruktur 321 Template Excel Kolektif Resmi Per Wilayah, Jenjang, & Kecamatan (`public/templates/kolektif/`)**:
+  - **Penyimpanan Terstruktur Berhierarki**:
+    - Folder induk: `public/templates/kolektif/`
+    - 7 Folder Wilayah: `Kolektif Kota Kediri`, `Kolektif Kabupaten Kediri`, `Kolektif Kabupaten Nganjuk`, `Kolektif Kabupaten Blitar`, `Kolektif Kota Blitar`, `Kolektif Kabupaten Tulungagung`, `Kolektif Kabupaten Trenggalek`.
+    - 3 Sub-folder Jenjang per wilayah: `Jenjang SD-MI`, `Jenjang SMP-MTS`, `Jenjang SMA-MA-SMK`.
+    - Total **107 Kecamatan** se-Karesidenan Kediri terlayani dengan **321 file template resmi `.xlsx`**.
+  - **Audit Komparatif & Standardisasi File**:
+    - Membuat skrip audit otomatis (`scripts/check_templates.mjs`, `scripts/compare_templates_with_db.mjs`) untuk mencocokkan kelengkapan template dengan master database wilayah Kemendikbud.
+    - **Pembuatan Template Kanigoro**: Menghasilkan 3 file template resmi untuk Kecamatan Kanigoro (Ibukota Kabupaten Blitar) yang sebelumnya belum tersedia (`SD-MI`, `SMP-MTS`, `SMA-MA-SMK`) dengan format header dan kolom identik.
+    - **Standardisasi Penamaan File**: Menyelaraskan variasi penamaan folder/file SMP (`SMP-MTS` dan `SMP MTS`) dan variasi nama kecamatan (`Kecamatan Kediri` vs `Kecamatan Kota Kediri`).
+    - **Pembersihan Anomali**: Menghapus file temporary lock Microsoft Excel (`~$KKA Kolektif...`) yang tidak sengaja terbawa saat proses transfer berkas.
+  - **Sistem Resolusi Unduhan Cerdas & Fallback Dinamis (SheetJS)**:
+    - Tombol unduh (`btnDownloadCustomTemplate`) menerapkan pencarian multi-kandidat URL fisik secara asinkron (`fetch HEAD`).
+    - Jika terjadi kegagalan jaringan atau file fisik tidak terjangkau, browser otomatis mengeksekusi fallback *SheetJS* client-side untuk merakit dan mengunduh spreadsheet Excel baru secara instan dengan metadata wilayah dan format resmi tanpa gagal.
+
+* **Inovasi Formulir Pendaftaran Kolektif: Alur Terpandu & Dropdown Sekolah Kemendikbud (`FormPendaftaranKolektif.astro`)**:
+  - **Bagian 1: Filter Terpandu (Guided Selector)**:
+    - Koordinator sekolah memilih **Jenjang Pendidikan** dan **Kecamatan Sekolah** terlebih dahulu.
+    - Box `#templateDownloadBox` muncul secara dinamis dan mulus (*reactive reveal*), menampilkan badge wilayah, nama file resmi, serta tombol aksi *"Unduh File Excel"*.
+  - **Bagian 2: Transformasi Input Sekolah Menjadi Dropdown Dinamis Berbasis Database**:
+    - Mengganti elemen teks biasa `inputNamaSekolahKolektif` menjadi dropdown interaktif `<select>`.
+    - Fungsi `updateSchoolDropdown()` secara otomatis memfilter daftar sekolah dari database 3.000+ lembaga Kemendikbud (`SCHOOL_DATABASE`) berdasarkan Wilayah, Jenjang (SD/SMP/SMA), dan Kecamatan yang sedang dipilih.
+    - **Opsi Fleksibilitas Manual**: Menyertakan opsi `+ Sekolah Lainnya (Ketik Manual)...` yang secara reaktif memunculkan kolom input teks cadangan (`#manualSchoolBoxKolektif`) jika terdapat sekolah baru, sekolah swasta khusus, atau madrasah yang belum terindeks di database.
+  - **Bagian 2: Integrasi Identitas Guru Pembina / Koordinator PIC**:
+    - Penambahan 3 kolom wajib: **Nama Lengkap Guru Pembina / PIC**, **Nomor WhatsApp Aktif PIC**, dan **Jabatan/Peran PIC di Sekolah**.
+    - **Live Preview Sinkron**: Setiap pengetikan atau pemilihan langsung tercermin pada kartu pratinjau ringkasan pendaftaran.
+    - **Auto-Fill Parser Excel**: Saat koordinator mengunggah file Excel kolektif, algoritma parser otomatis mengekstrak baris header untuk nama sekolah dan nomor WA, mencocokkannya ke dropdown sekolah, dan mengisi field PIC secara otomatis.
+    - Menampilkan tabel pratinjau daftar siswa terurai (No, Nama Siswa, NISN, Gender, Kelas) dengan penghitungan total biaya transparan.
+  - **Optimalisasi Responsivitas Mobile Layanan Cek Status (`src/pages/daftar/status.astro`)**:
+    - **Penyelarasan Proporsi Kartu Pencarian**: Menata ulang padding kartu menjadi `p-3.5 p-sm-4 p-md-5`, memperkecil diameter ikon pencarian menjadi `44px`, dan merapikan tipografi judul pada perangkat mobile agar proporsional dan tidak mendominasi layar.
+    - **Perombakan Layout Form Pencarian Mobile**: Mengganti form horizontal kaku (`input-group-lg` yang memotong placeholder) menjadi form adaptif `d-flex flex-column flex-sm-row`. Di layar mobile, kolom input membentang penuh (placeholder `Contoh: KKA26-M-NGJ-8841` terbaca utuh 100%) dengan tombol aksi *"Cari Status"* berada tepat di bawahnya secara ergonomis (*thumb-friendly*), sedangkan di layar desktop tetap bersanding rapi menyamping.
+    - **Pemberian Offset Scroll Navbar Sticky**: Mengatur transisi gulir otomatis hasil pencarian dengan offset vertikal `-80px` agar kartu status tidak terpotong atau tertutup di balik navbar sticky.
+
+* **Transformasi Visual Status & Catatan Penolakan Menjadi Merah Resmi (*Crimson Red*)**:
+  - **Koreksi Overriding Token CSS Global (`src/styles/global.css`)**:
+    - Menghapus aturan lama yang mengubah class `.bg-danger`, `.text-danger`, dan `.bg-danger-subtle` menjadi warna oranye/kuning.
+    - Mengembalikan token status bahaya / penolakan ke palet merah resmi (*Crimson Red* `#dc2626`, hover `#b91c1c`, subtle background `#fef2f2`, border `#fecaca`, dan text `#991b1b`).
+    - Menyelaraskan seluruh badge marketing di halaman publik ke `bg-warning text-dark fw-bold` agar tetap bernuansa emas tanpa merusak makna semantik alert kegagalan/penolakan.
+  - **Redesain Kartu Pemberitahuan Penolakan / Revisi (`#rejectionSectionAlert`)**:
+    - Mengganti latar belakang kuning-oranye yang kusam menjadi kartu putih bersih dengan garis aksen merah tegas di sisi kiri (`border-left: 5px solid #dc2626`) dan bayangan lembut.
+    - Menghadirkan badge merah pekat `PENDAFTARAN BUTUH REVISI`, indikator titik merah berdenyut (*pulsing dot*), dan tipografi judul gelap yang berwibawa (*authoritative*).
+    - **Redesain Kotak Catatan Resmi Admin Panitia**: Ditempatkan dalam wadah berlatar merah lembut (`#fff5f5`) dengan kartu kutipan putih bergaris merah di sisi kiri (`border-left: 4px solid #dc2626`). Teks catatan admin ditampilkan tebal, bersih, dan sangat mudah dibaca.
+    - **Kotak Panduan Langkah Tindak Lanjut**: Menjelaskan secara menenangkan bahwa pendaftaran tidak otomatis hangus, disertai kode registrasi peserta yang disorot warna merah.
+    - **Tombol Aksi WhatsApp Khusus**: Tombol berlatar merah tegas `#dc2626` dengan ikon WhatsApp putih untuk mempermudah pendaftar mengirimkan perbaikan berkas langsung ke tim verifikasi panitia.
+
+* **Penyempurnaan Total Tampilan Mobile & Pencegahan Elemen Keluar Kartu (`src/pages/daftar/status.astro`)**:
+  - **Pencegahan Kartu Bertumpuk & Duplikasi (*Card Clash Elimination*)**:
+    - Memastikan hanya satu kartu status yang tampil secara eksklusif. Ketika status pendaftaran berstatus `ditolak`, kartu `#statusBannerBox` disembunyikan sepenuhnya (`d-none`), sehingga hanya kartu merah resmi `#rejectionSectionAlert` yang tampil sebagai satu-satunya pemberitahuan terpadu.
+    - Menghilangkan ikon ganda yang sebelumnya saling bertabrakan atau menempel di layar ponsel.
+  - **Pemberantasan Masalah Elemen Keluar / Terpotong (*Zero Overflow Enforcement*)**:
+    - Menerapkan `overflow: hidden !important;` pada kartu dan kontainer status untuk memastikan tidak ada badge lingkaran atau ikon `(X)` yang mencuat keluar dari batas garis tepi kartu (*no negative margin bleeding*).
+    - Menyelaraskan ikon penolakan dan badge `PENDAFTARAN BUTUH PERBAIKAN` di dalam header kartu secara proporsional.
+    - Memperbarui ikon WhatsApp pada tombol aksi perbaikan (`#btnRejectionWaHelp`) dan konfirmasi status (`#btnWaConfirmStatus`) dengan vektor SVG resmi yang tajam dan presisi (*crisp official glyph*).
+  - **Penataan Proporsi Kartu Informasi Sekolah & Rincian Peserta**:
+    - Mengatur ulang kisi informasi sekolah, wilayah/kecamatan, jenjang, nomor WhatsApp PJ, dan total biaya dengan tata letak administratif yang proporsional, rapi, dan mudah dibaca oleh guru pembina maupun koordinator sekolah di layar HP kecil (360px - 412px).
+    - Memastikan tabel peserta dapat digeser secara halus (*horizontal swipeable*) dengan indikator petunjuk geser.
+  - **Jarak Bebas Navigasi Bawah (*Bottom Clearance Safety*)**:
+    - Menambahkan padding bawah ekstra pada kontainer utama mobile (`padding-bottom: 145px !important;`) sehingga seluruh tombol aksi (*Cetak Lembar Bukti*, *Konfirmasi ke Panitia*, dan *Cari Kode Lain*) dapat di-scroll penuh ke atas dan tidak terhalang atau terpotong oleh bilah navigasi lengket bawah (*mobile sticky bottom CTA bar*) maupun tombol pintas melayang (*scroll-to-top FAB*).
+  - **Eksekusi Pencarian Otomatis Berbasis URL (*Client-Side Param Auto-Search*)**:
+    - Menambahkan pembacaan parameter URL `window.location.search` (`?kode=...`) pada `DOMContentLoaded` sehingga saat guru atau peserta membuka tautan langsung dari WhatsApp, data pendaftaran langsung dimuat dan ditampilkan seketika tanpa perlu menekan tombol pencarian ulang.
+
+---
+
 ## 📊 Hasil Uji Build Terkini
 - Perintah: `npm run build`
-- Total Halaman Ter-generate: **45 halaman HTML statis + 1 file sitemap XML**
-- Waktu Build: **4.06 detik**
+- Total Halaman Ter-generate: **46 halaman HTML statis + 1 file sitemap XML**
+- Waktu Build: **4.16 detik**
 - Status: **Berhasil 100% (0 Error, 0 Warning)**
-- Validasi Terminal: Seluruh sistem verifikasi penolakan dengan catatan admin dan seksi peringatan status pendaftar terkompilasi sempurna tanpa kendala.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- Validasi Visual Browser: Tampilan cek status pada viewport smartphone (390x844) terbukti sangat rapi, proporsional, tanpa elemen menempel atau keluar batas kartu (*zero overflow*), dan seluruh tombol tindakan berada leluasa di atas bilah navigasi bawah.
 
