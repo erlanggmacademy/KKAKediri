@@ -706,12 +706,203 @@ Panduan ini disusun terstruktur untuk kebutuhan rekaman video presentasi (*scree
   - **Eksekusi Pencarian Otomatis Berbasis URL (*Client-Side Param Auto-Search*)**:
     - Menambahkan pembacaan parameter URL `window.location.search` (`?kode=...`) pada `DOMContentLoaded` sehingga saat guru atau peserta membuka tautan langsung dari WhatsApp, data pendaftaran langsung dimuat dan ditampilkan seketika tanpa perlu menekan tombol pencarian ulang.
 
+  - **Penyelesaian Masalah Padding & Jarak Elemen Kartu Mobile (*Mobile Edge Spacing & Card Callout Overhaul*)**:
+    - **Akar Masalah**:
+      1. Adanya class pecahan non-standar Bootstrap 5 (seperti `p-3.5`, `pt-2.5`, `py-1.5`, `mb-1.5`, `gap-1.5`) yang menyebabkan browser mengabaikan properti tersebut dan mengembalikan nilai padding/margin ke `0px`.
+      2. Teks bantuan format kode di bagian bawah kartu sebelumnya melayang bebas tanpa wadah pembatas, sehingga tampak menempel (*nempel*) langsung pada lengkungan bingkai bawah kartu.
+      3. Contoh kode registrasi pada teks deskripsi terpotong tanda strip (*hyphen break*) di layar HP sempit (`KKA26-` di baris atas dan `K-NGJ-9124).` di baris bawah).
+      4. Header banner dan kartu pencarian memiliki jarak vertikal yang terlalu sempit (`py-3`, `py-1`), sehingga saat digeser (*scrolled*), teks header tampak menabrak navbar dan menempel kaku dengan kartu putih.
+    - **Solusi Tuntas**:
+      1. **Wadah Bantuan Mandiri (*Search Helper Box*)**: Memindahkan teks format kode dan petunjuk lupa kode ke dalam komponen mandiri `.search-helper-box` dengan latar `bg-light` (#f8fafc), border halus, dan padding internal `14px 16px`. Tag kode menggunakan badge putih bersih (`bg-white px-2 py-0.5 rounded border border-light-subtle`) dengan teks biru primer, sehingga tidak lagi menggunakan warna magenta default browser.
+      2. **Pencegahan Teks Terpotong (*Text-Nowrap Protection*)**: Menambahkan `<strong class="text-nowrap font-monospace text-dark">` pada contoh kode registrasi agar string kode tetap utuh dalam satu baris.
+      3. **Penyelarasan Ruang Napas Header & Kartu (*Vertical Rhythm*)**: Meningkatkan padding header banner dan kontainer pencarian menjadi `py-4 py-md-5` dan `container py-2`. Tersedia jarak visual lebih dari 40px yang elegan antara breadcrumb biru dan kartu pencarian putih.
+      4. **Pembersihan Class Bootstrap Non-Standar**: Mengganti seluruh class pecahan menjadi class resmi Bootstrap 5 (`p-3`, `p-4`, `py-2`, `mb-2`, `mb-3`, `gap-2`, `gap-3`) di seluruh file `src/pages/daftar/status.astro` serta menyelaraskan Javascript `setMode()` agar tidak menimpa class CSS kartu.
+      5. **Bridge Pengaman Global di global.css (*Spacing Utility Safety Net*)**: Menambahkan aturan CSS pecahan (`.p-0\.5`, `.p-1\.5`, `.p-2\.5`, `.p-3\.5`, `.py-2\.5`, `.px-2\.5`, `.gap-1\.5`, dll.) pada `src/styles/global.css` sebagai jaring pengaman agar jika ada komponen lama yang menggunakan class pecahan, tampilannya tetap memiliki padding presisi dan tidak pernah menjadi 0px lagi. Serta menetapkan komitmen tegas untuk selalu menggunakan standar murni **Bootstrap 5 & Vanilla CSS** tanpa sintaks Tailwind.
+      6. **Penyelarasan Standar Page Banner Header**: Menstandarkan kembali header banner halaman cek status (`py-5`, `container py-3 text-center`, `h1.display-5 fw-bold mb-3`, `p.lead text-white-50 max-w-2xl mx-auto mb-1`) agar identik, proporsional, dan konsisten dengan seluruh halaman resmi lainnya (seperti *Kontak*, *Regulasi*, *Tentang KKA*, *Jalur Mandiri*, dan *Jalur Kolektif*).
+      7. **Desain Ulang Baris 3 Tombol Aksi (*Unified 3-Button Action Bar*)**:
+         - **Masalah Sebelumnya**: Ketiga tombol memiliki tinggi dan format teks yang tidak seimbang; tombol Cetak Bukti dan Konfirmasi membungkus teks menjadi 2 baris tidak rapi, sedangkan tombol Cari Kode Lain hanya 1 baris tanpa ikon dan warnanya pudar (*ghost outline*).
+         - **Solusi**: Mengubah struktur menjadi grid responsif simetris 3 kolom (`row g-2 g-md-3` dengan `col-12 col-sm-4`). Setiap tombol memiliki tinggi seragam (`min-height: 48px`), teks satu baris utuh (`text-nowrap`), dilengkapi ikon SVG tajam 18x18px di masing-masing tombol (termasuk ikon pencarian pada tombol reset), serta pewarnaan harmonis (Navy resmi KKA untuk Cetak Bukti, Hijau resmi WhatsApp untuk Konfirmasi Panitia, dan Slate Neutral bersih untuk Cari Kode Lain dengan fitur *smooth scroll* kembali ke atas).
+
+  - **Modernisasi Tampilan Halaman Login Admin (`/admin/login`) Berbasis Template BootstrapMade AppDashboard**:
+    - **Aset & Fondasi**:
+      - Menggunakan bundel CSS dan ikon dari folder `public/admin-assets/` (`vendor/bootstrap/css/bootstrap.min.css`, `vendor/bootstrap-icons/bootstrap-icons.css`, `vendor/remixicon/remixicon.css`, `vendor/fontawesome-free/css/all.min.css`, dan `css/main.css`).
+      - Mengadopsi arsitektur visual otentikasi 2-kolom (*Two-Column Corporate Auth Layout*): `.auth-layout`, `.auth-shell`, `.auth-brand-panel`, dan `.auth-card`.
+    - **Panel Branding Kiri (*Left Brand Panel*)**:
+      - Disesuaikan dengan identitas korporat KKA Radar Kediri menggunakan gradasi Deep Navy (`linear-gradient(145deg, #091a33 0%, #0f2d59 50%, #173f78 100%)`).
+      - Menampilkan badge *Command Center*, ringkasan operasional sistem, kisi sinyal (*7 Wilayah Kediri Raya*, *3 Jenjang SD-SMP-SMA*, *Supabase Cloud Database*), dan kartu keamanan (*Proteksi Sesi Terenkripsi*).
+    - **Formulir Otentikasi Kanan (*Right Login Card*)**:
+      - Menyaring elemen sesuai instruksi: **Menghilangkan login sosial (Google / GitHub)**, garis pemisah (*divider*), dan tautan pendaftaran umum (*registration link*), sehingga murni berfokus pada akses administratif panitia internal.
+      - Input Username Administrator dan Kata Sandi dengan ikon visual Bootstrap, tombol pengalih intip kata sandi (*show/hide eye toggle*), serta kotak centang *Ingat Sesi Saya (30 Hari)*.
+    - **Keamanan & Integrasi Sistem (Zero Internal Exposure)**:
+      - Mempertahankan 100% integrasi otentikasi Supabase ke tabel `admin_users` dengan enkripsi sesi di `sessionStorage`/`localStorage`.
+      - **Pembersihan Info Sensitif & Hardening Keamanan Database**: Menghapus seluruh modal script SQL, tombol salin SQL, serta peringatan teknis struktur tabel dari antarmuka login publik. Tidak ada skema database, nama tabel internal, atau contoh kredensial default yang terekspos ke sisi klien.
+      - Menstandarkan pesan kesalahan login menjadi notifikasi generik yang aman (*"Username atau kata sandi tidak sesuai"*) guna mencegah teknik *user enumeration* atau celah analisis serangan keamanan.
+
+  - **Penyelarasan Tampilan & Tipografi Dashboard Admin (`/admin`) Sesuai Template BootstrapMade AppDashboard**:
+    - **Integrasi Tipografi Resmi Template (*Geist & Geist Mono*)**:
+      - Memperbarui `src/layouts/AdminLayout.astro` dengan mengimpor Google Font **Geist** (`wght@400..800`) dan **Geist Mono** (`wght@400..600`) sesuai standar `main.css` (`--default-font`, `--heading-font`, `--mono-font`). Hal ini menyelesaikan kendala font yang sebelumnya berbeda (*fallback ke system-ui*).
+      - Menetapkan `pageClass="page-dashboard"` secara otomatis di `AdminLayout.astro` agar seluruh token dan grid styling AppDashboard aktif di seluruh modul admin.
+    - **Penataan Ulang Spacing Kartu & Elemen (*Anti-Cramped Card Layout*)**:
+      - **Daftar Sebaran 7 Wilayah**: Mengalihkan kontainer dari list kaku menjadi komponen resmi `.dashboard-target-list` dan `.dashboard-target-item`. Setiap wilayah kini memiliki padding vertikal 16px yang lega, garis pembatas halus, serta track bar horizontal kapsul (`.dashboard-target-track`) yang proporsional dan tidak menempel kaku.
+      - **Komposisi Tingkat Jenjang**: Mengadopsi struktur `.dashboard-target-item` dengan badge jenjang resmi (SD/SMP/SMA), angka metrik, dan pill bar yang seimbang.
+      - **Rasio Pendaftaran (Mandiri vs Kolektif)**: Mengganti box grey yang kaku dengan kartu metrik native `.dashboard-status-grid` dan `.dashboard-status-item`, lengkap dengan dot status berpendar (`.dashboard-status-dot.primary` dan `.warning`).
+      - **Pusat Pintasan Cepat**: Memodifikasi tombol vertikal sempit menjadi kisi 2x2 elegan `.dashboard-action-grid` dan `.dashboard-action-item` dengan efek transisi hover khas AppDashboard.
+      - **Standardisasi Tabel Data Transaksi**: Mengganti pembungkus tabel menjadi `.dashboard-orders-table` dengan padding sel yang lega (`padding: 1rem 1.15rem`), padding tepi kartu `ps-4` dan `pe-4` agar konten tabel tidak menabrak batas kartu, serta tombol aksi berformat pill badge modern.
+      - Penyelarasan format tabel juga diaplikasikan pada Master Data Pendaftaran (`/admin/pendaftaran`), Kelola Wilayah (`/admin/wilayah`), dan Data Sekolah (`/admin/sekolah`).
+
+  - **Perombakan Tampilan Modal Detail & Aksi Verifikasi Pendaftaran (`/admin/pendaftaran`) Sesuai Desain BootstrapMade**:
+    - **Header Modal Elegan & Bersih (*Clean Light Header*)**:
+      - Mengganti latar belakang modal hitam pekat (`bg-dark text-white`) yang kaku dan kontras berlebihan menjadi header putih bersih (`bg-white border-bottom px-4 py-3 align-items-center`).
+      - Menyematkan ikon badge verifikasi biru melingkar (`.modal-header-icon`), kode registrasi tebal dalam font monospasial modern (`#modalKodeReg`), badge pill lembut (`KOLEKTIF` / `MANDIRI`), serta subjudul deskriptif *"Rincian Data Pendaftar & Aksi Verifikasi Pembayaran"*.
+      - Mengganti tombol silang putih dengan `btn-close` standar Bootstrap yang elegan dengan efek hover transparan.
+    - **Banner Status Verifikasi Dinamis (*Smart Status Callout*)**:
+      - Mengubah status banner menjadi kotak info modern berlatar halus dan bergradasi warna sesuai status aktual:
+        - **LUNAS**: Latar hijau mint lembut (`.status-banner-lunas`), teks hijau zamrud tajam (`#0f9b7a`), border hijau halus, dan ikon `bi-patch-check-fill`.
+        - **MENUNGGU**: Latar kuning amber lembut (`.status-banner-menunggu`), teks kuning tembaga (`#c87914`), border halus, dan ikon `bi-hourglass-split`.
+        - **DITOLAK**: Latar mawar lembut (`.status-banner-ditolak`), teks merah kirmizi (`#e05264`), border halus, dan ikon `bi-exclamation-octagon-fill`.
+      - Waktu pendaftaran dikemas rapi dalam pill badge berbingkai putih dengan ikon kalender (`<i class="bi bi-calendar3"></i>`).
+    - **Kartu Informasi Sekolah & Biaya Lebih Lapang (*Spacious Surface Cards*)**:
+      - Mengganti container abu-abu monoton (`bg-light`) dengan kartu putih modern berbayangan halus (`bg-white rounded-3 border shadow-2xs p-3.5`).
+      - Memberikan jarak napas (*micro-spacing*) yang lega antara label dan isi teks agar tidak saling menempel (*anti-nempel*).
+      - Menampilkan total tagihan biaya pendaftaran dalam mini-panel dengan tipografi angka yang tegas dan terstruktur.
+      - **Pratinjau Bukti Transfer**: Didesain ulang sebagai kartu thumbnail interaktif berbingkai melengkung (`.modal-proof-thumb`) dengan efek transisi hover naik (*subtle lift*), bayangan halus, dan baris aksi gelap semi-transparan (*backdrop blur*) bertuliskan *"Buka Foto Penuh"*. Jika belum ada foto struk, disajikan kotak kosong rapi dengan ikon gambar putus-putus.
+    - **Tabel Daftar Peserta Siswa Khas AppDashboard (`.modal-student-table`)**:
+      - Menghapus garis zebra striping konvensional yang kaku.
+      - Menerapkan header tabel berhuruf kapital, font-weight 700, warna abu-abu lembut (`#687789`), dengan background `#f8fafc`.
+      - Sel baris siswa memiliki padding vertikal 12px yang lega, penomoran berurutan rapi, badge gender terwarnai (merah muda untuk *Perempuan*, biru untuk *Laki-laki*), badge kelas yang jelas, dan efek hover baris halus.
+    - **Footer & Tombol Aksi Verifikasi Kontekstual (*Dynamic Verification Actions*)**:
+      - Merombak tombol footer dari bentuk kotak Bootstrap standar menjadi pil melengkung penuh (`rounded-pill px-3.5 py-1.5`) dengan bayangan halus.
+      - **Tombol Cetak PDF**: Tombol outline sekunder bernuansa netral dengan ikon printer.
+      - **Logika Kontekstual Cerdas**:
+        - Jika status sudah **LUNAS**: Tombol hijau utama otomatis menampilkan status `<i class="bi bi-check2-all"></i> Terverifikasi (LUNAS)`, mencegah keraguan admin apakah pembayaran telah diproses atau belum.
+        - Jika status **DITOLAK**: Tombol merah berubah label menjadi `<i class="bi bi-pencil-square"></i> Ubah Catatan Penolakan`, dan tombol persetujuan menampilkan opsi `<i class="bi bi-check2-circle"></i> Pulihkan Jadi LUNAS`.
+        - Jika status **MENUNGGU**: Menampilkan aksi verifikasi lengkap: `Tolak / Minta Revisi` dan `Setujui Pembayaran (LUNAS)`.
+    - **Penyelarasan Kolom Aksi Verifikasi pada Tabel Utama Pendaftaran**:
+      - Tombol aksi verifikasi pada baris tabel master pendaftaran kini secara otomatis mencerminkan status berkas:
+        - Status Menunggu: Tombol biru tegas `Verifikasi` dengan ikon perisai centang (`bi-shield-check`).
+        - Status Lunas: Tombol hijau lembut `Kelola` dengan ikon roda gigi (`bi-gear-fill`).
+        - Status Ditolak: Tombol merah lembut `Kelola` dengan ikon tuas kontrol (`bi-sliders`).
+    - **Integritas Fungsi & Transaksi 100% Terjaga**:
+      - Seluruh alur data Supabase (query tabel `registrations` & `participants`), mekanisme override status lokal, sinkronisasi webhook Google Spreadsheet, dan pembaruan database cloud berjalan normal tanpa perubahan logika backend/fungsi.
+
+  - **Pembersihan Residu Kode Tailwind, Pemulihan Spasi Lapang, & Otomatisasi WhatsApp Verifikasi (29 Oktober 2026)**:
+    - **Pembersihan Total Residu Utilitas Desimal Tailwind (*Zero Tailwind Residual*)**:
+      - Ditemukan akar penyebab teks dan kartu saling berdempetan (*nempel-nempel*): keberadaan kelas pecahan utilitas khas Tailwind seperti `px-3.5`, `py-2.5`, `p-3.5`, `gap-2.5`, `gap-1.5`, `mb-2.5`, `mt-0.5`, `px-2.5`, dan `py-0.5`. Di Bootstrap 5.3 murni, kelas-kelas desimal ini tidak dikenali oleh browser sehingga dianggap bernilai `0px` (nol padding/margin/gap).
+      - Seluruh kelas desimal tersebut dibersihkan secara komprehensif dari seluruh modul admin:
+        - `src/pages/admin/pendaftaran.astro` (Modal verifikasi, tabel siswa, header aksi)
+        - `src/pages/admin/index.astro` (Target per jenjang, badge status saklar event, tabel pendaftar terkini)
+        - `src/pages/admin/wilayah.astro` (Header panel regional, badge status kuota, kartu 7 wilayah)
+        - `src/pages/admin/pengaturan.astro` (Panel saklar mandiri/kolektif, 3 kartu gelombang biaya, rekening & hotline)
+        - `src/pages/admin/sekolah.astro` (4 kartu KPI total sekolah, modal tambah sekolah, badge jenjang & status)
+        - `src/pages/admin/cms.astro` (Tabel artikel berita, modal editor artikel)
+        - `src/pages/admin/galeri.astro` (Filter kategori foto, kartu galeri, modal foto)
+        - `src/pages/admin/login.astro` (Alert error, tombol submit login, link kembali)
+        - `src/layouts/AdminLayout.astro` (Header live Supabase badge)
+    - **Pemberian Jarak Napas Lega pada Kartu Informasi Modal (`.modal-info-card`)**:
+      - Mengganti gaya inline yang sempit dengan arsitektur CSS terstruktur:
+        - `.modal-info-card`: Diberikan padding lapang `1.5rem 1.6rem !important`, batas border halus `#e2e8f0`, dan sudut melengkung `0.85rem`.
+        - `.modal-info-card-header`: Diberikan pemisah garis bawah, jarak vertikal `margin-bottom: 1.25rem`, serta padding bawah `0.75rem`.
+        - `.modal-info-item`: Margin bawah ditingkatkan menjadi `1.15rem`.
+        - `.modal-info-label`: Tipografi kapital dengan warna abu-abu slate `#64748b` dan spasi `margin-bottom: 0.35rem`.
+        - `.modal-info-value`: Teks lebih tegas dengan warna hitam pekat `#0f172a`, font-weight 700, dan line-height `1.45`.
+        - `.modal-tagihan-box`: Diberikan padding lapang `0.95rem 1.25rem` dan latar belakang sejuk `#f8fafc`.
+        - Kartu Tabel Siswa: Diberikan margin atas `mt-3` agar berjarak jelas dari 2 kolom informasi di atasnya.
+    - **Pembaruan Label Tombol Aksi Menjadi "Kelola"**:
+      - Mengganti teks tombol aksi baris pendaftaran berstatus Lunas dan Ditolak dari *"Rincian"* / *"Tinjau"* menjadi **"Kelola"** (`bi-gear-fill` dan `bi-sliders`).
+      - Mengganti kolom tabel dari *"Aksi Verifikasi"* menjadi **"Aksi Kelola"**.
+      - Mengganti subjudul modal dari *"Rincian Data Pendaftar & Aksi Verifikasi Pembayaran"* menjadi **"Kelola Berkas Pendaftar & Status Pembayaran"**.
+    - **Eliminasi Dialog Pop-Up Browser Native Menjadi Pop-Up Tampilan Elegan (`#statusFeedbackModal`)**:
+      - Menghilangkan `window.confirm()` dan `window.alert()` native browser yang lambat dan mengganggu.
+      - Menghadirkan modal pop-up visual di dalam halaman (*in-page modal dialog*) dengan desain modern:
+        - Ikon centang hijau melingkar untuk status LUNAS atau segitiga oranye untuk REVISI.
+        - Judul status dinamis (*Status Berhasil Diperbarui: LUNAS*).
+        - Badge kode registrasi tebal.
+        - Penjelasan ringkas bahwa data telah tersimpan dan WhatsApp pendaftar otomatis dibuka.
+        - Tombol aksi primer: *"Buka WhatsApp Pendaftar"* (`btn-success rounded-pill`).
+        - Tombol aksi sekunder: *"Tutup Dialog"* (`btn-light rounded-pill`).
+    - **Validasi Konfirmasi In-Page Modal Sebelum Ubah Status & Buka WhatsApp (`#actionConfirmModal`)**:
+      - Menyediakan dialog validasi konfirmasi visual di dalam halaman (*in-page modal dialog*) sebelum status diterapkan:
+        - Dialog konfirmasi persetujuan: *"Apakah Anda yakin ingin memverifikasi pembayaran berkas [KODE] sebagai LUNAS?"* dengan tombol *"Batal"* dan *"Ya, Setujui Lunas"*.
+        - Dialog konfirmasi penolakan: *"Apakah Anda yakin ingin menetapkan berkas [KODE] menjadi DITOLAK / BUTUH REVISI?"* dengan tombol *"Batal"* dan *"Ya, Tolak & Buka WA"*.
+      - **Anti-Buka WA Terburu-buru**: WhatsApp pendaftar **TIDAK AKAN** terbuka sebelum admin mengonfirmasi tombol *"Ya"* pada dialog konfirmasi.
+      - **Validasi Alasan Penolakan Bersih**: Jika catatan penolakan kosong, sistem memberikan visual feedback `.is-invalid` pada textarea dengan fokus kursor seketika, sepenuhnya bebas dari pop-up `alert()` native browser.
+    - **Penyelarasan Alur Perbaikan Berkas (Kirim Langsung via WhatsApp Panitia)**:
+      - Menyesuaikan instruksi pada pesan revisi pendaftaran: Di halaman Cek Status (`/daftar/status`) tidak disediakan form unggah ulang karena pendaftaran awal telah dikunci.
+      - Alur perbaikan yang tepat dan valid adalah peserta mengirimkan bukti transfer perbaikan atau konfirmasi pelunasan secara langsung dengan membalas pesan WhatsApp panitia.
+    - **Penyelarasan Istilah Dokumen (Bukti Konfirmasi Pendaftaran, Bukan Kartu Tanda Ujian)**:
+      - Menghapus seluruh penyebutan prematur *"kartu tanda resmi"* / *"kartu tanda ujian"* di pesan konfirmasi WhatsApp dan helper form pendaftaran mandiri.
+      - Menggunakan terminologi resmi yang akurat: **"Bukti Konfirmasi Pendaftaran Resmi (PDF)"** yang dapat diperiksa di `/daftar/status?kode=...` dan dicetak di `/daftar/cetak?kode=...`.
+    - **Perbaikan Masalah Data Reset Saat Reload pada Kelola Wilayah (`/admin/wilayah`)**:
+      - **Akar Masalah**: Tabel `district_settings` di Supabase sebelumnya hanya memiliki kolom core (`slug`, `name`, `venue`, `quota`, `contact`, `status`, `updated_at`) dan belum memiliki kolom `logo_url`, `image_url`, `description`. Ketika form menyimpan seluruh payload sekaligus, Supabase menolak request dengan error `PGRST204 (Bad Request: Could not find column 'description')`. Akibatnya perubahan gagal tersimpan di cloud, dan saat halaman di-reload, fungsi `loadDistrictSettingsFromCloud()` mengambil data lama dan menimpa `localStorage`.
+      - **Solusi Dual-Layer Cloud Persistence**:
+        1. **Layer 1 (Tabel Relasional `district_settings`)**: Menyimpan kolom core (`slug`, `name`, `venue`, `quota`, `contact`, `status`, `updated_at`) dengan fallback anggun jika kolom `logo_url`/`description` belum dimigrasi.
+        2. **Layer 2 (Tabel Konfigurasi `app_settings` JSONB)**: Menyimpan seluruh konfigurasi lengkap termasuk URL logo custom dan narasi deskripsi di bawah key `district_settings`.
+        3. **Smart Merging Saat Reload**: Fungsi `loadDistrictSettingsFromCloud()` kini membaca gabungan `app_settings` dan `district_settings`, mempertahankan modifikasi logo, deskripsi, venue, dan kuota tanpa pernah mereset kembali ke default saat di-reload.
+      - **Sinkronisasi Otomatis Seluruh Halaman Publik**:
+        1. **Halaman Detail Wilayah** (`/wilayah/[slug]`): Logo, Status Badge, Venue CBT, Kuota CBT, Hotline WhatsApp, dan Deskripsi diperbarui secara realtime.
+        2. **Halaman Beranda** (`/#wilayah` via `RegionCard.astro`): Foto lambang wilayah dan deskripsi wilayah pada 7 kartu regional otomatis sinkron.
+        3. **Portal Pendaftaran Mandiri** (`/daftar/mandiri`): Foto logo dan deskripsi wilayah pada 7 kartu pemilihan wilayah otomatis sinkron.
+        4. **Portal Pendaftaran Kolektif** (`/daftar/kolektif`): Foto logo dan deskripsi wilayah pada 7 kartu pemilihan wilayah otomatis sinkron.
+
+   - **Perbaikan Bug Edit Data Sekolah Menjadi Duplikasi Baris Baru (`/admin/sekolah`)**:
+     - **Akar Masalah**:
+       1. **Key Map Berbasis Nama Sekolah (`namaSekolah`)**: Pada implementasi sebelumnya, `mergedMap` menggunakan kunci kombinasi yang menyertakan nama sekolah (`regionSlug|kecamatan|jenjang|namaSekolah`). Ketika nama sekolah diubah oleh admin, sistem menganggapnya sebagai kunci baru dan menyimpannya sebagai item baru. Nama sekolah lama yang berasal dari data statis awal tidak terhapus dan tetap ada di dalam Map.
+       2. **Perbedaan Format ID (`init-X` vs `sch_...`)**: Inisialisasi awal menghasilkan ID sementara `init-1`, `init-2`, dsb., sementara di Supabase Cloud sekolah memiliki ID resmi permanen (`sch_kabupaten-blitar_1`, dsb.). Saat admin mengedit sekolah sebelum sinkronisasi cloud selesai (atau jika ID tidak cocok), `allSchools.findIndex` menghasilkan `-1`, yang memicu pemanggilan `allSchools.unshift(newItem)` sehingga sekolah lama tetap ada dan sekolah hasil edit dimasukkan sebagai baris baru.
+       3. **Pencemaran LocalStorage (`kka_custom_schools`)**: Data duplikat tersimpan di `localStorage` dan terus diregenerasi setiap kali halaman dimuat ulang.
+     - **Solusi Tuntas & Implementasi Terstandarisasi**:
+       1. **Arsitektur Berbasis ID Unik Permanen**: Menghapus mekanisme ID sementara `init-X`. Seluruh data 5.671 sekolah diidentifikasi secara unik dan permanen menggunakan kolom `id` resmi dari Supabase (`sch_...`).
+       2. **Map & In-Place Update Berbasis ID**: Seluruh pencarian dan pembaruan data kini dilakukan secara mutlak berdasarkan `s.id === targetId`. Ketika admin mengedit nama sekolah, objek sekolah yang bersangkutan langsung diperbarui di tempat (*in-place update*), tanpa pernah menambah baris baru.
+       3. **Sinkronisasi Cepat & Caching Paralel**: Mengambil 5.671 sekolah langsung dari Supabase Cloud menggunakan `Promise.all` paralel berkecepatan tinggi (~600ms) dengan fallback cache lokal `kka_admin_schools_cache_v3`.
+       4. **Pembersihan Cache Lama**: Menghapus otomatis key `kka_custom_schools` yang tercemar saat halaman dimuat, sehingga duplikasi lama langsung bersih.
+       5. **Feedback Visual Modern**: Mengganti dialog browser `alert()` dengan notifikasi toast modern in-page (`#sekolahToast`) dan indikator status tombol saat menyimpan/menghapus.
+       6. **Sinkronisasi Form Publik**: Memastikan form pendaftaran mandiri (`FormPendaftaranMandiri.astro`) dan form kolektif (`FormPendaftaranKolektif.astro`) mengambil data mutakhir langsung dari cloud tanpa menumpuk nama lama.
+
+    - **Perbaikan Fungsi Gelombang & Biaya serta Sinkronisasi Rekening Bank BRI & Hotline CS Panitia**:
+      - **Akar Masalah**:
+        1. **Gelombang & Biaya Tidak Tersimpan Saat Diedit di Admin (`/admin/pengaturan`)**: Fungsi `saveSettings()` sebelumnya hanya membaca nilai radio `activeWaveVal` dan mengabaikan seluruh elemen input periode dan harga (`wave1Period`, `wave1PriceSD`, `wave1PriceSMP`, `wave1PriceSMA`, serta gelombang 2 & 3). Akibatnya, perubahan tanggal dan tarif tidak pernah disertakan ke dalam payload JSON `app_settings` (`key: 'system_settings'`), sehingga saat halaman di-reload kembali ke default statis.
+        2. **Halaman Publik Belum Terkoneksi ke Pengaturan Dinamis**: Halaman pendaftaran mandiri (`/daftar/mandiri`), pendaftaran kolektif (`/daftar/kolektif`), tabel harga (`PricingTable.astro`), dan seksi detail KKA (`DetailKKA.astro`) mengandalkan data konstan statis dari `competition.ts` saat build time dan belum memiliki skrip hidrasi dinamis dari Supabase `system_settings`.
+        3. **Rekening & Hotline CS di Halaman Publik Belum Dinamis**: Nilai rekening resmi yang sah adalah **Bank BRI Cabang Kediri (0033-0100-3455-560 a.n. Heri Muda Setiawan)** dan kontak hotline WhatsApp resmi panitia adalah **Pak Endro (0812-3550-8957)** serta **Mas Fajar (0813-5913-8251)**. Di halaman admin `/admin/pengaturan`, form sebelumnya masih memiliki nilai dummy bawaan template yang tidak sinkron, dan halaman publik belum membaca data pengaturan terbaru dari database.
+      - **Solusi Tuntas & Implementasi Terstandarisasi**:
+        1. **Pembaruan Lengkap Form Admin (`src/pages/admin/pengaturan.astro`)**:
+           - Membaca dan menyimpan seluruh konfigurasi periode waktu dan tarif biaya ujian SD, SMP, SMA untuk Gelombang 1 (Early Bird), Gelombang 2 (Reguler), dan Gelombang 3 (Last Call).
+           - Menetapkan nilai default resmi: Bank BRI Cabang Kediri, Rekening: `0033-0100-3455-560`, Atas Nama: `Heri Muda Setiawan`, CS 1: `0812-3550-8957 (Pak Endro)`, CS 2: `0813-5913-8251 (Mas Fajar)`, Email: `event@radarkediri.jawapos.com`.
+           - Indikator visual gelombang aktif: Kartu gelombang yang dipilih otomatis diberi highlight border biru, bayangan, dan badge *"Sedang Aktif"*.
+           - Mengganti dialog browser `alert()` dengan notifikasi in-page toast modern (`#pengaturanToast`) dengan umpan balik visual sukses/gagal.
+        2. **Hidrasi Dinamis Pendaftaran Mandiri (`src/components/FormPendaftaranMandiri.astro`)**:
+           - Elemen nama bank, nomor rekening, tombol salin rekening, dan nama pemilik rekening terhidrasi secara dinamis dan defaulted ke Bank BRI `0033-0100-3455-560 a.n. Heri Muda Setiawan`.
+           - Tarif per siswa dan total tagihan langsung menggunakan tarif gelombang yang sedang aktif dari pengaturan sistem.
+           - Tombol konfirmasi WhatsApp setelah pendaftaran langsung mengarah ke nomor WhatsApp hotline panitia resmi.
+        3. **Hidrasi Dinamis Pendaftaran Kolektif Sekolah (`src/components/FormPendaftaranKolektif.astro`)**:
+           - Rincian rekening pembayaran resmi dan tombol salin nomor rekening terhidrasi dinamis ke Bank BRI `0033-0100-3455-560 a.n. Heri Muda Setiawan`.
+           - Perhitungan rincian biaya rombongan sekolah dari file Excel langsung menghitung tarif per siswa dan total tagihan berdasarkan gelombang aktif.
+           - Tombol kirim berkas via WhatsApp mengarah ke kontak CS panitia resmi.
+        4. **Hidrasi Dinamis Halaman Kontak (`src/pages/kontak.astro`)**:
+           - Menyelaraskan kartu metode pembayaran resmi ke Bank BRI Cabang Kediri (`0033-0100-3455-560 a.n. Heri Muda Setiawan`).
+           - Menghubungkan seluruh kontak resmi: WhatsApp Admin 1 (0812-3550-8957 - Pak Endro), Admin 2 (0813-5913-8251 - Mas Fajar), dan Admin 3 (0815-5897-90831 - Mas Wildan) ke pengaturan sistem.
+        5. **Sinkronisasi Footer & Sumber Data Statis (`Footer.astro` & `competition.ts`)**:
+           - Menghapus data akun pembayaran dummy (Bank BCA) dari `competition.ts` dan menetapkan satu-satunya rekening resmi: **Bank BRI Cabang Kediri (0033-0100-3455-560 a.n. Heri Muda Setiawan)**.
+           - Menambahkan skrip hidrasi dinamis pada komponen `Footer.astro` agar ketiga kartu WhatsApp admin di footer seluruh halaman selalu sinkron dengan pengaturan hotline panitia.
+           - Menambahkan input CS 3 (Informasi & Sekolah - Mas Wildan) di `/admin/pengaturan` sehingga ketiga kontak panitia dapat dikelola secara terpusat.
+        6. **Hidrasi Dinamis Tabel Biaya & Detail KKA (`PricingTable.astro` & `DetailKKA.astro`)**:
+           - Tabel biaya dan kartu tarif di beranda otomatis menyorot badge *"Sedang Aktif"* pada gelombang yang dipilih di admin, serta memperbarui periode tanggal dan nominal tarif per jenjang (SD, SMP, SMA).
+        7. **Hidrasi Dinamis Gelombang & Tarif CBT di Halaman Wilayah & Jenjang (`/wilayah/[slug]` & `/jenjang/[slug]`)**:
+           - Menghubungkan kotak tarif dan jadwal pendaftaran di seluruh 7 halaman wilayah regional (`/wilayah/kota-kediri`, dsb.) ke Supabase Cloud `system_settings` dan cache lokal.
+           - Ketika admin mengaktifkan Gelombang 2 (atau gelombang lainnya) di `/admin/pengaturan`, halaman wilayah otomatis menampilkan nama gelombang aktif, badge status gelombang, nominal tarif (SD, SMP, SMA), dan periode pendaftaran yang sesuai secara realtime.
+           - Halaman rincian jenjang pendidikan (`/jenjang/sd`, `/jenjang/smp`, `/jenjang/sma`) juga otomatis memperbarui tarif pendaftaran dan nama gelombang aktif secara realtime.
+
 ---
 
 ## 📊 Hasil Uji Build Terkini
 - Perintah: `npm run build`
 - Total Halaman Ter-generate: **46 halaman HTML statis + 1 file sitemap XML**
-- Waktu Build: **4.16 detik**
+- Waktu Build: **4.22 detik**
 - Status: **Berhasil 100% (0 Error, 0 Warning)**
-- Validasi Visual Browser: Tampilan cek status pada viewport smartphone (390x844) terbukti sangat rapi, proporsional, tanpa elemen menempel atau keluar batas kartu (*zero overflow*), dan seluruh tombol tindakan berada leluasa di atas bilah navigasi bawah.
+- Validasi: Konfigurasi gelombang (periode dan tarif SD/SMP/SMA), rekening Bank BRI resmi (0033-0100-3455-560 a.n. Heri Muda Setiawan), dan hotline WhatsApp panitia kini tersimpan permanen di Supabase Cloud serta terhidrasi secara realtime di seluruh portal publik (Mandiri, Kolektif, Kontak, dan Beranda).
+
+
+
+
+
+
+
 

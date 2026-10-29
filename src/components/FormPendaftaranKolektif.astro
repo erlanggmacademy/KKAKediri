@@ -375,7 +375,7 @@ const kecamatanList = currentRegionSchools ? Object.keys(currentRegionSchools.di
           </div>
 
           <div class="bank-account-card p-3.5 p-md-4 rounded-4 border bg-white shadow-2xs">
-            <!-- Header Kartu: Logo BRI & Nama Bank -->
+            <!-- Header Kartu: Logo & Nama Bank -->
             <div class="d-flex align-items-center mb-3 pb-2.5 border-bottom">
               <div class="d-flex align-items-center gap-3">
                 <img 
@@ -386,21 +386,22 @@ const kecamatanList = currentRegionSchools ? Object.keys(currentRegionSchools.di
                   style="object-fit: contain;"
                   loading="lazy"
                 />
-                <span class="fs-5 fw-bold text-dark mb-0">Bank BRI</span>
+                <span class="fs-5 fw-bold text-dark mb-0" id="kolektifBankName">Bank BRI Cabang Kediri</span>
               </div>
             </div>
 
             <!-- Bagian Nomor Rekening Panjang & Tombol Salin -->
             <div class="p-3 bg-light rounded-3 border mb-2.5">
-              <span class="text-muted small d-block mb-1" style="font-size: 0.78rem;">Nomor Rekening BRI:</span>
+              <span class="text-muted small d-block mb-1" style="font-size: 0.78rem;" id="kolektifBankNumberLabel">Nomor Rekening BRI:</span>
               <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2.5">
-                <div class="account-number font-monospace fw-bold text-primary fs-3 text-nowrap" style="letter-spacing: 1px;">
+                <div class="account-number font-monospace fw-bold text-primary fs-3 text-nowrap" id="kolektifBankNumber" style="letter-spacing: 1px;">
                   0033-0100-3455-560
                 </div>
                 <div>
                   <button 
                     type="button" 
                     class="btn btn-primary btn-sm px-3.5 py-1.5 rounded-pill fw-semibold btn-copy-account d-inline-flex align-items-center gap-1.5 shadow-2xs hover-scale" 
+                    id="kolektifBtnCopyAccount"
                     data-copy="003301003455560" 
                     title="Salin nomor rekening BRI"
                   >
@@ -417,7 +418,7 @@ const kecamatanList = currentRegionSchools ? Object.keys(currentRegionSchools.di
             <!-- Footer: Pemilik Rekening -->
             <div class="d-flex align-items-center justify-content-between text-muted small px-1 flex-wrap gap-1" style="font-size: 0.82rem;">
               <span>Atas Nama (Penerima):</span>
-              <strong class="text-dark fs-6">Heri Muda Setiawan</strong>
+              <strong class="text-dark fs-6" id="kolektifBankHolder">Heri Muda Setiawan</strong>
             </div>
           </div>
         </div>
@@ -621,7 +622,57 @@ const kecamatanList = currentRegionSchools ? Object.keys(currentRegionSchools.di
 
   document.addEventListener('DOMContentLoaded', () => {
     let parsedStudents: any[] = [];
-    const prices = getActiveWave().prices;
+    let prices = { ...getActiveWave().prices };
+    let currentAdminWa = '6281235508957';
+    let lastDetectedJenjangCategory: 'sd' | 'smp' | 'sma' = 'sd';
+
+    function applyDynamicSystemSettings(cfg: any) {
+      if (!cfg) return;
+
+      // 1. Update Bank Information
+      const bankNameEl = document.getElementById('kolektifBankName');
+      const bankNumEl = document.getElementById('kolektifBankNumber');
+      const bankHolderEl = document.getElementById('kolektifBankHolder');
+      const copyBtn = document.getElementById('kolektifBtnCopyAccount') as HTMLElement | null;
+
+      if (bankNameEl && cfg.bankName) bankNameEl.textContent = cfg.bankName;
+      if (bankNumEl && cfg.bankNumber) bankNumEl.textContent = cfg.bankNumber;
+      if (bankHolderEl && cfg.bankHolder) bankHolderEl.textContent = cfg.bankHolder;
+      if (copyBtn && cfg.bankNumber) {
+        copyBtn.setAttribute('data-copy', cfg.bankNumber.replace(/[^0-9]/g, ''));
+      }
+
+      // 2. Update Wave Prices
+      const activeWaveId = Number(cfg.activeWave) || 1;
+      let waveObj: any = null;
+      if (Array.isArray(cfg.waves)) {
+        waveObj = cfg.waves.find((w: any) => w.id === activeWaveId);
+      }
+      if (waveObj && waveObj.prices) {
+        prices = {
+          sd: Number(waveObj.prices.sd) || 25000,
+          smp: Number(waveObj.prices.smp) || 35000,
+          sma: Number(waveObj.prices.sma) || 50000,
+        };
+      }
+
+      // 3. Update WhatsApp CS Number
+      if (cfg.wa1 || cfg.wa2) {
+        let cleanWa = (cfg.wa1 || cfg.wa2).replace(/[^0-9]/g, '');
+        if (cleanWa.startsWith('0')) {
+          cleanWa = '62' + cleanWa.slice(1);
+        }
+        if (cleanWa) currentAdminWa = cleanWa;
+      }
+
+      // If already parsed, recalculate
+      if (parsedStudents && parsedStudents.length > 0 && lastDetectedJenjangCategory) {
+        const rate = prices[lastDetectedJenjangCategory] || 25000;
+        const totalBayar = rate * parsedStudents.length;
+        if (rincianBiayaPerSiswa) rincianBiayaPerSiswa.textContent = formatRp(rate);
+        if (rincianTotalBayar) rincianTotalBayar.textContent = formatRp(totalBayar);
+      }
+    }
 
     const kolektifCard = document.getElementById('kolektifFormCard');
     const activeDistrictName = kolektifCard?.dataset.districtName || 'Kabupaten Kediri';
@@ -681,24 +732,35 @@ const kecamatanList = currentRegionSchools ? Object.keys(currentRegionSchools.di
     const kolektifSuccessCard = document.getElementById('kolektifSuccessCard');
     const btnResetKolektif = document.getElementById('btnResetKolektif');
 
-    // Check if Kolektif registration is closed by Admin
+    // 0a. Check local system settings & apply immediately
+    try {
+      const storedSys = localStorage.getItem('kka_admin_system_settings');
+      if (storedSys) applyDynamicSystemSettings(JSON.parse(storedSys));
+    } catch (e) {}
+
+    // 0b. Check if Kolektif registration is closed by Admin
     try {
       const storedReg = localStorage.getItem('kka_registration_status_control');
       if (storedReg) applyKolektifClose(JSON.parse(storedReg));
     } catch (e) {}
 
-    // Async check to Cloud Supabase
+    // Async check to Cloud Supabase for live settings & registration control
     (async () => {
       try {
         const { data, error } = await supabase
           .from('app_settings')
-          .select('value')
-          .eq('key', 'registration_control')
-          .single();
+          .select('*');
 
-        if (!error && data && data.value) {
-          applyKolektifClose(data.value);
-          localStorage.setItem('kka_registration_status_control', JSON.stringify(data.value));
+        if (!error && data) {
+          data.forEach((row: any) => {
+            if (row.key === 'system_settings' && row.value) {
+              applyDynamicSystemSettings(row.value);
+              localStorage.setItem('kka_admin_system_settings', JSON.stringify(row.value));
+            } else if (row.key === 'registration_control' && row.value) {
+              applyKolektifClose(row.value);
+              localStorage.setItem('kka_registration_status_control', JSON.stringify(row.value));
+            }
+          });
         }
       } catch (err) {}
     })();
@@ -745,31 +807,56 @@ const kecamatanList = currentRegionSchools ? Object.keys(currentRegionSchools.di
 
       schoolList = Array.from(new Set(schoolList)).sort((a, b) => a.localeCompare(b, 'id'));
 
-      inputNamaSekolah.innerHTML = '<option value="">-- Pilih Asal Sekolah / Madrasah --</option>';
+      function renderSchoolSelectOptions(list: string[]) {
+        const cur = inputNamaSekolah.value || currentSelection;
+        inputNamaSekolah.innerHTML = '<option value="">-- Pilih Asal Sekolah / Madrasah --</option>';
 
-      // If prefill or custom school is not in list, add it
-      if (currentSelection && currentSelection !== '__manual__' && !schoolList.includes(currentSelection)) {
-        const customOpt = document.createElement('option');
-        customOpt.value = currentSelection;
-        customOpt.textContent = currentSelection;
-        customOpt.selected = true;
-        inputNamaSekolah.appendChild(customOpt);
+        if (cur && cur !== '__manual__' && !list.includes(cur)) {
+          const customOpt = document.createElement('option');
+          customOpt.value = cur;
+          customOpt.textContent = cur;
+          customOpt.selected = true;
+          inputNamaSekolah.appendChild(customOpt);
+        }
+
+        list.forEach(sch => {
+          const opt = document.createElement('option');
+          opt.value = sch;
+          opt.textContent = sch;
+          if (cur === sch) opt.selected = true;
+          inputNamaSekolah.appendChild(opt);
+        });
+
+        const manualOpt = document.createElement('option');
+        manualOpt.value = '__manual__';
+        manualOpt.textContent = '+ Sekolah Lainnya (Ketik Manual)...';
+        if (cur === '__manual__') manualOpt.selected = true;
+        inputNamaSekolah.appendChild(manualOpt);
       }
 
-      schoolList.forEach(sch => {
-        const opt = document.createElement('option');
-        opt.value = sch;
-        opt.textContent = sch;
-        if (currentSelection === sch) opt.selected = true;
-        inputNamaSekolah.appendChild(opt);
-      });
+      renderSchoolSelectOptions(schoolList);
 
-      // Add manual entry option
-      const manualOpt = document.createElement('option');
-      manualOpt.value = '__manual__';
-      manualOpt.textContent = '+ Sekolah Lainnya (Ketik Manual)...';
-      if (currentSelection === '__manual__') manualOpt.selected = true;
-      inputNamaSekolah.appendChild(manualOpt);
+      // Query LIVE ke Supabase Cloud (tabel schools) untuk menyinkronkan data sekolah mutakhir
+      if (activeDistrictSlug && kecVal && jCat) {
+        supabase
+          .from('schools')
+          .select('nama_sekolah')
+          .eq('region_slug', activeDistrictSlug)
+          .eq('kecamatan', kecVal)
+          .eq('jenjang', jCat)
+          .order('nama_sekolah', { ascending: true })
+          .then(({ data, error }) => {
+            if (!error && data && data.length > 0) {
+              const liveList = Array.from(new Set(data.map(d => d.nama_sekolah).filter(Boolean))).sort((a, b) => a.localeCompare(b, 'id'));
+              if (liveList.length > 0) {
+                renderSchoolSelectOptions(liveList);
+              }
+            }
+          })
+          .catch((err) => {
+            console.warn('[Supabase] Live school options sync error:', err);
+          });
+      }
 
       // Handle visibility of manual input
       if (inputNamaSekolah.value === '__manual__') {
@@ -1208,6 +1295,7 @@ const kecamatanList = currentRegionSchools ? Object.keys(currentRegionSchools.di
         jenjangCategory = 'sd';
         schoolMeta.jenjang = 'SD / MI';
       }
+      lastDetectedJenjangCategory = jenjangCategory as 'sd' | 'smp' | 'sma';
 
       // Populate Metadata Card
       if (displayNamaSekolah) displayNamaSekolah.textContent = schoolMeta.namaSekolah || '(Isi di Bagian 2)';
@@ -1389,7 +1477,8 @@ const kecamatanList = currentRegionSchools ? Object.keys(currentRegionSchools.di
 
           const btnWa = document.getElementById('btnWaKolektifDirect') as HTMLAnchorElement;
           if (btnWa) {
-            btnWa.href = `https://wa.me/6281235508957?text=${encodeURIComponent(msg)}`;
+            const waTarget = currentAdminWa || '6281235508957';
+            btnWa.href = `https://wa.me/${waTarget}?text=${encodeURIComponent(msg)}`;
           }
           const btnCheckStatus = document.getElementById('btnCheckStatusDirectKolektif') as HTMLAnchorElement;
           if (btnCheckStatus) {

@@ -91,8 +91,8 @@ const currentPrice = currentWave.prices[level.id as 'sd' | 'smp' | 'sma'];
             <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 rounded-pill fs-8 fw-bold mb-2">
               Tarif Pendaftaran
             </span>
-            <h3 class="fw-bold text-kka-primary mb-1">{formatRupiah(currentPrice)}</h3>
-            <p class="text-muted small mb-4">Biaya {currentWave.name}</p>
+            <h3 class="fw-bold text-kka-primary mb-1" id="jenjangPrice">{formatRupiah(currentPrice)}</h3>
+            <p class="text-muted small mb-4" id="jenjangWaveInfo">Biaya {currentWave.name}</p>
 
             <h6 class="fw-bold text-dark fs-8 text-uppercase tracking-wider mb-2">Fasilitas Peserta:</h6>
             <ul class="list-unstyled d-flex flex-column gap-2 small text-secondary mb-0">
@@ -106,6 +106,77 @@ const currentPrice = currentWave.prices[level.id as 'sd' | 'smp' | 'sma'];
       </div>
     </div>
   </section>
+
+  <!-- Hidden Page Config for Bundled Client Script -->
+  <div id="jenjangPageConfig" data-level={level.id} class="d-none"></div>
+
+  <script>
+    import { supabase } from '../../lib/supabase';
+
+    function formatRp(val: number) {
+      return 'Rp ' + Number(val || 0).toLocaleString('id-ID');
+    }
+
+    function applyJenjangWaveSettings(cfg: any) {
+      if (!cfg) return;
+      const configEl = document.getElementById('jenjangPageConfig');
+      const levelId = configEl?.getAttribute('data-level') || 'sd';
+      const activeWaveId = Number(cfg.activeWave) || 1;
+      let activeWaveData: any = null;
+
+      if (Array.isArray(cfg.waves)) {
+        activeWaveData = cfg.waves.find((w: any) => Number(w.id) === activeWaveId);
+      }
+
+      if (!activeWaveData) {
+        if (activeWaveId === 1) {
+          activeWaveData = { id: 1, name: 'Gelombang I (Early Bird)', prices: { sd: 25000, smp: 35000, sma: 50000 } };
+        } else if (activeWaveId === 2) {
+          activeWaveData = { id: 2, name: 'Gelombang II (Reguler)', prices: { sd: 30000, smp: 40000, sma: 60000 } };
+        } else {
+          activeWaveData = { id: 3, name: 'Gelombang III (Last Call)', prices: { sd: 40000, smp: 50000, sma: 75000 } };
+        }
+      }
+
+      const priceEl = document.getElementById('jenjangPrice');
+      const waveInfoEl = document.getElementById('jenjangWaveInfo');
+
+      const targetPrice = activeWaveData.prices?.[levelId];
+      if (priceEl && targetPrice != null) {
+        priceEl.textContent = formatRp(targetPrice);
+      }
+      if (waveInfoEl && activeWaveData.name) {
+        waveInfoEl.textContent = `Biaya ${activeWaveData.name}`;
+      }
+    }
+
+    async function syncJenjangDetail() {
+      try {
+        const storedSys = localStorage.getItem('kka_admin_system_settings');
+        if (storedSys) applyJenjangWaveSettings(JSON.parse(storedSys));
+      } catch (_) {}
+
+      try {
+        const { data } = await supabase
+          .from('app_settings')
+          .select('value')
+          .eq('key', 'system_settings')
+          .maybeSingle();
+
+        if (data?.value) {
+          applyJenjangWaveSettings(data.value);
+          localStorage.setItem('kka_admin_system_settings', JSON.stringify(data.value));
+        }
+      } catch (_) {}
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', syncJenjangDetail);
+    } else {
+      syncJenjangDetail();
+    }
+    document.addEventListener('astro:page-load', syncJenjangDetail);
+  </script>
 </BaseLayout>
 
 <style>

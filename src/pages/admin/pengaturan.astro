@@ -25,9 +25,9 @@ import { WAVES } from '../../data/competition';
 
     <!-- MASTER SWITCH STATUS PENDAFTARAN (MANDIRI & KOLEKTIF) -->
     <div class="dashboard-panel mb-4 border-warning shadow-sm">
-      <div class="dashboard-panel-header px-3.5 py-3 d-flex align-items-center justify-content-between flex-wrap gap-2 bg-warning-subtle border-bottom border-warning-subtle">
+      <div class="dashboard-panel-header px-4 py-3 d-flex align-items-center justify-content-between flex-wrap gap-2 bg-warning-subtle border-bottom border-warning-subtle">
         <div class="d-flex align-items-center gap-2">
-          <span class="badge bg-warning text-dark fw-bold rounded-pill px-2.5 py-1 fs-9">KONTROL STATUS EVENT</span>
+          <span class="badge bg-warning text-dark fw-bold rounded-pill px-3 py-1 fs-9">KONTROL STATUS EVENT</span>
           <h2 class="fs-6 fw-bold mb-0 text-dark">Saklar Buka / Tutup Pendaftaran Publik</h2>
         </div>
         <span class="fs-9 text-muted fw-semibold">
@@ -35,15 +35,15 @@ import { WAVES } from '../../data/competition';
         </span>
       </div>
 
-      <div class="dashboard-panel-body py-3.5 px-3.5">
+      <div class="dashboard-panel-body p-3">
         <div class="row g-4">
           <!-- Jalur Mandiri Control -->
           <div class="col-12 col-md-6 border-end-md">
             <div class="p-3 bg-white rounded-3 border h-100 shadow-2xs">
               <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
                 <div class="d-flex align-items-center gap-2">
-                  <span class="badge bg-primary text-white rounded-pill px-2.5 py-1 fs-9 fw-bold">JALUR MANDIRI</span>
-                  <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0.5 fs-9 fw-bold" id="badgeStatusMandiri">BUKA (NORMAL)</span>
+                  <span class="badge bg-primary text-white rounded-pill px-3 py-1 fs-9 fw-bold">JALUR MANDIRI</span>
+                  <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1 fs-9 fw-bold" id="badgeStatusMandiri">BUKA (NORMAL)</span>
                 </div>
                 <div class="form-check form-switch mb-0">
                   <input class="form-check-input" type="checkbox" id="switchRegMandiri" checked style="width: 2.5em; height: 1.3em; cursor: pointer;" />
@@ -78,8 +78,8 @@ import { WAVES } from '../../data/competition';
             <div class="p-3 bg-white rounded-3 border h-100 shadow-2xs">
               <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
                 <div class="d-flex align-items-center gap-2">
-                  <span class="badge bg-warning text-dark rounded-pill px-2.5 py-1 fs-9 fw-bold">JALUR KOLEKTIF</span>
-                  <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0.5 fs-9 fw-bold" id="badgeStatusKolektif">BUKA (NORMAL)</span>
+                  <span class="badge bg-warning text-dark rounded-pill px-3 py-1 fs-9 fw-bold">JALUR KOLEKTIF</span>
+                  <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1 fs-9 fw-bold" id="badgeStatusKolektif">BUKA (NORMAL)</span>
                 </div>
                 <div class="form-check form-switch mb-0">
                   <input class="form-check-input" type="checkbox" id="switchRegKolektif" checked style="width: 2.5em; height: 1.3em; cursor: pointer;" />
@@ -116,22 +116,22 @@ import { WAVES } from '../../data/competition';
     <div class="row g-3 mb-4">
       <!-- Gelombang 1 -->
       <div class="col-12 col-lg-4">
-        <div class="dashboard-panel h-100 border-primary-subtle">
-          <div class="dashboard-panel-header compact py-2.5 px-3.5 d-flex align-items-center justify-content-between">
+        <div class="dashboard-panel h-100 border-primary border-2 shadow-sm" id="waveCard1">
+          <div class="dashboard-panel-header compact py-3 px-3 d-flex align-items-center justify-content-between">
             <div>
-              <span class="badge bg-primary text-white rounded-pill px-2.5 py-0.5 fs-9">Gelombang 1</span>
+              <span class="badge bg-primary text-white rounded-pill px-3 py-1 fs-9">Gelombang 1</span>
               <h3 class="fs-8 fw-bold text-dark mt-1 mb-0">Early Bird</h3>
             </div>
             <div class="form-check form-switch mb-0">
-              <input class="form-check-input" type="radio" name="activeWaveRadio" id="waveRadio1" value="1" checked />
-              <label class="form-check-label fs-9 fw-bold text-success" for="waveRadio1">Aktif</label>
+              <input class="form-check-input" type="radio" name="activeWaveRadio" id="waveRadio1" value="1" checked style="cursor: pointer;" />
+              <label class="form-check-label fs-9 fw-bold text-primary" for="waveRadio1" id="lblWaveRadio1">Sedang Aktif</label>
             </div>
           </div>
 
-          <div class="dashboard-panel-body py-3 px-3.5">
+          <div class="dashboard-panel-body p-3">
             <div class="mb-3">
               <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Periode Waktu</label>
-              <input type="text" class="form-control form-control-sm fs-8" id="wave1Period" value="10 Des 2025 - 20 Jan 2026" />
+              <input type="text" class="form-control form-control-sm fs-8" id="wave1Period" value="2 Juni – 20 Juni 2026" />
             </div>
 
             <div class="mb-2">
@@ -141,12 +141,12 @@ import { WAVES } from '../../data/competition';
 
             <div class="mb-2">
               <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Tarif SMP / MTs (Rp)</label>
-              <input type="number" class="form-control form-control-sm fs-8 font-monospace" id="wave1PriceSMP" value="30000" />
+              <input type="number" class="form-control form-control-sm fs-8 font-monospace" id="wave1PriceSMP" value="35000" />
             </div>
 
             <div class="mb-0">
               <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Tarif SMA / SMK (Rp)</label>
-              <input type="number" class="form-control form-control-sm fs-8 font-monospace" id="wave1PriceSMA" value="35000" />
+              <input type="number" class="form-control form-control-sm fs-8 font-monospace" id="wave1PriceSMA" value="50000" />
             </div>
           </div>
         </div>
@@ -154,22 +154,22 @@ import { WAVES } from '../../data/competition';
 
       <!-- Gelombang 2 -->
       <div class="col-12 col-lg-4">
-        <div class="dashboard-panel h-100">
-          <div class="dashboard-panel-header compact py-2.5 px-3.5 d-flex align-items-center justify-content-between">
+        <div class="dashboard-panel h-100 opacity-75" id="waveCard2">
+          <div class="dashboard-panel-header compact py-3 px-3 d-flex align-items-center justify-content-between">
             <div>
-              <span class="badge bg-warning text-dark rounded-pill px-2.5 py-0.5 fs-9">Gelombang 2</span>
+              <span class="badge bg-warning text-dark rounded-pill px-3 py-1 fs-9">Gelombang 2</span>
               <h3 class="fs-8 fw-bold text-dark mt-1 mb-0">Reguler</h3>
             </div>
             <div class="form-check form-switch mb-0">
-              <input class="form-check-input" type="radio" name="activeWaveRadio" id="waveRadio2" value="2" />
-              <label class="form-check-label fs-9 fw-bold text-secondary" for="waveRadio2">Aktifkan</label>
+              <input class="form-check-input" type="radio" name="activeWaveRadio" id="waveRadio2" value="2" style="cursor: pointer;" />
+              <label class="form-check-label fs-9 fw-bold text-secondary" for="waveRadio2" id="lblWaveRadio2">Aktifkan</label>
             </div>
           </div>
 
-          <div class="dashboard-panel-body py-3 px-3.5">
+          <div class="dashboard-panel-body p-3">
             <div class="mb-3">
               <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Periode Waktu</label>
-              <input type="text" class="form-control form-control-sm fs-8" id="wave2Period" value="21 Jan 2026 - 15 Feb 2026" />
+              <input type="text" class="form-control form-control-sm fs-8" id="wave2Period" value="22 Juni – 18 Juli 2026" />
             </div>
 
             <div class="mb-2">
@@ -179,12 +179,12 @@ import { WAVES } from '../../data/competition';
 
             <div class="mb-2">
               <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Tarif SMP / MTs (Rp)</label>
-              <input type="number" class="form-control form-control-sm fs-8 font-monospace" id="wave2PriceSMP" value="35000" />
+              <input type="number" class="form-control form-control-sm fs-8 font-monospace" id="wave2PriceSMP" value="40000" />
             </div>
 
             <div class="mb-0">
               <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Tarif SMA / SMK (Rp)</label>
-              <input type="number" class="form-control form-control-sm fs-8 font-monospace" id="wave2PriceSMA" value="40000" />
+              <input type="number" class="form-control form-control-sm fs-8 font-monospace" id="wave2PriceSMA" value="60000" />
             </div>
           </div>
         </div>
@@ -192,37 +192,37 @@ import { WAVES } from '../../data/competition';
 
       <!-- Gelombang 3 -->
       <div class="col-12 col-lg-4">
-        <div class="dashboard-panel h-100">
-          <div class="dashboard-panel-header compact py-2.5 px-3.5 d-flex align-items-center justify-content-between">
+        <div class="dashboard-panel h-100 opacity-75" id="waveCard3">
+          <div class="dashboard-panel-header compact py-3 px-3 d-flex align-items-center justify-content-between">
             <div>
-              <span class="badge bg-danger text-white rounded-pill px-2.5 py-0.5 fs-9">Gelombang 3</span>
+              <span class="badge bg-danger text-white rounded-pill px-3 py-1 fs-9">Gelombang 3</span>
               <h3 class="fs-8 fw-bold text-dark mt-1 mb-0">Last Call</h3>
             </div>
             <div class="form-check form-switch mb-0">
-              <input class="form-check-input" type="radio" name="activeWaveRadio" id="waveRadio3" value="3" />
-              <label class="form-check-label fs-9 fw-bold text-secondary" for="waveRadio3">Aktifkan</label>
+              <input class="form-check-input" type="radio" name="activeWaveRadio" id="waveRadio3" value="3" style="cursor: pointer;" />
+              <label class="form-check-label fs-9 fw-bold text-secondary" for="waveRadio3" id="lblWaveRadio3">Aktifkan</label>
             </div>
           </div>
 
-          <div class="dashboard-panel-body py-3 px-3.5">
+          <div class="dashboard-panel-body p-3">
             <div class="mb-3">
               <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Periode Waktu</label>
-              <input type="text" class="form-control form-control-sm fs-8" id="wave3Period" value="16 Feb 2026 - 28 Feb 2026" />
+              <input type="text" class="form-control form-control-sm fs-8" id="wave3Period" value="20 Juli – 25 Juli 2026" />
             </div>
 
             <div class="mb-2">
               <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Tarif SD / MI (Rp)</label>
-              <input type="number" class="form-control form-control-sm fs-8 font-monospace" id="wave3PriceSD" value="35000" />
+              <input type="number" class="form-control form-control-sm fs-8 font-monospace" id="wave3PriceSD" value="40000" />
             </div>
 
             <div class="mb-2">
               <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Tarif SMP / MTs (Rp)</label>
-              <input type="number" class="form-control form-control-sm fs-8 font-monospace" id="wave3PriceSMP" value="40000" />
+              <input type="number" class="form-control form-control-sm fs-8 font-monospace" id="wave3PriceSMP" value="50000" />
             </div>
 
             <div class="mb-0">
               <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Tarif SMA / SMK (Rp)</label>
-              <input type="number" class="form-control form-control-sm fs-8 font-monospace" id="wave3PriceSMA" value="45000" />
+              <input type="number" class="form-control form-control-sm fs-8 font-monospace" id="wave3PriceSMA" value="75000" />
             </div>
           </div>
         </div>
@@ -234,19 +234,19 @@ import { WAVES } from '../../data/competition';
       <!-- Rekening Pembayaran Resmi -->
       <div class="col-12 col-md-6">
         <div class="dashboard-panel h-100">
-          <div class="dashboard-panel-header px-3.5 py-2.5">
+          <div class="dashboard-panel-header px-4 py-3">
             <div class="d-flex align-items-center gap-2">
               <i class="bi bi-credit-card text-primary fs-6"></i>
               <h3 class="fs-7 fw-bold text-dark mb-0">Rekening Resmi Pembayaran</h3>
             </div>
           </div>
 
-          <div class="dashboard-panel-body py-3 px-3.5">
-            <div class="mb-2.5">
+          <div class="dashboard-panel-body p-3">
+            <div class="mb-3">
               <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Nama Bank</label>
               <input type="text" class="form-control form-control-sm fs-8" id="settingBankName" value="Bank BRI Cabang Kediri" />
             </div>
-            <div class="mb-2.5">
+            <div class="mb-3">
               <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Nomor Rekening</label>
               <input type="text" class="form-control form-control-sm fs-8 font-monospace" id="settingBankNumber" value="0033-0100-3455-560" />
             </div>
@@ -261,28 +261,45 @@ import { WAVES } from '../../data/competition';
       <!-- Hotline CS Panitia -->
       <div class="col-12 col-md-6">
         <div class="dashboard-panel h-100">
-          <div class="dashboard-panel-header px-3.5 py-2.5">
+          <div class="dashboard-panel-header px-4 py-3">
             <div class="d-flex align-items-center gap-2">
               <i class="bi bi-headset text-success fs-6"></i>
               <h3 class="fs-7 fw-bold text-dark mb-0">Hotline & Customer Service</h3>
             </div>
           </div>
 
-          <div class="dashboard-panel-body py-3 px-3.5">
-            <div class="mb-2.5">
+          <div class="dashboard-panel-body p-3">
+            <div class="mb-3">
               <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Nomor WhatsApp CS 1 (Pendaftaran)</label>
-              <input type="text" class="form-control form-control-sm fs-8 font-monospace" id="settingWa1" value="081234567890" />
+              <input type="text" class="form-control form-control-sm fs-8 font-monospace" id="settingWa1" value="0812-3550-8957" />
             </div>
-            <div class="mb-2.5">
+            <div class="mb-3">
               <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Nomor WhatsApp CS 2 (Konfirmasi Bayar)</label>
-              <input type="text" class="form-control form-control-sm fs-8 font-monospace" id="settingWa2" value="089876543210" />
+              <input type="text" class="form-control form-control-sm fs-8 font-monospace" id="settingWa2" value="0813-5913-8251" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Nomor WhatsApp CS 3 (Informasi & Sekolah)</label>
+              <input type="text" class="form-control form-control-sm fs-8 font-monospace" id="settingWa3" value="0815-5897-90831" />
             </div>
             <div class="mb-0">
               <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Email Sekretariat Resmi</label>
-              <input type="email" class="form-control form-control-sm fs-8" id="settingEmail" value="kka@radarkediri.jawapos.com" />
+              <input type="email" class="form-control form-control-sm fs-8" id="settingEmail" value="event@radarkediri.jawapos.com" />
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- In-Page Toast Notification Container -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 9999;">
+    <div id="pengaturanToast" class="toast align-items-center text-white border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body d-flex align-items-center gap-2 fs-8" id="pengaturanToastBody">
+          <i class="bi bi-check-circle-fill fs-6" id="pengaturanToastIcon"></i>
+          <span id="pengaturanToastMsg">Pengaturan berhasil disimpan!</span>
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
       </div>
     </div>
   </div>
@@ -314,21 +331,85 @@ import { WAVES } from '../../data/competition';
       }
     };
 
+    function showPengaturanToast(message: string, type: 'success' | 'danger' | 'warning' = 'success') {
+      const toastEl = document.getElementById('pengaturanToast');
+      const toastMsg = document.getElementById('pengaturanToastMsg');
+      const toastIcon = document.getElementById('pengaturanToastIcon');
+      if (!toastEl || !toastMsg) {
+        alert(message);
+        return;
+      }
+      toastEl.className = `toast align-items-center text-white border-0 shadow-lg bg-${type === 'success' ? 'success' : (type === 'danger' ? 'danger' : 'warning')}`;
+      if (toastIcon) {
+        toastIcon.className = type === 'success' ? 'bi bi-check-circle-fill fs-6' : 'bi bi-exclamation-triangle-fill fs-6';
+      }
+      toastMsg.textContent = message;
+
+      const bs = (window as any).bootstrap;
+      if (bs && bs.Toast) {
+        const toast = bs.Toast.getOrCreateInstance(toastEl, { delay: 4000 });
+        toast.show();
+      } else {
+        toastEl.classList.add('show');
+        setTimeout(() => toastEl.classList.remove('show'), 4000);
+      }
+    }
+
+    function updateActiveWaveUI(activeId: number) {
+      for (let i = 1; i <= 3; i++) {
+        const card = document.getElementById(`waveCard${i}`);
+        const lbl = document.getElementById(`lblWaveRadio${i}`);
+        const radio = document.getElementById(`waveRadio${i}`) as HTMLInputElement | null;
+        const isActive = (i === activeId);
+        if (radio) radio.checked = isActive;
+        if (card) {
+          if (isActive) {
+            card.className = 'dashboard-panel h-100 border-primary border-2 shadow-sm';
+          } else {
+            card.className = 'dashboard-panel h-100 opacity-75';
+          }
+        }
+        if (lbl) {
+          lbl.textContent = isActive ? 'Sedang Aktif' : 'Aktifkan';
+          lbl.className = isActive ? 'form-check-label fs-9 fw-bold text-primary' : 'form-check-label fs-9 fw-bold text-secondary';
+        }
+      }
+    }
+
     function applySystemSettings(cfg: any) {
       if (!cfg) return;
-      const r1 = document.getElementById('waveRadio1') as HTMLInputElement;
-      const r2 = document.getElementById('waveRadio2') as HTMLInputElement;
-      const r3 = document.getElementById('waveRadio3') as HTMLInputElement;
 
-      if (cfg.activeWave === 1 && r1) r1.checked = true;
-      if (cfg.activeWave === 2 && r2) r2.checked = true;
-      if (cfg.activeWave === 3 && r3) r3.checked = true;
+      const activeId = Number(cfg.activeWave) || 1;
+      updateActiveWaveUI(activeId);
+
+      // Hydrate waves (periods & prices)
+      if (Array.isArray(cfg.waves)) {
+        cfg.waves.forEach((w: any) => {
+          if (w.id === 1) {
+            if (w.period) (document.getElementById('wave1Period') as HTMLInputElement).value = w.period;
+            if (w.prices?.sd != null) (document.getElementById('wave1PriceSD') as HTMLInputElement).value = String(w.prices.sd);
+            if (w.prices?.smp != null) (document.getElementById('wave1PriceSMP') as HTMLInputElement).value = String(w.prices.smp);
+            if (w.prices?.sma != null) (document.getElementById('wave1PriceSMA') as HTMLInputElement).value = String(w.prices.sma);
+          } else if (w.id === 2) {
+            if (w.period) (document.getElementById('wave2Period') as HTMLInputElement).value = w.period;
+            if (w.prices?.sd != null) (document.getElementById('wave2PriceSD') as HTMLInputElement).value = String(w.prices.sd);
+            if (w.prices?.smp != null) (document.getElementById('wave2PriceSMP') as HTMLInputElement).value = String(w.prices.smp);
+            if (w.prices?.sma != null) (document.getElementById('wave2PriceSMA') as HTMLInputElement).value = String(w.prices.sma);
+          } else if (w.id === 3) {
+            if (w.period) (document.getElementById('wave3Period') as HTMLInputElement).value = w.period;
+            if (w.prices?.sd != null) (document.getElementById('wave3PriceSD') as HTMLInputElement).value = String(w.prices.sd);
+            if (w.prices?.smp != null) (document.getElementById('wave3PriceSMP') as HTMLInputElement).value = String(w.prices.smp);
+            if (w.prices?.sma != null) (document.getElementById('wave3PriceSMA') as HTMLInputElement).value = String(w.prices.sma);
+          }
+        });
+      }
 
       if (cfg.bankName) (document.getElementById('settingBankName') as HTMLInputElement).value = cfg.bankName;
       if (cfg.bankNumber) (document.getElementById('settingBankNumber') as HTMLInputElement).value = cfg.bankNumber;
       if (cfg.bankHolder) (document.getElementById('settingBankHolder') as HTMLInputElement).value = cfg.bankHolder;
       if (cfg.wa1) (document.getElementById('settingWa1') as HTMLInputElement).value = cfg.wa1;
       if (cfg.wa2) (document.getElementById('settingWa2') as HTMLInputElement).value = cfg.wa2;
+      if (cfg.wa3) (document.getElementById('settingWa3') as HTMLInputElement).value = cfg.wa3;
       if (cfg.email) (document.getElementById('settingEmail') as HTMLInputElement).value = cfg.email;
     }
 
@@ -378,19 +459,19 @@ import { WAVES } from '../../data/competition';
           lblSwMandiri.className = 'form-check-label fs-8 fw-bold text-success ms-1';
           if (selMandiri.value === 'buka') {
             badgeMandiri.textContent = 'BUKA (NORMAL)';
-            badgeMandiri.className = 'badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0.5 fs-9 fw-bold';
+            badgeMandiri.className = 'badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1 fs-9 fw-bold';
           } else if (selMandiri.value === 'kuota_penuh') {
             badgeMandiri.textContent = 'KUOTA PENUH';
-            badgeMandiri.className = 'badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2 py-0.5 fs-9 fw-bold';
+            badgeMandiri.className = 'badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2 py-1 fs-9 fw-bold';
           } else {
             badgeMandiri.textContent = 'DITUTUP';
-            badgeMandiri.className = 'badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill px-2 py-0.5 fs-9 fw-bold';
+            badgeMandiri.className = 'badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill px-2 py-1 fs-9 fw-bold';
           }
         } else {
           lblSwMandiri.textContent = 'Nonaktif (Tutup)';
           lblSwMandiri.className = 'form-check-label fs-8 fw-bold text-danger ms-1';
           badgeMandiri.textContent = 'NONAKTIF / TUTUP';
-          badgeMandiri.className = 'badge bg-danger text-white rounded-pill px-2 py-0.5 fs-9 fw-bold';
+          badgeMandiri.className = 'badge bg-danger text-white rounded-pill px-2 py-1 fs-9 fw-bold';
         }
       }
 
@@ -400,19 +481,19 @@ import { WAVES } from '../../data/competition';
           lblSwKolektif.className = 'form-check-label fs-8 fw-bold text-success ms-1';
           if (selKolektif.value === 'buka') {
             badgeKolektif.textContent = 'BUKA (NORMAL)';
-            badgeKolektif.className = 'badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0.5 fs-9 fw-bold';
+            badgeKolektif.className = 'badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1 fs-9 fw-bold';
           } else if (selKolektif.value === 'kuota_penuh') {
             badgeKolektif.textContent = 'KUOTA PENUH';
-            badgeKolektif.className = 'badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2 py-0.5 fs-9 fw-bold';
+            badgeKolektif.className = 'badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2 py-1 fs-9 fw-bold';
           } else {
             badgeKolektif.textContent = 'DITUTUP';
-            badgeKolektif.className = 'badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill px-2 py-0.5 fs-9 fw-bold';
+            badgeKolektif.className = 'badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill px-2 py-1 fs-9 fw-bold';
           }
         } else {
           lblSwKolektif.textContent = 'Nonaktif (Tutup)';
           lblSwKolektif.className = 'form-check-label fs-8 fw-bold text-danger ms-1';
           badgeKolektif.textContent = 'NONAKTIF / TUTUP';
-          badgeKolektif.className = 'badge bg-danger text-white rounded-pill px-2 py-0.5 fs-9 fw-bold';
+          badgeKolektif.className = 'badge bg-danger text-white rounded-pill px-2 py-1 fs-9 fw-bold';
         }
       }
     }
@@ -453,28 +534,65 @@ import { WAVES } from '../../data/competition';
         btnSave.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Menyimpan ke Cloud Supabase...';
       }
 
-      // 1. Siapkan Payload System Settings
+      // 1. Siapkan Data Gelombang & Biaya Lengkap
       const activeWaveVal = Number((document.querySelector('input[name="activeWaveRadio"]:checked') as HTMLInputElement)?.value) || 1;
-      const bankName = (document.getElementById('settingBankName') as HTMLInputElement)?.value;
-      const bankNumber = (document.getElementById('settingBankNumber') as HTMLInputElement)?.value;
-      const bankHolder = (document.getElementById('settingBankHolder') as HTMLInputElement)?.value;
-      const wa1 = (document.getElementById('settingWa1') as HTMLInputElement)?.value;
-      const wa2 = (document.getElementById('settingWa2') as HTMLInputElement)?.value;
-      const email = (document.getElementById('settingEmail') as HTMLInputElement)?.value;
+      const waves = [
+        {
+          id: 1,
+          name: 'Gelombang I (Early Bird)',
+          period: (document.getElementById('wave1Period') as HTMLInputElement)?.value.trim() || '2 Juni – 20 Juni 2026',
+          prices: {
+            sd: Number((document.getElementById('wave1PriceSD') as HTMLInputElement)?.value) || 25000,
+            smp: Number((document.getElementById('wave1PriceSMP') as HTMLInputElement)?.value) || 35000,
+            sma: Number((document.getElementById('wave1PriceSMA') as HTMLInputElement)?.value) || 50000,
+          }
+        },
+        {
+          id: 2,
+          name: 'Gelombang II (Reguler)',
+          period: (document.getElementById('wave2Period') as HTMLInputElement)?.value.trim() || '22 Juni – 18 Juli 2026',
+          prices: {
+            sd: Number((document.getElementById('wave2PriceSD') as HTMLInputElement)?.value) || 30000,
+            smp: Number((document.getElementById('wave2PriceSMP') as HTMLInputElement)?.value) || 40000,
+            sma: Number((document.getElementById('wave2PriceSMA') as HTMLInputElement)?.value) || 60000,
+          }
+        },
+        {
+          id: 3,
+          name: 'Gelombang III (Last Call)',
+          period: (document.getElementById('wave3Period') as HTMLInputElement)?.value.trim() || '20 Juli – 25 Juli 2026',
+          prices: {
+            sd: Number((document.getElementById('wave3PriceSD') as HTMLInputElement)?.value) || 40000,
+            smp: Number((document.getElementById('wave3PriceSMP') as HTMLInputElement)?.value) || 50000,
+            sma: Number((document.getElementById('wave3PriceSMA') as HTMLInputElement)?.value) || 75000,
+          }
+        }
+      ];
+
+      // 2. Siapkan Payload System Settings (Rekening & Hotline)
+      const bankName = (document.getElementById('settingBankName') as HTMLInputElement)?.value.trim();
+      const bankNumber = (document.getElementById('settingBankNumber') as HTMLInputElement)?.value.trim();
+      const bankHolder = (document.getElementById('settingBankHolder') as HTMLInputElement)?.value.trim();
+      const wa1 = (document.getElementById('settingWa1') as HTMLInputElement)?.value.trim();
+      const wa2 = (document.getElementById('settingWa2') as HTMLInputElement)?.value.trim();
+      const wa3 = (document.getElementById('settingWa3') as HTMLInputElement)?.value.trim();
+      const email = (document.getElementById('settingEmail') as HTMLInputElement)?.value.trim();
 
       const payload = {
         activeWave: activeWaveVal,
+        waves,
         bankName,
         bankNumber,
         bankHolder,
         wa1,
         wa2,
+        wa3,
         email,
         updatedAt: new Date().toISOString()
       };
       localStorage.setItem('kka_admin_system_settings', JSON.stringify(payload));
 
-      // 2. Siapkan Payload Registration Control Status
+      // 3. Siapkan Payload Registration Control Status
       const swMandiri = (document.getElementById('switchRegMandiri') as HTMLInputElement)?.checked;
       const selMandiri = (document.getElementById('selectMandiriCondition') as HTMLSelectElement)?.value;
       const txtMTitle = (document.getElementById('txtMandiriClosedTitle') as HTMLInputElement)?.value;
@@ -503,8 +621,9 @@ import { WAVES } from '../../data/competition';
       localStorage.setItem('kka_registration_status_control', JSON.stringify(regPayload));
 
       updateRegUI();
+      updateActiveWaveUI(activeWaveVal);
 
-      // 3. Simpan Langsung ke Database Supabase Cloud (Tabel app_settings)
+      // 4. Simpan Langsung ke Database Supabase Cloud (Tabel app_settings)
       let supabaseSaved = false;
       let errorMsg = '';
 
@@ -531,20 +650,28 @@ import { WAVES } from '../../data/competition';
       } finally {
         if (btnSave) {
           btnSave.disabled = false;
-          btnSave.innerHTML = '<i class="bi bi-cloud-check-fill me-1.5"></i> Simpan Semua Perubahan';
+          btnSave.innerHTML = '<i class="bi bi-cloud-check-fill me-1.5"></i> Simpan Seluruh Pengaturan';
         }
       }
 
       if (supabaseSaved) {
-        alert('BERHASIL DISIMPAN KE SUPABASE CLOUD!\n\nPengaturan pendaftaran (saklar buka/tutup, pesan penutupan, rekening panitia, gelombang) telah tersimpan permanen di Supabase dan langsung aktif di semua perangkat pengguna.');
+        showPengaturanToast('Seluruh konfigurasi gelombang, biaya, rekening, dan hotline CS berhasil disimpan ke Supabase Cloud dan langsung aktif di semua halaman pendaftaran!', 'success');
       } else {
-        alert(`Pengaturan tersimpan di browser ini, namun database Supabase Cloud belum menerima:\n"${errorMsg}"\n\nPastikan Anda telah menjalankan skrip SQL migrasi di Supabase SQL Editor.`);
+        showPengaturanToast(`Tersimpan lokal di browser, namun Supabase Cloud belum menerima: "${errorMsg}". Pastikan koneksi aktif.`, 'warning');
       }
     }
 
     function setupPengaturanPage() {
       loadSettings();
       document.getElementById('btnSaveAllSettings')?.addEventListener('click', saveSettings);
+
+      // Radio button listeners for wave cards
+      document.querySelectorAll('input[name="activeWaveRadio"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+          const val = Number((e.target as HTMLInputElement).value);
+          updateActiveWaveUI(val);
+        });
+      });
 
       document.getElementById('switchRegMandiri')?.addEventListener('change', (e) => {
         const sw = e.target as HTMLInputElement;

@@ -159,7 +159,7 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
               required 
             />
             <div class="form-text fs-8 text-muted">
-              Nomor ini akan digunakan panitia untuk pengiriman kartu tanda ujian dan verifikasi.
+              Nomor ini akan digunakan panitia untuk konfirmasi pendaftaran dan verifikasi pembayaran.
             </div>
             <div class="invalid-feedback">Nomor WhatsApp aktif wajib diisi dengan benar.</div>
           </div>
@@ -274,7 +274,7 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
           </div>
 
           <div class="bank-account-card p-3.5 p-md-4 rounded-4 border bg-white shadow-2xs">
-            <!-- Header Kartu: Logo BRI & Nama Bank -->
+            <!-- Header Kartu: Logo & Nama Bank -->
             <div class="d-flex align-items-center mb-3 pb-2.5 border-bottom">
               <div class="d-flex align-items-center gap-3">
                 <img 
@@ -285,21 +285,22 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
                   style="object-fit: contain;"
                   loading="lazy"
                 />
-                <span class="fs-5 fw-bold text-dark mb-0">Bank BRI</span>
+                <span class="fs-5 fw-bold text-dark mb-0" id="mandiriBankName">Bank BRI Cabang Kediri</span>
               </div>
             </div>
 
             <!-- Bagian Nomor Rekening Panjang & Tombol Salin -->
             <div class="p-3 bg-light rounded-3 border mb-2.5">
-              <span class="text-muted small d-block mb-1" style="font-size: 0.78rem;">Nomor Rekening BRI:</span>
+              <span class="text-muted small d-block mb-1" style="font-size: 0.78rem;" id="mandiriBankNumberLabel">Nomor Rekening BRI:</span>
               <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2.5">
-                <div class="account-number font-monospace fw-bold text-primary fs-3 text-nowrap" style="letter-spacing: 1px;">
+                <div class="account-number font-monospace fw-bold text-primary fs-3 text-nowrap" id="mandiriBankNumber" style="letter-spacing: 1px;">
                   0033-0100-3455-560
                 </div>
                 <div>
                   <button 
                     type="button" 
                     class="btn btn-primary btn-sm px-3.5 py-1.5 rounded-pill fw-semibold btn-copy-account d-inline-flex align-items-center gap-1.5 shadow-2xs hover-scale" 
+                    id="mandiriBtnCopyAccount"
                     data-copy="003301003455560" 
                     title="Salin nomor rekening BRI"
                   >
@@ -316,7 +317,7 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
             <!-- Footer: Pemilik Rekening -->
             <div class="d-flex align-items-center justify-content-between text-muted small px-1 flex-wrap gap-1" style="font-size: 0.82rem;">
               <span>Atas Nama (Penerima):</span>
-              <strong class="text-dark fs-6">Heri Muda Setiawan</strong>
+              <strong class="text-dark fs-6" id="mandiriBankHolder">Heri Muda Setiawan</strong>
             </div>
           </div>
         </div>
@@ -326,7 +327,7 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
           <div class="row align-items-center g-3">
             <div class="col-12 col-md-7">
               <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
-                <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-1 fs-8 fw-semibold">
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-1 fs-8 fw-semibold" id="mandiriWaveBadge">
                   {currentWave.name}
                 </span>
                 <span class="text-secondary small fw-medium">Tarif Pendaftaran:</span>
@@ -493,7 +494,8 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
   import { supabase } from '../lib/supabase';
 
   const schoolDb = SCHOOL_DATABASE;
-  const activePrices = getActiveWave().prices;
+  let activePrices = { ...getActiveWave().prices };
+  let currentAdminWa = '6281235508957';
 
   function applyMandiriClose(regCfg: any) {
     if (regCfg && regCfg.mandiri && regCfg.mandiri.enabled === false) {
@@ -510,6 +512,52 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
       if (closedBadge) {
         closedBadge.textContent = regCfg.mandiri.condition === 'kuota_penuh' ? 'KUOTA PENUH' : 'PENDAFTARAN DITUTUP';
       }
+    }
+  }
+
+  function applyDynamicSystemSettings(cfg: any) {
+    if (!cfg) return;
+
+    // 1. Update Bank Information
+    const bankNameEl = document.getElementById('mandiriBankName');
+    const bankNumEl = document.getElementById('mandiriBankNumber');
+    const bankHolderEl = document.getElementById('mandiriBankHolder');
+    const copyBtn = document.getElementById('mandiriBtnCopyAccount') as HTMLElement | null;
+
+    if (bankNameEl && cfg.bankName) bankNameEl.textContent = cfg.bankName;
+    if (bankNumEl && cfg.bankNumber) bankNumEl.textContent = cfg.bankNumber;
+    if (bankHolderEl && cfg.bankHolder) bankHolderEl.textContent = cfg.bankHolder;
+    if (copyBtn && cfg.bankNumber) {
+      copyBtn.setAttribute('data-copy', cfg.bankNumber.replace(/[^0-9]/g, ''));
+    }
+
+    // 2. Update Active Wave & Dynamic Pricing
+    const activeWaveId = Number(cfg.activeWave) || 1;
+    let waveObj: any = null;
+    if (Array.isArray(cfg.waves)) {
+      waveObj = cfg.waves.find((w: any) => w.id === activeWaveId);
+    }
+    if (waveObj) {
+      if (waveObj.prices) {
+        activePrices = {
+          sd: Number(waveObj.prices.sd) || 25000,
+          smp: Number(waveObj.prices.smp) || 35000,
+          sma: Number(waveObj.prices.sma) || 50000,
+        };
+      }
+      const badgeEl = document.getElementById('mandiriWaveBadge');
+      if (badgeEl && waveObj.name) {
+        badgeEl.textContent = waveObj.name;
+      }
+    }
+
+    // 3. Update WhatsApp CS Number
+    if (cfg.wa1 || cfg.wa2) {
+      let cleanWa = (cfg.wa1 || cfg.wa2).replace(/[^0-9]/g, '');
+      if (cleanWa.startsWith('0')) {
+        cleanWa = '62' + cleanWa.slice(1);
+      }
+      if (cleanWa) currentAdminWa = cleanWa;
     }
   }
 
@@ -533,24 +581,36 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
     const successCard = document.getElementById('successConfirmationCard');
     const btnResetForm = document.getElementById('btnResetForm');
 
-    // 0. Check if Mandiri registration is closed by Admin
+    // 0a. Check local system settings & apply immediately
+    try {
+      const storedSys = localStorage.getItem('kka_admin_system_settings');
+      if (storedSys) applyDynamicSystemSettings(JSON.parse(storedSys));
+    } catch (e) {}
+
+    // 0b. Check if Mandiri registration is closed by Admin
     try {
       const storedReg = localStorage.getItem('kka_registration_status_control');
       if (storedReg) applyMandiriClose(JSON.parse(storedReg));
     } catch (e) {}
 
-    // Async check to Cloud Supabase
+    // Async check to Cloud Supabase for live settings & registration control
     (async () => {
       try {
         const { data, error } = await supabase
           .from('app_settings')
-          .select('value')
-          .eq('key', 'registration_control')
-          .single();
+          .select('*');
 
-        if (!error && data && data.value) {
-          applyMandiriClose(data.value);
-          localStorage.setItem('kka_registration_status_control', JSON.stringify(data.value));
+        if (!error && data) {
+          data.forEach((row: any) => {
+            if (row.key === 'system_settings' && row.value) {
+              applyDynamicSystemSettings(row.value);
+              localStorage.setItem('kka_admin_system_settings', JSON.stringify(row.value));
+              updatePricing();
+            } else if (row.key === 'registration_control' && row.value) {
+              applyMandiriClose(row.value);
+              localStorage.setItem('kka_registration_status_control', JSON.stringify(row.value));
+            }
+          });
         }
       } catch (err) {}
     })();
@@ -769,10 +829,11 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
           .order('nama_sekolah', { ascending: true });
 
         if (!error && cloudSchools && cloudSchools.length > 0) {
+          const liveSchoolSet = new Set<string>();
           cloudSchools.forEach(d => {
-            if (d.nama_sekolah) schoolSet.add(d.nama_sekolah);
+            if (d.nama_sekolah) liveSchoolSet.add(d.nama_sekolah);
           });
-          renderSchoolOptions(Array.from(schoolSet));
+          renderSchoolOptions(Array.from(liveSchoolSet));
         }
       } catch (cloudErr) {
         console.warn('[Supabase] Live school fetch:', cloudErr);
@@ -1026,9 +1087,10 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
         });
         waMessage += `\n*Total Biaya*: ${formatRp(totalBiayaVal)}\n`;
         waMessage += `*Bukti Transfer*: Telah dilampirkan via web.\n\n`;
-        waMessage += `Mohon segera diverifikasi untuk penerbitan kartu ujian. Terima kasih.`;
+        waMessage += `Mohon segera diverifikasi untuk pendaftaran kami. Terima kasih.`;
 
-        const waUrl = `https://wa.me/6281235508957?text=${encodeURIComponent(waMessage)}`;
+        const waTarget = currentAdminWa || '6281235508957';
+        const waUrl = `https://wa.me/${waTarget}?text=${encodeURIComponent(waMessage)}`;
         document.getElementById('btnWaPanitiaDirect').href = waUrl;
         const btnCheckStatus = document.getElementById('btnCheckStatusDirectMandiri');
         if (btnCheckStatus) {

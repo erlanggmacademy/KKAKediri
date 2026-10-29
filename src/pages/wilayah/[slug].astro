@@ -53,9 +53,16 @@ const currentWave = WAVES.find((w) => w.isActive) || WAVES[0];
     <div class="container py-3">
       <div class="row g-5 align-items-center">
         <div class="col-lg-7">
-          <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-1 fs-8 fw-bold mb-2">
-            ZONA KOMPETISI {district.badge.toUpperCase()}
-          </span>
+          <!-- Dynamic Status Badge & Zone -->
+          <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-1 fs-8 fw-bold">
+              ZONA KOMPETISI {district.badge.toUpperCase()}
+            </span>
+            <span id="publicDistrictStatusBadge" class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1 fs-8 fw-bold">
+              PENDAFTARAN BUKA
+            </span>
+          </div>
+
           <h2 class="fw-bold text-kka-primary mb-3">
             Siap Bertanding Membawa Nama Harum Sekolah di {district.name}?
           </h2>
@@ -63,27 +70,38 @@ const currentWave = WAVES.find((w) => w.isActive) || WAVES[0];
             {district.description} Seluruh sekolah negeri dan swasta di bawah naungan Cabdindik Wilayah Jawa Timur serta Kantor Kemenag {district.name} diundang untuk berpartisipasi pada ajang tahunan KKA Jawa Pos Radar Kediri.
           </p>
 
-          <div class="p-4 bg-light rounded-4 border mb-4">
-            <h6 class="fw-bold text-dark mb-2">Tarif Gelombang Aktif Saat Ini ({currentWave.name}):</h6>
+          <div class="p-4 bg-light rounded-4 border mb-4" id="boxTarifGelombang">
+            <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap gap-2">
+              <h6 class="fw-bold text-dark mb-0">
+                Tarif Gelombang Aktif Saat Ini (<span id="publicWaveName" class="text-primary">{currentWave.name}</span>):
+              </h6>
+              <span id="publicWaveBadge" class="badge bg-primary text-white rounded-pill px-2.5 py-1 fs-9 fw-bold shadow-sm">
+                GELOMBANG {currentWave.id} AKTIF
+              </span>
+            </div>
             <div class="row g-2 text-center">
               <div class="col-4">
                 <div class="p-2 bg-white rounded-3 border">
                   <div class="fs-8 text-muted">SD / MI</div>
-                  <div class="fw-bold text-primary">{formatRupiah(currentWave.prices.sd)}</div>
+                  <div class="fw-bold text-primary fs-6" id="publicPriceSD">{formatRupiah(currentWave.prices.sd)}</div>
                 </div>
               </div>
               <div class="col-4">
                 <div class="p-2 bg-white rounded-3 border">
                   <div class="fs-8 text-muted">SMP / MTs</div>
-                  <div class="fw-bold text-primary">{formatRupiah(currentWave.prices.smp)}</div>
+                  <div class="fw-bold text-primary fs-6" id="publicPriceSMP">{formatRupiah(currentWave.prices.smp)}</div>
                 </div>
               </div>
               <div class="col-4">
                 <div class="p-2 bg-white rounded-3 border">
                   <div class="fs-8 text-muted">SMA / MA</div>
-                  <div class="fw-bold text-danger">{formatRupiah(currentWave.prices.sma)}</div>
+                  <div class="fw-bold text-danger fs-6" id="publicPriceSMA">{formatRupiah(currentWave.prices.sma)}</div>
                 </div>
               </div>
+            </div>
+            <div class="mt-2.5 pt-2 border-top d-flex align-items-center justify-content-between text-muted fs-8">
+              <span>Periode Pendaftaran Gelombang:</span>
+              <strong class="text-dark" id="publicWavePeriod">{currentWave.period}</strong>
             </div>
           </div>
 
@@ -99,7 +117,7 @@ const currentWave = WAVES.find((w) => w.isActive) || WAVES[0];
 
         <div class="col-lg-5">
           <div class="kka-card p-4 p-xl-5 bg-white border-2">
-            <h5 class="fw-bold text-kka-primary mb-3">Jadwal Seleksi {district.badge}</h5>
+            <h5 class="fw-bold text-kka-primary mb-3">Jadwal & Info Seleksi {district.badge}</h5>
             <ul class="list-unstyled d-flex flex-column gap-3 small text-secondary mb-0">
               <li class="d-flex gap-2.5 align-items-start">
                 <span class="p-1.5 rounded-2 bg-light border text-primary mt-0.5">
@@ -109,8 +127,33 @@ const currentWave = WAVES.find((w) => w.isActive) || WAVES[0];
                   </svg>
                 </span>
                 <div>
-                  <strong>Lokasi Babak Penyisihan:</strong><br />
-                  <span id="publicVenueName">Laboratorium CBT Sekolah Masing-masing / Titik Uji Terpilih di {district.name}.</span>
+                  <strong>Lokasi Venue CBT:</strong><br />
+                  <span id="publicVenueName" class="fw-semibold text-dark">Memuat venue...</span>
+                </div>
+              </li>
+              <li class="d-flex gap-2.5 align-items-start" id="rowPublicQuota">
+                <span class="p-1.5 rounded-2 bg-light border text-primary mt-0.5">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+                </span>
+                <div>
+                  <strong>Kapasitas Kuota CBT:</strong><br />
+                  <span id="publicQuotaInfo" class="fw-semibold text-primary font-monospace">1.000 Peserta</span>
+                </div>
+              </li>
+              <li class="d-flex gap-2.5 align-items-start" id="rowPublicContact">
+                <span class="p-1.5 rounded-2 bg-light border text-success mt-0.5">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                  </svg>
+                </span>
+                <div>
+                  <strong>Hotline PIC / WhatsApp Panitia:</strong><br />
+                  <span id="publicContactInfo" class="fw-semibold text-dark">-</span>
                 </div>
               </li>
               <li class="d-flex gap-2.5 align-items-start">
@@ -124,7 +167,7 @@ const currentWave = WAVES.find((w) => w.isActive) || WAVES[0];
                 </span>
                 <div>
                   <strong>Periode Pendaftaran:</strong><br />
-                  2 Juni 2026 s/d 25 Juli 2026 (3 Gelombang).
+                  <span id="publicSidebarWavePeriod">{currentWave.period} ({currentWave.name} Aktif).</span>
                 </div>
               </li>
               <li class="d-flex gap-2.5 align-items-start">
@@ -146,54 +189,224 @@ const currentWave = WAVES.find((w) => w.isActive) || WAVES[0];
     </div>
   </section>
 
-  <script define:vars={{ currentSlug: district.slug, districtName: district.name }}>
+  <!-- Hidden Page Config Data for Bundled Client Script -->
+  <div id="districtPageConfig" data-slug={district.slug} data-name={district.name} class="d-none"></div>
+
+  <script>
     import { supabase } from '../../lib/supabase';
 
-    (async function() {
+    async function syncPublicWilayahDetail() {
+      const configEl = document.getElementById('districtPageConfig');
+      if (!configEl) return;
+      const currentSlug = configEl.getAttribute('data-slug') || '';
+      const districtName = configEl.getAttribute('data-name') || '';
+      if (!currentSlug) return;
+
+      let venue = '';
+      let logo = '';
+      let desc = '';
+      let quota = 0;
+      let contact = '';
+      let status = '';
+
+      // 1. Ambil dari tabel relasional district_settings di Supabase
       try {
         const { data, error } = await supabase
           .from('district_settings')
           .select('*')
           .eq('slug', currentSlug)
-          .single();
+          .maybeSingle();
 
         if (!error && data) {
-          if (data.venue) {
-            const venueEl = document.getElementById('publicVenueName');
-            if (venueEl) venueEl.textContent = data.venue;
-          }
-          if (data.logo_url || data.image_url) {
-            const logoEl = document.getElementById('publicDistrictLogo') as HTMLImageElement;
-            if (logoEl) logoEl.src = data.logo_url || data.image_url;
-          }
-          if (data.description) {
-            const descEl = document.getElementById('publicDistrictDesc');
-            if (descEl) descEl.textContent = `${data.description} Seluruh sekolah negeri dan swasta di bawah naungan Cabdindik Wilayah Jawa Timur serta Kantor Kemenag ${districtName} diundang untuk berpartisipasi pada ajang tahunan KKA Jawa Pos Radar Kediri.`;
+          if (data.venue) venue = data.venue;
+          if (data.quota) quota = data.quota;
+          if (data.contact) contact = data.contact;
+          if (data.status) status = data.status;
+          if (data.logo_url || data.image_url) logo = data.logo_url || data.image_url;
+          if (data.description) desc = data.description;
+        }
+      } catch (_) {}
+
+      // 2. Ambil dari app_settings (JSONB lengkap: venue, quota, contact, status, logoUrl, description)
+      try {
+        const { data: appData } = await supabase
+          .from('app_settings')
+          .select('value')
+          .eq('key', 'district_settings')
+          .maybeSingle();
+
+        if (appData?.value?.[currentSlug]) {
+          const item = appData.value[currentSlug];
+          if (!venue && item.venue) venue = item.venue;
+          if (!quota && item.quota) quota = item.quota;
+          if (!contact && item.contact) contact = item.contact;
+          if (!status && item.status) status = item.status;
+          if (!logo && item.logoUrl) logo = item.logoUrl;
+          if (!desc && item.description) desc = item.description;
+        }
+      } catch (_) {}
+
+      // 3. Fallback ke localStorage
+      try {
+        const stored = JSON.parse(localStorage.getItem('kka_admin_district_settings') || '{}');
+        if (stored?.[currentSlug]) {
+          const item = stored[currentSlug];
+          if (!venue && item.venue) venue = item.venue;
+          if (!quota && item.quota) quota = item.quota;
+          if (!contact && item.contact) contact = item.contact;
+          if (!status && item.status) status = item.status;
+          if (!logo && item.logoUrl) logo = item.logoUrl;
+          if (!desc && item.description) desc = item.description;
+        }
+      } catch (_) {}
+
+      // 4. Ambil dan Terapkan Konfigurasi Gelombang & Biaya CBT
+      function formatRp(val: number) {
+        return 'Rp ' + Number(val || 0).toLocaleString('id-ID');
+      }
+
+      function applyWaveSettings(cfg: any) {
+        if (!cfg) return;
+        const activeWaveId = Number(cfg.activeWave) || 1;
+        let activeWaveData: any = null;
+
+        if (Array.isArray(cfg.waves)) {
+          activeWaveData = cfg.waves.find((w: any) => Number(w.id) === activeWaveId);
+        }
+
+        if (!activeWaveData) {
+          if (activeWaveId === 1) {
+            activeWaveData = {
+              id: 1,
+              name: 'Gelombang I (Early Bird)',
+              period: '2 Juni – 20 Juni 2026',
+              prices: { sd: 25000, smp: 35000, sma: 50000 }
+            };
+          } else if (activeWaveId === 2) {
+            activeWaveData = {
+              id: 2,
+              name: 'Gelombang II (Reguler)',
+              period: '22 Juni – 18 Juli 2026',
+              prices: { sd: 30000, smp: 40000, sma: 60000 }
+            };
+          } else {
+            activeWaveData = {
+              id: 3,
+              name: 'Gelombang III (Last Call)',
+              period: '20 Juli – 25 Juli 2026',
+              prices: { sd: 40000, smp: 50000, sma: 75000 }
+            };
           }
         }
-      } catch (e) {
-        try {
-          const stored = localStorage.getItem('kka_admin_district_settings');
-          if (stored) {
-            const settings = JSON.parse(stored);
-            if (settings[currentSlug]) {
-              if (settings[currentSlug].venue) {
-                const venueEl = document.getElementById('publicVenueName');
-                if (venueEl) venueEl.textContent = settings[currentSlug].venue;
-              }
-              if (settings[currentSlug].logoUrl) {
-                const logoEl = document.getElementById('publicDistrictLogo') as HTMLImageElement;
-                if (logoEl) logoEl.src = settings[currentSlug].logoUrl;
-              }
-              if (settings[currentSlug].description) {
-                const descEl = document.getElementById('publicDistrictDesc');
-                if (descEl) descEl.textContent = `${settings[currentSlug].description} Seluruh sekolah negeri dan swasta di bawah naungan Cabdindik Wilayah Jawa Timur serta Kantor Kemenag ${districtName} diundang untuk berpartisipasi pada ajang tahunan KKA Jawa Pos Radar Kediri.`;
-              }
-            }
-          }
-        } catch (err) {}
+
+        // Update Nama Gelombang
+        const waveNameEl = document.getElementById('publicWaveName');
+        if (waveNameEl && activeWaveData.name) {
+          waveNameEl.textContent = activeWaveData.name;
+        }
+
+        // Update Badge Gelombang
+        const waveBadgeEl = document.getElementById('publicWaveBadge');
+        if (waveBadgeEl) {
+          waveBadgeEl.textContent = `GELOMBANG ${activeWaveId} AKTIF`;
+        }
+
+        // Update Harga SD, SMP, SMA
+        const sdEl = document.getElementById('publicPriceSD');
+        const smpEl = document.getElementById('publicPriceSMP');
+        const smaEl = document.getElementById('publicPriceSMA');
+
+        if (sdEl && activeWaveData.prices?.sd != null) {
+          sdEl.textContent = formatRp(activeWaveData.prices.sd);
+        }
+        if (smpEl && activeWaveData.prices?.smp != null) {
+          smpEl.textContent = formatRp(activeWaveData.prices.smp);
+        }
+        if (smaEl && activeWaveData.prices?.sma != null) {
+          smaEl.textContent = formatRp(activeWaveData.prices.sma);
+        }
+
+        // Update Teks Periode Gelombang
+        const periodEl = document.getElementById('publicWavePeriod');
+        if (periodEl && activeWaveData.period) {
+          periodEl.textContent = activeWaveData.period;
+        }
+
+        const sidePeriodEl = document.getElementById('publicSidebarWavePeriod');
+        if (sidePeriodEl && activeWaveData.period) {
+          sidePeriodEl.textContent = `${activeWaveData.period} (${activeWaveData.name} Aktif).`;
+        }
       }
-    })();
+
+      // Render cache lokal gelombang secara instan (0ms)
+      try {
+        const storedSys = localStorage.getItem('kka_admin_system_settings');
+        if (storedSys) applyWaveSettings(JSON.parse(storedSys));
+      } catch (_) {}
+
+      // Ambil gelombang mutakhir dari Supabase Cloud
+      try {
+        const { data: sysData } = await supabase
+          .from('app_settings')
+          .select('value')
+          .eq('key', 'system_settings')
+          .maybeSingle();
+
+        if (sysData?.value) {
+          applyWaveSettings(sysData.value);
+          localStorage.setItem('kka_admin_system_settings', JSON.stringify(sysData.value));
+        }
+      } catch (_) {}
+
+      // Terapkan ke DOM
+      if (venue) {
+        const venueEl = document.getElementById('publicVenueName');
+        if (venueEl) venueEl.textContent = venue;
+      }
+      if (logo) {
+        const logoEl = document.getElementById('publicDistrictLogo') as HTMLImageElement | null;
+        if (logoEl) logoEl.src = logo;
+      }
+      if (desc) {
+        const descEl = document.getElementById('publicDistrictDesc');
+        if (descEl) {
+          descEl.textContent = `${desc} Seluruh sekolah negeri dan swasta di bawah naungan Cabdindik Wilayah Jawa Timur serta Kantor Kemenag ${districtName} diundang untuk berpartisipasi pada ajang tahunan KKA Jawa Pos Radar Kediri.`;
+        }
+      }
+      if (quota) {
+        const quotaEl = document.getElementById('publicQuotaInfo');
+        if (quotaEl) quotaEl.textContent = `${quota.toLocaleString('id-ID')} Peserta`;
+      }
+      if (contact) {
+        const contactEl = document.getElementById('publicContactInfo');
+        if (contactEl) contactEl.textContent = contact;
+      }
+      if (status) {
+        const badgeEl = document.getElementById('publicDistrictStatusBadge');
+        if (badgeEl) {
+          if (status === 'buka') {
+            badgeEl.className = 'badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1 fs-8 fw-bold';
+            badgeEl.textContent = 'PENDAFTARAN BUKA';
+          } else if (status === 'menipis') {
+            badgeEl.className = 'badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill px-3 py-1 fs-8 fw-bold';
+            badgeEl.textContent = 'KUOTA MENIPIS';
+          } else if (status === 'penuh') {
+            badgeEl.className = 'badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-3 py-1 fs-8 fw-bold';
+            badgeEl.textContent = 'KUOTA PENUH';
+          } else if (status === 'tutup') {
+            badgeEl.className = 'badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill px-3 py-1 fs-8 fw-bold';
+            badgeEl.textContent = 'DITUTUP';
+          }
+        }
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', syncPublicWilayahDetail);
+    } else {
+      syncPublicWilayahDetail();
+    }
+    document.addEventListener('astro:page-load', syncPublicWilayahDetail);
   </script>
 </BaseLayout>
 

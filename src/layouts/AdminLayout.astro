@@ -1,10 +1,15 @@
 ---
 interface Props {
   title?: string;
-  activeMenu?: 'dashboard' | 'pendaftaran' | 'wilayah' | 'cms' | 'galeri' | 'pengaturan';
+  activeMenu?: 'dashboard' | 'pendaftaran' | 'wilayah' | 'cms' | 'galeri' | 'pengaturan' | 'sekolah';
+  pageClass?: string;
 }
 
-const { title = 'Dashboard Administrator KKA 2026', activeMenu = 'dashboard' } = Astro.props;
+const { 
+  title = 'Dashboard Administrator KKA 2026', 
+  activeMenu = 'dashboard',
+  pageClass = 'page-dashboard'
+} = Astro.props;
 ---
 
 <!doctype html>
@@ -19,7 +24,7 @@ const { title = 'Dashboard Administrator KKA 2026', activeMenu = 'dashboard' } =
     <!-- Preconnect Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
     <!-- Template Vendor CSS (From AppDashboard-pro) -->
     <link href="/admin-assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
@@ -130,7 +135,7 @@ const { title = 'Dashboard Administrator KKA 2026', activeMenu = 'dashboard' } =
       <!-- Header Right -->
       <div class="header-right">
         <!-- Live Supabase Status Badge -->
-        <div class="d-none d-md-flex align-items-center gap-2 px-3 py-1.5 rounded-pill bg-success-subtle text-success border border-success-subtle fs-8 fw-semibold me-2">
+        <div class="d-none d-md-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-success-subtle text-success border border-success-subtle fs-8 fw-semibold me-2">
           <span class="pulse-indicator"></span>
           <span>Supabase Terhubung</span>
         </div>
@@ -350,7 +355,7 @@ const { title = 'Dashboard Administrator KKA 2026', activeMenu = 'dashboard' } =
 
     <!-- Main Content Area -->
     <main class="main">
-      <div class="main-content">
+      <div class={`main-content ${pageClass}`}>
         <slot />
       </div>
 

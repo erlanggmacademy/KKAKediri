@@ -52,6 +52,7 @@ import Breadcrumb from '../components/Breadcrumb.astro';
             </div>
 
             <!-- List Kontak -->
+            <!-- List Kontak -->
             <div class="d-flex flex-column gap-3">
               <!-- WhatsApp Admin 1 -->
               <a 
@@ -59,6 +60,7 @@ import Breadcrumb from '../components/Breadcrumb.astro';
                 target="_blank" 
                 rel="noopener noreferrer" 
                 class="contact-item-box"
+                id="kontakWa1Link"
               >
                 <div class="contact-item-icon">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white" viewBox="0 0 16 16">
@@ -67,7 +69,7 @@ import Breadcrumb from '../components/Breadcrumb.astro';
                 </div>
                 <div class="contact-item-info">
                   <div class="contact-item-label">WhatsApp Admin 1</div>
-                  <div class="contact-item-value">0812-3550-8957 (Pak Endro)</div>
+                  <div class="contact-item-value" id="kontakWa1Number">0812-3550-8957 (Pak Endro)</div>
                 </div>
               </a>
 
@@ -77,6 +79,7 @@ import Breadcrumb from '../components/Breadcrumb.astro';
                 target="_blank" 
                 rel="noopener noreferrer" 
                 class="contact-item-box"
+                id="kontakWa2Link"
               >
                 <div class="contact-item-icon">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white" viewBox="0 0 16 16">
@@ -85,7 +88,7 @@ import Breadcrumb from '../components/Breadcrumb.astro';
                 </div>
                 <div class="contact-item-info">
                   <div class="contact-item-label">WhatsApp Admin 2</div>
-                  <div class="contact-item-value">0813-5913-8251 (Mas Fajar)</div>
+                  <div class="contact-item-value" id="kontakWa2Number">0813-5913-8251 (Mas Fajar)</div>
                 </div>
               </a>
 
@@ -95,6 +98,7 @@ import Breadcrumb from '../components/Breadcrumb.astro';
                 target="_blank" 
                 rel="noopener noreferrer" 
                 class="contact-item-box"
+                id="kontakWa3Link"
               >
                 <div class="contact-item-icon">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white" viewBox="0 0 16 16">
@@ -103,7 +107,7 @@ import Breadcrumb from '../components/Breadcrumb.astro';
                 </div>
                 <div class="contact-item-info">
                   <div class="contact-item-label">WhatsApp Admin 3</div>
-                  <div class="contact-item-value">0815-5897-90831 (Mas Wildan)</div>
+                  <div class="contact-item-value" id="kontakWa3Number">0815-5897-90831 (Mas Wildan)</div>
                 </div>
               </a>
 
@@ -113,7 +117,7 @@ import Breadcrumb from '../components/Breadcrumb.astro';
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="10"></circle>
                     <line x1="2" y1="12" x2="22" y2="12"></line>
-                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"></path>
                   </svg>
                 </div>
                 <div class="contact-item-info">
@@ -154,9 +158,9 @@ import Breadcrumb from '../components/Breadcrumb.astro';
 
                 <!-- Detail Rekening -->
                 <div class="bank-account-info flex-grow-1">
-                  <div class="bank-name fw-bold text-dark mb-1 fs-6">Bank BRI Cabang Kediri</div>
-                  <div class="bank-number fw-bold mb-1 fs-5" style="color: #0066ff;">No. Rek: 0033-0100-3455-560</div>
-                  <div class="bank-owner text-secondary small">A.n Heri Muda Setiawan</div>
+                  <div class="bank-name fw-bold text-dark mb-1 fs-6" id="kontakBankName">Bank BRI Cabang Kediri</div>
+                  <div class="bank-number fw-bold mb-1 fs-5" style="color: #0066ff;" id="kontakBankNumber">No. Rek: 0033-0100-3455-560</div>
+                  <div class="bank-owner text-secondary small" id="kontakBankHolder">A.n Heri Muda Setiawan</div>
                 </div>
               </div>
             </div>
@@ -191,6 +195,79 @@ import Breadcrumb from '../components/Breadcrumb.astro';
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  import { supabase } from '../lib/supabase';
+
+  function applyDynamicContactSettings(cfg: any) {
+    if (!cfg) return;
+
+    // 1. Bank
+    const bankNameEl = document.getElementById('kontakBankName');
+    const bankNumEl = document.getElementById('kontakBankNumber');
+    const bankHolderEl = document.getElementById('kontakBankHolder');
+
+    if (bankNameEl && cfg.bankName) bankNameEl.textContent = cfg.bankName;
+    if (bankNumEl && cfg.bankNumber) bankNumEl.textContent = `No. Rek: ${cfg.bankNumber}`;
+    if (bankHolderEl && cfg.bankHolder) bankHolderEl.textContent = `A.n ${cfg.bankHolder}`;
+
+    // 2. WhatsApp CS 1
+    if (cfg.wa1) {
+      let cleanWa1 = cfg.wa1.replace(/[^0-9]/g, '');
+      if (cleanWa1.startsWith('0')) cleanWa1 = '62' + cleanWa1.slice(1);
+      const wa1Link = document.getElementById('kontakWa1Link') as HTMLAnchorElement | null;
+      const wa1Text = document.getElementById('kontakWa1Number');
+      if (wa1Link) wa1Link.href = `https://wa.me/${cleanWa1}?text=Halo%20Panitia%20KKA%202026%2C%20saya%20ingin%20konsultasi%20pendaftaran.`;
+      if (wa1Text) wa1Text.textContent = cfg.wa1.includes('(') ? cfg.wa1 : `${cfg.wa1} (Pak Endro)`;
+    }
+
+    // 3. WhatsApp CS 2
+    if (cfg.wa2) {
+      let cleanWa2 = cfg.wa2.replace(/[^0-9]/g, '');
+      if (cleanWa2.startsWith('0')) cleanWa2 = '62' + cleanWa2.slice(1);
+      const wa2Link = document.getElementById('kontakWa2Link') as HTMLAnchorElement | null;
+      const wa2Text = document.getElementById('kontakWa2Number');
+      if (wa2Link) wa2Link.href = `https://wa.me/${cleanWa2}?text=Halo%20Panitia%20KKA%202026%2C%20saya%20ingin%20konfirmasi%20pembayaran.`;
+      if (wa2Text) wa2Text.textContent = cfg.wa2.includes('(') ? cfg.wa2 : `${cfg.wa2} (Mas Fajar)`;
+    }
+
+    // 4. WhatsApp CS 3
+    if (cfg.wa3) {
+      let cleanWa3 = cfg.wa3.replace(/[^0-9]/g, '');
+      if (cleanWa3.startsWith('0')) cleanWa3 = '62' + cleanWa3.slice(1);
+      const wa3Link = document.getElementById('kontakWa3Link') as HTMLAnchorElement | null;
+      const wa3Text = document.getElementById('kontakWa3Number');
+      if (wa3Link) wa3Link.href = `https://wa.me/${cleanWa3}?text=Halo%20Panitia%20KKA%202026%2C%20saya%20ingin%20konsultasi%20pendaftaran.`;
+      if (wa3Text) wa3Text.textContent = cfg.wa3.includes('(') ? cfg.wa3 : `${cfg.wa3} (Mas Wildan)`;
+    }
+  }
+
+  function initKontakHydration() {
+    try {
+      const stored = localStorage.getItem('kka_admin_system_settings');
+      if (stored) applyDynamicContactSettings(JSON.parse(stored));
+    } catch (e) {}
+
+    supabase
+      .from('app_settings')
+      .select('value')
+      .eq('key', 'system_settings')
+      .single()
+      .then(({ data, error }) => {
+        if (!error && data?.value) {
+          applyDynamicContactSettings(data.value);
+          localStorage.setItem('kka_admin_system_settings', JSON.stringify(data.value));
+        }
+      });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initKontakHydration);
+  } else {
+    initKontakHydration();
+  }
+  document.addEventListener('astro:page-load', initKontakHydration);
+</script>
 
 <style>
   .max-w-xl { max-width: 620px; }

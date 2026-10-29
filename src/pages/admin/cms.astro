@@ -60,16 +60,16 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
     <!-- TABLE DAFTAR ARTIKEL -->
     <div class="dashboard-panel mb-4">
-      <div class="dashboard-panel-header px-3.5 py-3">
+      <div class="dashboard-panel-header px-4 py-3">
         <div class="d-flex align-items-center gap-2">
           <span class="dashboard-section-kicker">MANAJEMEN KONTEN</span>
           <h2 class="fs-6 mb-0">Daftar Artikel & Berita KKA</h2>
-          <span class="badge bg-primary rounded-pill px-2.5 py-1 fs-9 ms-1" id="articleCountBadge">0 Artikel</span>
+          <span class="badge bg-primary rounded-pill px-3 py-1 fs-9 ms-1" id="articleCountBadge">0 Artikel</span>
         </div>
         <div class="d-flex align-items-center gap-2">
           <input 
             type="text" 
-            class="form-control form-control-sm fs-8 py-1.5" 
+            class="form-control form-control-sm fs-8 py-2" 
             id="searchArticleInput" 
             placeholder="Cari judul atau topik..." 
             style="width: 200px;" 
@@ -182,7 +182,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
           <div class="modal-footer bg-light px-4 py-3 d-flex align-items-center justify-content-between">
             <button type="button" class="btn btn-light btn-sm border fs-8" id="articleModalCancelBtn">Batal</button>
-            <button type="submit" class="btn btn-primary btn-sm fw-bold px-3.5 py-1.5 fs-8">
+            <button type="submit" class="btn btn-primary btn-sm fw-bold px-3 py-2 fs-8">
               <i class="bi bi-save me-1"></i>
               <span>Simpan Artikel</span>
             </button>
@@ -322,8 +322,8 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         const tr = document.createElement('tr');
         const isPub = art.status === 'published';
         const statusBadge = isPub 
-          ? '<span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2.5 py-1">Terbit</span>'
-          : '<span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill px-2.5 py-1">Draft</span>';
+          ? '<span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1">Terbit</span>'
+          : '<span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill px-3 py-1">Draft</span>';
 
         tr.innerHTML = `
           <td class="ps-3 text-center text-muted fw-semibold">${idx + 1}</td>
@@ -332,7 +332,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             <div class="fs-9 text-muted text-truncate" style="max-width: 320px;">${art.summary}</div>
           </td>
           <td class="text-nowrap">
-            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-0.5 rounded fs-9">${art.category}</span>
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1 rounded fs-9">${art.category}</span>
           </td>
           <td class="text-nowrap">
             <div class="text-dark fs-8">${art.author}</div>
@@ -342,7 +342,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             ${statusBadge}
           </td>
           <td class="pe-3 text-end text-nowrap">
-            <button type="button" class="btn btn-sm btn-primary rounded-2 px-2.5 py-1 fw-bold fs-8 btn-edit-art" data-id="${art.id}">
+            <button type="button" class="btn btn-sm btn-primary rounded-2 px-3 py-1 fw-bold fs-8 btn-edit-art" data-id="${art.id}">
               <i class="bi bi-pencil-square"></i> Edit
             </button>
             <button type="button" class="btn btn-sm btn-outline-danger rounded-2 px-2 py-1 ms-1 fs-8 btn-delete-art" data-id="${art.id}" title="Hapus Artikel">

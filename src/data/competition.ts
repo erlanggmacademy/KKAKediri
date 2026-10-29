@@ -240,15 +240,9 @@ export const SITE_INFO = {
   ],
   paymentAccounts: [
     {
-      bank: 'Bank BRI',
-      accountNumber: '0033-01-001234-53-8',
-      accountHolder: 'Radar Kediri Event',
-      note: 'Wajib cantumkan Kode Pendaftaran pada berita transfer'
-    },
-    {
-      bank: 'Bank BCA',
-      accountNumber: '011-897-6543',
-      accountHolder: 'Radar Kediri Event',
+      bank: 'Bank BRI Cabang Kediri',
+      accountNumber: '0033-0100-3455-560',
+      accountHolder: 'Heri Muda Setiawan',
       note: 'Wajib cantumkan Kode Pendaftaran pada berita transfer'
     }
   ]

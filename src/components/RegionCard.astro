@@ -241,25 +241,45 @@ const { district } = Astro.props;
 </style>
 
 <script>
-  function syncDistrictCustomData() {
+  import { supabase } from '../lib/supabase';
+
+  async function syncDistrictCustomData() {
+    let settings: any = null;
     try {
       const stored = localStorage.getItem('kka_admin_district_settings');
-      if (stored) {
-        const settings = JSON.parse(stored);
-        document.querySelectorAll('img[data-district-slug]').forEach((imgEl) => {
-          const slug = imgEl.getAttribute('data-district-slug');
-          if (slug && settings[slug]?.logoUrl) {
-            (imgEl as HTMLImageElement).src = settings[slug].logoUrl;
-          }
-        });
-        document.querySelectorAll('[data-district-desc]').forEach((descEl) => {
-          const slug = descEl.getAttribute('data-district-desc');
-          if (slug && settings[slug]?.description) {
-            descEl.textContent = settings[slug].description;
-          }
-        });
-      }
+      if (stored) settings = JSON.parse(stored);
     } catch (e) {}
+
+    const applySettings = (data: any) => {
+      if (!data) return;
+      document.querySelectorAll('img[data-district-slug]').forEach((imgEl) => {
+        const slug = imgEl.getAttribute('data-district-slug');
+        if (slug && data[slug]?.logoUrl) {
+          (imgEl as HTMLImageElement).src = data[slug].logoUrl;
+        }
+      });
+      document.querySelectorAll('[data-district-desc]').forEach((descEl) => {
+        const slug = descEl.getAttribute('data-district-desc');
+        if (slug && data[slug]?.description) {
+          descEl.textContent = data[slug].description;
+        }
+      });
+    };
+
+    if (settings) applySettings(settings);
+
+    try {
+      const { data: appData } = await supabase
+        .from('app_settings')
+        .select('value')
+        .eq('key', 'district_settings')
+        .maybeSingle();
+
+      if (appData?.value && typeof appData.value === 'object') {
+        applySettings(appData.value);
+        localStorage.setItem('kka_admin_district_settings', JSON.stringify(appData.value));
+      }
+    } catch (_) {}
   }
 
   if (document.readyState === 'loading') {

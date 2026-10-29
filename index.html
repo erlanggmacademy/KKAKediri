@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - AppDashboard</title>
+  <meta name="description" content="AppDashboard - Bootstrap Admin Dashboard Template">
+  <meta name="keywords" content="admin, dashboard, bootstrap">
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+  <link href="assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+  <link href="assets/vendor/phosphor-icons/phosphor-icons.css" rel="stylesheet">
+  <link href="assets/vendor/lucide-icons/lucide.css" rel="stylesheet">
+  <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
+  <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
+  <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+  <link href="assets/vendor/choices.js/choices.min.css" rel="stylesheet">
+  <link href="assets/vendor/flatpickr/flatpickr.min.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="assets/css/main.css" rel="stylesheet">
+
+  <!-- =======================================================
+    * Template Name: AppDashboard - Bootstrap Admin Dashboard Template
+    * Template URL: https://bootstrapmade.com/appdashboard-bootstrap-admin-dashboard-template/
+    * Updated: Jun 13 2026 with Bootstrap v5.3.8
+    * Author: BootstrapMade.com
+    * License: https://bootstrapmade.com/license/
+    ======================================================== -->
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="header">
+    <!-- Header Left -->
+    <div class="header-left">
+      <a href="index.html" class="header-logo">
+        <span class="header-logo-mark">
+          <img src="assets/img/logo.webp" alt="AppDashboard">
+        </span>
+        <span>AppDashboard</span>
+      </a>
+      <button class="sidebar-toggle" title="Toggle Sidebar">
+        <i class="bi bi-list"></i>
+      </button>
+      <div class="header-context">
+        <span>Workspace</span>
+        <strong>Command Center</strong>
+      </div>
+    </div>
+
+    <!-- Header Search (Desktop) -->
+    <div class="header-search">
+      <form class="search-form" action="search-results.html" method="GET">
+        <button type="submit"><i class="bi bi-search"></i></button>
+        <input type="search" name="q" placeholder="Search workspace..." autocomplete="off">
+      </form>
+    </div>
+
+    <!-- Header Right -->
+    <div class="header-right">
+      <!-- Desktop Actions (hidden on mobile, shown in mobile menu) -->
+      <div class="header-actions-desktop">
+        <!-- Theme Toggle -->
+        <button class="header-action theme-toggle" title="Toggle Theme">
+          <i class="bi bi-moon icon-dark"></i>
+          <i class="bi bi-sun icon-light"></i>
+        </button>
+
+        <!-- Fullscreen Toggle -->
+        <button class="header-action fullscreen-toggle" onclick="toggleFullscreen()" title="Fullscreen">
+          <i class="bi bi-fullscreen icon-enter"></i>
+          <i class="bi bi-fullscreen-exit icon-exit"></i>
+        </button>
+
+        <!-- Notifications -->
+        <div class="header-action dropdown notification-dropdown">
+          <button class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-bell"></i>
+            <span class="badge">3</span>
+          </button>
+          <div class="dropdown-menu dropdown-menu-end">
+            <div class="notification-header">
+              <div>
+                <span>Today</span>
+                <h6>Notifications</h6>
+              </div>
+              <a href="#" data-notification-action="mark-all-read">Mark all read</a>
+            </div>
+            <div class="notification-list">
+              <div class="notification-item unread">
+                <div class="notification-icon success">
+                  <i class="bi bi-check-circle"></i>
+                </div>
+                <div class="notification-content">
+                  <div class="notification-title">Order Completed</div>
+                  <div class="notification-text">Your order #12345 has been delivered</div>
+                  <div class="notification-time">5 min ago</div>
+                </div>
+              </div>
+              <div class="notification-item unread">
+                <div class="notification-icon warning">
+                  <i class="bi bi-exclamation-triangle"></i>
+                </div>
+                <div class="notification-content">
+                  <div class="notification-title">Low Storage</div>
+                  <div class="notification-text">Server storage is running low (85% used)</div>
+                  <div class="notification-time">1 hour ago</div>
+                </div>
+              </div>
+              <div class="notification-item">
+                <div class="notification-icon info">
+                  <i class="bi bi-info-circle"></i>
+                </div>
+                <div class="notification-content">
+                  <div class="notification-title">New Feature</div>
+                  <div class="notification-text">Dark mode is now available</div>
+                  <div class="notification-time">2 hours ago</div>
+                </div>
+              </div>
+            </div>
+            <div class="notification-footer">
+              <a href="notifications.html">View all notifications</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- User Dropdown -->
+        <div class="header-action dropdown user-dropdown">
+          <button class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            <img src="assets/img/profile-img.webp" alt="User" class="avatar">
+            <span class="user-name">
+              <strong>John Doe</strong>
+              <small>Administrator</small>
+            </span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li class="dropdown-header">
+              <img src="assets/img/profile-img.webp" alt="User">
+              <h6>John Doe</h6>
+              <span>Administrator</span>
+            </li>
+            <li>
+              <a class="dropdown-item" href="profile.html">
+                <i class="bi bi-person"></i> My Profile
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="settings.html">
+                <i class="bi bi-gear"></i> Settings
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="activity.html">
+                <i class="bi bi-activity"></i> Activity Log
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <a class="dropdown-item" href="auth-login.html">
+                <i class="bi bi-box-arrow-right"></i> Sign Out
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Mobile Actions (visible only on mobile) -->
+      <div class="header-actions-mobile">
+        <!-- Search Toggle (Mobile) -->
+        <button class="header-action search-toggle" title="Search">
+          <i class="bi bi-search"></i>
+        </button>
+
+        <!-- Mobile Menu Toggle -->
+        <button class="header-action mobile-menu-toggle" title="More">
+          <i class="bi bi-three-dots-vertical"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Search -->
+  <div class="mobile-search">
+    <form class="search-form" action="search-results.html" method="GET">
+      <input type="search" name="q" placeholder="Search..." autocomplete="off">
+      <button type="submit"><i class="bi bi-search"></i></button>
+    </form>
+  </div>
+
+  <!-- Mobile Header Menu -->
+  <div class="mobile-header-menu">
+    <div class="mobile-header-menu-content">
+      <!-- Theme Toggle -->
+      <button class="mobile-menu-item theme-toggle" title="Toggle Theme">
+        <i class="bi bi-moon icon-dark"></i>
+        <i class="bi bi-sun icon-light"></i>
+        <span class="mobile-menu-label">Theme</span>
+      </button>
+
+      <!-- Fullscreen Toggle -->
+      <button class="mobile-menu-item fullscreen-toggle" onclick="toggleFullscreen()" title="Fullscreen">
+        <i class="bi bi-fullscreen icon-enter"></i>
+        <i class="bi bi-fullscreen-exit icon-exit"></i>
+        <span class="mobile-menu-label">Fullscreen</span>
+      </button>
+
+      <!-- Notifications -->
+      <a href="notifications.html" class="mobile-menu-item">
+        <i class="bi bi-bell"></i>
+        <span class="badge">3</span>
+        <span class="mobile-menu-label">Notifications</span>
+      </a>
+
+      <!-- Profile -->
+      <a href="profile.html" class="mobile-menu-item">
+        <i class="bi bi-person"></i>
+        <span class="mobile-menu-label">Profile</span>
+      </a>
+
+      <!-- Settings -->
+      <a href="settings.html" class="mobile-menu-item">
+        <i class="bi bi-gear"></i>
+        <span class="mobile-menu-label">Settings</span>
+      </a>
+
+      <!-- Sign Out -->
+      <a href="auth-login.html" class="mobile-menu-item mobile-menu-item-danger">
+        <i class="bi bi-box-arrow-right"></i>
+        <span class="mobile-menu-label">Sign Out</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <!-- Sidebar Header -->
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <span class="sidebar-logo-mark">
+          <img src="assets/img/logo.webp" alt="AppDashboard">
+        </span>
+        <span class="sidebar-logo-text">
+          <span class="sidebar-logo-name">AppDashboard</span>
+          <span class="sidebar-logo-label">Admin suite</span>
+        </span>
+      </a>
+      <button class="sidebar-close">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar-nav">
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a class="nav-link active" href="index.html">
+            <i class="bi bi-grid"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+
+        <!-- Dashboards Submenu -->
+        <li class="nav-item has-submenu ">
+          <a class="nav-link" href="#" aria-expanded="false">
+            <i class="bi bi-speedometer2"></i>
+            <span>Dashboards</span>
+            <i class="bi bi-chevron-down nav-arrow"></i>
+          </a>
+          <ul class="nav-submenu ">
+            <li><a class="nav-link " href="dashboard-sales.html">Sales</a></li>
+            <li><a class="nav-link " href="dashboard-analytics.html">Analytics</a></li>
+            <li><a class="nav-link " href="dashboard-crm.html">CRM</a></li>
+            <li><a class="nav-link " href="dashboard-marketing.html">Marketing</a></li>
+            <li><a class="nav-link " href="dashboard-projects.html">Projects</a></li>
+            <li><a class="nav-link " href="dashboard-finance.html">Finance</a></li>
+          </ul>
+        </li>
+
+        <!-- Users -->
+        <li class="nav-item has-submenu ">
+          <a class="nav-link" href="#" aria-expanded="false">
+            <i class="bi bi-people"></i>
+            <span>Users</span>
+            <i class="bi bi-chevron-down nav-arrow"></i>
+          </a>
+          <ul class="nav-submenu ">
+            <li><a class="nav-link " href="users.html">Users List</a></li>
+            <li><a class="nav-link " href="users-view.html">User View</a></li>
+            <li><a class="nav-link " href="users-edit.html">User Edit</a></li>
+            <li><a class="nav-link " href="profile.html">Profile</a></li>
+            <!-- 3rd Level - Settings submenu -->
+            <li class="has-submenu ">
+              <a class="nav-link" href="#" aria-expanded="false">
+                Settings
+                <i class="bi bi-chevron-down nav-arrow"></i>
+              </a>
+              <ul class="nav-submenu ">
+                <li><a class="nav-link " href="settings.html">Account</a></li>
+                <li><a class="nav-link " href="notifications.html">Notifications</a></li>
+                <li><a class="nav-link " href="activity.html">Activity</a></li>
+              </ul>
+            </li>
+            <li><a class="nav-link " href="roles.html">Roles & Permissions</a></li>
+          </ul>
+        </li>
+
+        <!-- Authentication -->
+        <li class="nav-item has-submenu ">
+          <a class="nav-link" href="#" aria-expanded="false">
+            <i class="bi bi-shield-lock"></i>
+            <span>Authentication</span>
+            <i class="bi bi-chevron-down nav-arrow"></i>
+          </a>
+          <ul class="nav-submenu ">
+            <li><a class="nav-link " href="auth-login.html">Login</a></li>
+            <li><a class="nav-link " href="auth-register.html">Register</a></li>
+            <li><a class="nav-link " href="auth-forgot-password.html">Forgot Password</a></li>
+            <li><a class="nav-link " href="auth-reset-password.html">Reset Password</a></li>
+            <li><a class="nav-link " href="auth-verify-email.html">Email Verification</a></li>
+            <li><a class="nav-link " href="auth-two-factor.html">Two Factor Auth</a></li>
+            <li><a class="nav-link " href="auth-lock-screen.html">Lock Screen</a></li>
+          </ul>
+        </li>
+
+        <!-- Apps Section -->
+        <li class="nav-heading"><span>Apps</span></li>
+
+        <li class="nav-item">
+          <a class="nav-link " href="apps-calendar.html">
+            <i class="bi bi-calendar3"></i>
+            <span>Calendar</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link " href="apps-kanban.html">
+            <i class="bi bi-kanban"></i>
+            <span>Kanban Board</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link " href="apps-chat.html">
+            <i class="bi bi-chat-dots"></i>
+            <span>Chat</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link " href="apps-contacts.html">
+            <i class="bi bi-person-lines-fill"></i>
+            <span>Contacts</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link " href="apps-file-manager.html">
+            <i class="bi bi-folder2-open"></i>
+            <span>File Manager</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link " href="apps-email.html">
+            <i class="bi bi-envelope"></i>
+            <span>Email</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link " href="apps-todo.html">
+            <i class="bi bi-check2-square"></i>
+            <span>Todo List</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link " href="apps-support.html">
+            <i class="bi bi-headset"></i>
+            <span>Support Center</span>
+          </a>
+        </li>
+
+        <!-- UI Elements Section -->
+        <li class="nav-heading"><span>UI Elements</span></li>
+
+        <li class="nav-item has-submenu ">
+          <a class="nav-link" href="#" aria-expanded="false">
+            <i class="bi bi-puzzle"></i>
+            <span>Components</span>
+            <i class="bi bi-chevron-down nav-arrow"></i>
+          </a>
+          <ul class="nav-submenu ">
+            <li><a class="nav-link " href="components-alerts.html">Alerts</a></li>
+            <li><a class="nav-link " href="components-accordion.html">Accordion</a></li>
+            <li><a class="nav-link " href="components-badges.html">Badges</a></li>
+            <li><a class="nav-link " href="components-breadcrumbs.html">Breadcrumbs</a></li>
+            <li><a class="nav-link " href="components-buttons.html">Buttons</a></li>
+            <li><a class="nav-link " href="components-cards.html">Cards</a></li>
+            <li><a class="nav-link " href="components-carousel.html">Carousel</a></li>
+            <li><a class="nav-link " href="components-dropdowns.html">Dropdowns</a></li>
+            <li><a class="nav-link " href="components-list-group.html">List Group</a></li>
+            <li><a class="nav-link " href="components-modal.html">Modal</a></li>
+            <li><a class="nav-link " href="components-nav-tabs.html">Navs & Tabs</a></li>
+            <li><a class="nav-link " href="components-offcanvas.html">Offcanvas</a></li>
+            <li><a class="nav-link " href="components-pagination.html">Pagination</a></li>
+            <li><a class="nav-link " href="components-popovers.html">Popovers</a></li>
+            <li><a class="nav-link " href="components-progress.html">Progress</a></li>
+            <li><a class="nav-link " href="components-spinners.html">Spinners</a></li>
+            <li><a class="nav-link " href="components-toasts.html">Toasts</a></li>
+            <li><a class="nav-link " href="components-tooltips.html">Tooltips</a></li>
+          </ul>
+        </li>
+
+        <!-- Widgets -->
+        <li class="nav-item has-submenu ">
+          <a class="nav-link" href="#" aria-expanded="false">
+            <i class="bi bi-grid-1x2"></i>
+            <span>Widgets</span>
+            <i class="bi bi-chevron-down nav-arrow"></i>
+          </a>
+          <ul class="nav-submenu ">
+            <li><a class="nav-link " href="widgets-cards.html">Cards</a></li>
+            <li><a class="nav-link " href="widgets-banners.html">Banners</a></li>
+            <li><a class="nav-link " href="widgets-charts.html">Charts</a></li>
+            <li><a class="nav-link " href="widgets-apps.html">Apps</a></li>
+            <li><a class="nav-link " href="widgets-data.html">Data</a></li>
+          </ul>
+        </li>
+
+        <!-- Forms Section -->
+        <li class="nav-item has-submenu ">
+          <a class="nav-link" href="#" aria-expanded="false">
+            <i class="bi bi-ui-checks-grid"></i>
+            <span>Forms</span>
+            <i class="bi bi-chevron-down nav-arrow"></i>
+          </a>
+          <ul class="nav-submenu ">
+            <li><a class="nav-link " href="forms-elements.html">Form Elements</a></li>
+            <li><a class="nav-link " href="forms-layouts.html">Form Layouts</a></li>
+            <li><a class="nav-link " href="forms-validation.html">Validation</a></li>
+            <li><a class="nav-link " href="forms-wizard.html">Wizard</a></li>
+            <li><a class="nav-link " href="forms-editors.html">Rich Editors</a></li>
+            <li><a class="nav-link " href="forms-pickers.html">Date/Time Pickers</a></li>
+            <li><a class="nav-link " href="forms-select.html">Advanced Select</a></li>
+            <li><a class="nav-link " href="forms-upload.html">File Upload</a></li>
+          </ul>
+        </li>
+
+        <!-- Tables Section -->
+        <li class="nav-item has-submenu ">
+          <a class="nav-link" href="#" aria-expanded="false">
+            <i class="bi bi-table"></i>
+            <span>Tables</span>
+            <i class="bi bi-chevron-down nav-arrow"></i>
+          </a>
+          <ul class="nav-submenu ">
+            <li><a class="nav-link " href="tables-basic.html">Basic Tables</a></li>
+            <li><a class="nav-link " href="tables-datatables.html">DataTables</a></li>
+            <li><a class="nav-link " href="tables-responsive.html">Responsive Tables</a></li>
+          </ul>
+        </li>
+
+        <!-- Charts Section -->
+        <li class="nav-item has-submenu ">
+          <a class="nav-link" href="#" aria-expanded="false">
+            <i class="bi bi-bar-chart"></i>
+            <span>Charts</span>
+            <i class="bi bi-chevron-down nav-arrow"></i>
+          </a>
+          <ul class="nav-submenu ">
+            <li><a class="nav-link " href="charts-apexcharts.html">ApexCharts</a></li>
+            <li><a class="nav-link " href="charts-chartjs.html">Chart.js</a></li>
+            <li><a class="nav-link " href="charts-echarts.html">ECharts</a></li>
+          </ul>
+        </li>
+
+        <!-- Icons Section -->
+        <li class="nav-item has-submenu ">
+          <a class="nav-link" href="#" aria-expanded="false">
+            <i class="bi bi-gem"></i>
+            <span>Icons</span>
+            <i class="bi bi-chevron-down nav-arrow"></i>
+          </a>
+          <ul class="nav-submenu ">
+            <li><a class="nav-link " href="icons-bootstrap.html">Bootstrap Icons</a></li>
+            <li><a class="nav-link " href="icons-remixicon.html">Remix Icons</a></li>
+            <li><a class="nav-link " href="icons-fontawesome.html">Font Awesome</a></li>
+            <li><a class="nav-link " href="icons-phosphor.html">Phosphor Icons</a></li>
+            <li><a class="nav-link " href="icons-lucide.html">Lucide Icons</a></li>
+          </ul>
+        </li>
+
+        <!-- Pages Section -->
+        <li class="nav-heading"><span>Pages</span></li>
+
+        <li class="nav-item">
+          <a class="nav-link " href="contact.html">
+            <i class="bi bi-envelope"></i>
+            <span>Contact</span>
+          </a>
+        </li>
+
+        <!-- Invoices -->
+        <li class="nav-item has-submenu ">
+          <a class="nav-link" href="#" aria-expanded="false">
+            <i class="bi bi-receipt"></i>
+            <span>Invoices</span>
+            <i class="bi bi-chevron-down nav-arrow"></i>
+          </a>
+          <ul class="nav-submenu ">
+            <li><a class="nav-link " href="invoice-list.html">Invoice List</a></li>
+            <li><a class="nav-link " href="invoice.html">Invoice View</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link " href="pricing.html">
+            <i class="bi bi-tag"></i>
+            <span>Pricing</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link " href="faq.html">
+            <i class="bi bi-question-circle"></i>
+            <span>FAQ</span>
+          </a>
+        </li>
+
+        <!-- Error Pages -->
+        <li class="nav-item has-submenu ">
+          <a class="nav-link" href="#" aria-expanded="false">
+            <i class="bi bi-exclamation-triangle"></i>
+            <span>Error Pages</span>
+            <i class="bi bi-chevron-down nav-arrow"></i>
+          </a>
+          <ul class="nav-submenu ">
+            <li><a class="nav-link " href="error-404.html">404 Not Found</a></li>
+            <li><a class="nav-link " href="error-403.html">403 Forbidden</a></li>
+            <li><a class="nav-link " href="error-500.html">500 Server Error</a></li>
+            <li><a class="nav-link " href="error-maintenance.html">Maintenance</a></li>
+            <li><a class="nav-link " href="error-coming-soon.html">Coming Soon</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link " href="timeline.html">
+            <i class="bi bi-clock-history"></i>
+            <span>Timeline</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link " href="search-results.html">
+            <i class="bi bi-search"></i>
+            <span>Search Results</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link " href="blank.html">
+            <i class="bi bi-file-earmark"></i>
+            <span>Blank Page</span>
+          </a>
+        </li>
+
+      </ul>
+    </nav>
+
+  </aside>
+
+  <!-- Sidebar Overlay (Mobile) -->
+  <div class="sidebar-overlay"></div>
+
+  <!-- Main Content -->
+  <main class="main">
+    <div class="main-content page-dashboard">
+      <div class="dashboard-hero">
+        <div class="dashboard-hero-copy">
+          <span class="dashboard-eyebrow">Command Center</span>
+          <h1>Operating dashboard</h1>
+          <p>Monitor revenue, orders, customer movement, and priority workflow signals from one focused workspace.</p>
+        </div>
+        <div class="dashboard-hero-actions">
+          <a href="invoice-list.html" class="btn btn-light">
+            <i class="bi bi-receipt"></i>
+            Invoices
+          </a>
+          <a href="users.html" class="btn btn-primary">
+            <i class="bi bi-person-plus"></i>
+            Add User
+          </a>
+        </div>
+
+        <div class="dashboard-kpi-grid">
+          <div class="dashboard-kpi-card">
+            <div class="dashboard-kpi-icon primary">
+              <i class="bi bi-cart3"></i>
+            </div>
+            <div class="dashboard-kpi-content">
+              <span>Total Sales</span>
+              <strong>$12,426</strong>
+              <small class="positive"><i class="bi bi-arrow-up"></i> 12.5% vs last month</small>
+            </div>
+          </div>
+          <div class="dashboard-kpi-card">
+            <div class="dashboard-kpi-icon success">
+              <i class="bi bi-currency-dollar"></i>
+            </div>
+            <div class="dashboard-kpi-content">
+              <span>Revenue</span>
+              <strong>$8,234</strong>
+              <small class="positive"><i class="bi bi-arrow-up"></i> 8.2% vs last month</small>
+            </div>
+          </div>
+          <div class="dashboard-kpi-card">
+            <div class="dashboard-kpi-icon warning">
+              <i class="bi bi-box-seam"></i>
+            </div>
+            <div class="dashboard-kpi-content">
+              <span>Orders</span>
+              <strong>1,248</strong>
+              <small class="negative"><i class="bi bi-arrow-down"></i> 3.1% vs last month</small>
+            </div>
+          </div>
+          <div class="dashboard-kpi-card">
+            <div class="dashboard-kpi-icon info">
+              <i class="bi bi-people"></i>
+            </div>
+            <div class="dashboard-kpi-content">
+              <span>Customers</span>
+              <strong>5,432</strong>
+              <small class="positive"><i class="bi bi-arrow-up"></i> 5.8% vs last month</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-workbench">
+        <section class="dashboard-panel dashboard-chart-panel">
+          <div class="dashboard-panel-header">
+            <div>
+              <span class="dashboard-section-kicker">Financial pulse</span>
+              <h2>Revenue Overview</h2>
+            </div>
+            <div class="dashboard-segmented">
+              <button class="active">12M</button>
+              <button>6M</button>
+              <button>30D</button>
+            </div>
+          </div>
+          <div class="dashboard-chart-summary">
+            <div>
+              <span>Revenue</span>
+              <strong>$10.2k</strong>
+            </div>
+            <div>
+              <span>Expenses</span>
+              <strong>$5.1k</strong>
+            </div>
+            <div>
+              <span>Customers</span>
+              <strong>3.8k</strong>
+            </div>
+          </div>
+          <div class="dashboard-chart-wrap">
+            <div class="chart-container" id="revenueChart"></div>
+          </div>
+        </section>
+
+        <aside class="dashboard-side-stack">
+          <section class="dashboard-panel dashboard-activity-panel">
+            <div class="dashboard-panel-header compact">
+              <div>
+                <span class="dashboard-section-kicker">Live queue</span>
+                <h2>Recent Activity</h2>
+              </div>
+              <a href="activity.html">View all</a>
+            </div>
+            <div class="dashboard-activity-list">
+              <div class="dashboard-activity-item">
+                <span class="dashboard-activity-icon success"><i class="bi bi-check-lg"></i></span>
+                <div>
+                  <strong>New order received <a href="#">#ORD-001</a></strong>
+                  <small>5 minutes ago</small>
+                </div>
+              </div>
+              <div class="dashboard-activity-item">
+                <span class="dashboard-activity-icon primary"><i class="bi bi-person-plus"></i></span>
+                <div>
+                  <strong>New user registered <a href="#">John Doe</a></strong>
+                  <small>15 minutes ago</small>
+                </div>
+              </div>
+              <div class="dashboard-activity-item">
+                <span class="dashboard-activity-icon warning"><i class="bi bi-exclamation-triangle"></i></span>
+                <div>
+                  <strong>Server CPU usage at 85%</strong>
+                  <small>1 hour ago</small>
+                </div>
+              </div>
+              <div class="dashboard-activity-item">
+                <span class="dashboard-activity-icon info"><i class="bi bi-chat-dots"></i></span>
+                <div>
+                  <strong>New comment on <a href="#">blog post</a></strong>
+                  <small>2 hours ago</small>
+                </div>
+              </div>
+              <div class="dashboard-activity-item">
+                <span class="dashboard-activity-icon danger"><i class="bi bi-x-circle"></i></span>
+                <div>
+                  <strong>Order <a href="#">#ORD-004</a> cancelled</strong>
+                  <small>3 hours ago</small>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="dashboard-panel dashboard-actions-panel">
+            <div class="dashboard-panel-header compact">
+              <div>
+                <span class="dashboard-section-kicker">Shortcuts</span>
+                <h2>Quick Actions</h2>
+              </div>
+            </div>
+            <div class="dashboard-action-grid">
+              <a href="#" class="dashboard-action-item">
+                <i class="bi bi-plus-circle"></i>
+                <span>New Order</span>
+              </a>
+              <a href="users-edit.html" class="dashboard-action-item">
+                <i class="bi bi-person-plus"></i>
+                <span>Add User</span>
+              </a>
+              <a href="invoice.html" class="dashboard-action-item">
+                <i class="bi bi-file-earmark-text"></i>
+                <span>Report</span>
+              </a>
+              <a href="settings.html" class="dashboard-action-item">
+                <i class="bi bi-gear"></i>
+                <span>Settings</span>
+              </a>
+            </div>
+          </section>
+        </aside>
+      </div>
+
+      <div class="dashboard-insight-grid">
+        <section class="dashboard-panel dashboard-funnel-panel">
+          <div class="dashboard-panel-header compact">
+            <div>
+              <span class="dashboard-section-kicker">Pipeline</span>
+              <h2>Conversion Funnel</h2>
+            </div>
+            <span class="dashboard-panel-note">7 days</span>
+          </div>
+          <div class="dashboard-funnel-list">
+            <div class="dashboard-funnel-item">
+              <div>
+                <span>Visitors</span>
+                <strong>24,800</strong>
+                <small>100% converted</small>
+              </div>
+              <div class="dashboard-funnel-track full"><span></span></div>
+            </div>
+            <div class="dashboard-funnel-item">
+              <div>
+                <span>Signups</span>
+                <strong>6,420</strong>
+                <small>26% converted</small>
+              </div>
+              <div class="dashboard-funnel-track high"><span></span></div>
+            </div>
+            <div class="dashboard-funnel-item">
+              <div>
+                <span>Trials</span>
+                <strong>2,180</strong>
+                <small>34% converted</small>
+              </div>
+              <div class="dashboard-funnel-track medium"><span></span></div>
+            </div>
+            <div class="dashboard-funnel-item">
+              <div>
+                <span>Paid</span>
+                <strong>684</strong>
+                <small>31% converted</small>
+              </div>
+              <div class="dashboard-funnel-track low"><span></span></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="dashboard-panel dashboard-products-panel">
+          <div class="dashboard-panel-header compact">
+            <div>
+              <span class="dashboard-section-kicker">Revenue mix</span>
+              <h2>Top Products</h2>
+            </div>
+            <a href="invoice-list.html">Details</a>
+          </div>
+          <div class="dashboard-product-list">
+            <div class="dashboard-product-item">
+              <span class="dashboard-product-rank">1</span>
+              <div>
+                <strong>Enterprise Plan</strong>
+                <small>$42.8k revenue</small>
+              </div>
+              <em class="positive">+18.4%</em>
+            </div>
+            <div class="dashboard-product-item">
+              <span class="dashboard-product-rank">2</span>
+              <div>
+                <strong>Premium Plan</strong>
+                <small>$27.3k revenue</small>
+              </div>
+              <em class="positive">+12.1%</em>
+            </div>
+            <div class="dashboard-product-item">
+              <span class="dashboard-product-rank">3</span>
+              <div>
+                <strong>Team Add-ons</strong>
+                <small>$14.6k revenue</small>
+              </div>
+              <em class="positive">+7.8%</em>
+            </div>
+            <div class="dashboard-product-item">
+              <span class="dashboard-product-rank">4</span>
+              <div>
+                <strong>Support Seats</strong>
+                <small>$9.2k revenue</small>
+              </div>
+              <em class="negative">-2.4%</em>
+            </div>
+          </div>
+        </section>
+
+        <section class="dashboard-panel dashboard-status-panel">
+          <div class="dashboard-panel-header compact">
+            <div>
+              <span class="dashboard-section-kicker">Reliability</span>
+              <h2>System Status</h2>
+            </div>
+            <span class="badge badge-soft-success">Operational</span>
+          </div>
+          <div class="dashboard-status-grid">
+            <div class="dashboard-status-item">
+              <span class="dashboard-status-dot success"></span>
+              <div>
+                <strong>99.98%</strong>
+                <small>API Uptime</small>
+              </div>
+            </div>
+            <div class="dashboard-status-item">
+              <span class="dashboard-status-dot primary"></span>
+              <div>
+                <strong>0.08%</strong>
+                <small>Error Rate</small>
+              </div>
+            </div>
+            <div class="dashboard-status-item">
+              <span class="dashboard-status-dot info"></span>
+              <div>
+                <strong>124ms</strong>
+                <small>Latency</small>
+              </div>
+            </div>
+            <div class="dashboard-status-item">
+              <span class="dashboard-status-dot success"></span>
+              <div>
+                <strong>0</strong>
+                <small>Incidents</small>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="dashboard-lower-grid">
+        <section class="dashboard-panel dashboard-orders-panel">
+          <div class="dashboard-panel-header">
+            <div>
+              <span class="dashboard-section-kicker">Commerce stream</span>
+              <h2>Recent Orders</h2>
+            </div>
+            <a href="invoice-list.html" class="btn btn-sm btn-primary">View All</a>
+          </div>
+          <div class="dashboard-orders-table">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Order</th>
+                  <th>Customer</th>
+                  <th>Product</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><a href="#">#ORD-001</a></td>
+                  <td>
+                    <div class="dashboard-table-user">
+                      <img src="assets/img/avatars/avatar-1.webp" alt="">
+                      <div>
+                        <strong>John Doe</strong>
+                        <span>john@example.com</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Premium Plan</td>
+                  <td>$299.00</td>
+                  <td><span class="badge badge-soft-success">Completed</span></td>
+                </tr>
+                <tr>
+                  <td><a href="#">#ORD-002</a></td>
+                  <td>
+                    <div class="dashboard-table-user">
+                      <img src="assets/img/avatars/avatar-2.webp" alt="">
+                      <div>
+                        <strong>Jane Smith</strong>
+                        <span>jane@example.com</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Basic Plan</td>
+                  <td>$99.00</td>
+                  <td><span class="badge badge-soft-warning">Pending</span></td>
+                </tr>
+                <tr>
+                  <td><a href="#">#ORD-003</a></td>
+                  <td>
+                    <div class="dashboard-table-user">
+                      <img src="assets/img/avatars/avatar-3.webp" alt="">
+                      <div>
+                        <strong>Mike Johnson</strong>
+                        <span>mike@example.com</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Enterprise Plan</td>
+                  <td>$999.00</td>
+                  <td><span class="badge badge-soft-success">Completed</span></td>
+                </tr>
+                <tr>
+                  <td><a href="#">#ORD-004</a></td>
+                  <td>
+                    <div class="dashboard-table-user">
+                      <img src="assets/img/avatars/avatar-4.webp" alt="">
+                      <div>
+                        <strong>Sarah Wilson</strong>
+                        <span>sarah@example.com</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Basic Plan</td>
+                  <td>$99.00</td>
+                  <td><span class="badge badge-soft-danger">Cancelled</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="dashboard-panel dashboard-targets-panel">
+          <div class="dashboard-panel-header compact">
+            <div>
+              <span class="dashboard-section-kicker">Plan health</span>
+              <h2>Sales Targets</h2>
+            </div>
+          </div>
+          <div class="dashboard-target-list">
+            <div class="dashboard-target-item">
+              <div>
+                <span>Product Sales</span>
+                <strong>75%</strong>
+              </div>
+              <div class="dashboard-target-track"><span style="width: 75%"></span></div>
+            </div>
+            <div class="dashboard-target-item">
+              <div>
+                <span>Service Revenue</span>
+                <strong>60%</strong>
+              </div>
+              <div class="dashboard-target-track success"><span style="width: 60%"></span></div>
+            </div>
+            <div class="dashboard-target-item">
+              <div>
+                <span>New Customers</span>
+                <strong>85%</strong>
+              </div>
+              <div class="dashboard-target-track warning"><span style="width: 85%"></span></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <span class="footer-brand-mark">
+            <img src="assets/img/logo.webp" alt="AppDashboard">
+          </span>
+          <div>
+            <strong>AppDashboard</strong>
+            <span>Operational admin workspace</span>
+          </div>
+        </div>
+
+        <div class="footer-links">
+          <a href="#">About</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Contact</a>
+        </div>
+
+        <div class="footer-meta">
+          <div class="footer-copyright">
+            &copy; 2026 <a href="#">AppDashboard</a>. All Rights Reserved.
+          </div>
+          <div class="footer-credits">
+          </div>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Back to Top -->
+  <a href="#" class="back-to-top">
+    <i class="bi bi-arrow-up"></i>
+  </a>
+
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
+  <script src="assets/vendor/chart.js/chart.umd.js"></script>
+  <script src="assets/vendor/echarts/echarts.min.js"></script>
+  <script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
+  <script src="assets/vendor/quill/quill.js"></script>
+  <script src="assets/vendor/tinymce/tinymce.min.js"></script>
+  <script src="assets/vendor/choices.js/choices.min.js"></script>
+  <script src="assets/vendor/flatpickr/flatpickr.min.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
+
+  <!-- Template Main JS Files -->
+  <script src="assets/js/theme.js"></script>
+  <script src="assets/js/main.js"></script>
+
+  <!-- App Sidebar Toggle (for app pages with sidebars) -->
+  <script src="assets/js/apps-sidebar-toggle.js"></script>
+
+  <script>
+    // Revenue Overview Chart
+    document.addEventListener('DOMContentLoaded', function() {
+      const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim();
+      const successColor = getComputedStyle(document.documentElement).getPropertyValue('--success-color').trim();
+      const warningColor = getComputedStyle(document.documentElement).getPropertyValue('--warning-color').trim();
+      const borderColor = getComputedStyle(document.documentElement).getPropertyValue('--border-color').trim();
+      const mutedColor = getComputedStyle(document.documentElement).getPropertyValue('--muted-color').trim();
+      const options = {
+        series: [{
+          name: 'Revenue',
+          data: [4200, 5800, 4900, 6200, 5100, 7400, 6800, 8100, 7200, 9500, 8900, 10200]
+        }, {
+          name: 'Expenses',
+          data: [2800, 3200, 2900, 3400, 3100, 3800, 3500, 4200, 3900, 4800, 4200, 5100]
+        }, {
+          name: 'Customers',
+          data: [120, 480, 750, 920, 1000, 1200, 1550, 1850, 2280, 2640, 3100, 3800]
+        }],
+        chart: {
+          type: 'area',
+          height: 330,
+          fontFamily: 'inherit',
+          toolbar: {
+            show: false
+          },
+          zoom: {
+            enabled: false
+          }
+        },
+        colors: [accentColor, successColor, warningColor],
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          curve: 'smooth',
+          width: 2.5
+        },
+        fill: {
+          type: 'gradient',
+          gradient: {
+            shadeIntensity: 1,
+            opacityFrom: 0.34,
+            opacityTo: 0.06,
+            stops: [0, 90, 100]
+          }
+        },
+        xaxis: {
+          categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+          axisBorder: {
+            show: false
+          },
+          axisTicks: {
+            show: false
+          },
+          labels: {
+            style: {
+              colors: mutedColor,
+              fontSize: '12px'
+            }
+          }
+        },
+        yaxis: {
+          labels: {
+            style: {
+              colors: mutedColor,
+              fontSize: '12px'
+            },
+            formatter: function(value) {
+              return '$' + (value / 1000).toFixed(1) + 'k';
+            }
+          }
+        },
+        grid: {
+          borderColor: borderColor,
+          strokeDashArray: 4,
+          xaxis: {
+            lines: {
+              show: false
+            }
+          }
+        },
+        legend: {
+          position: 'top',
+          horizontalAlign: 'right',
+          fontSize: '13px',
+          markers: {
+            width: 10,
+            height: 10,
+            radius: 4
+          },
+          itemMargin: {
+            horizontal: 12
+          }
+        },
+        tooltip: {
+          y: {
+            formatter: function(value, {
+              seriesIndex
+            }) {
+              if (seriesIndex === 2) {
+                return value.toLocaleString() + ' customers';
+              }
+              return '$' + value.toLocaleString();
+            }
+          }
+        }
+      };
+      const chart = new ApexCharts(document.querySelector('#revenueChart'), options);
+      chart.render();
+      document.addEventListener('themeChanged', function() {
+        const newBorderColor = getComputedStyle(document.documentElement).getPropertyValue('--border-color').trim();
+        const newMutedColor = getComputedStyle(document.documentElement).getPropertyValue('--muted-color').trim();
+        chart.updateOptions({
+          grid: {
+            borderColor: newBorderColor
+          },
+          xaxis: {
+            labels: {
+              style: {
+                colors: newMutedColor
+              }
+            }
+          },
+          yaxis: {
+            labels: {
+              style: {
+                colors: newMutedColor
+              }
+            }
+          }
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>

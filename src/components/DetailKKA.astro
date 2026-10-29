@@ -264,19 +264,21 @@ import { formatRupiah } from '../lib/pricing';
                 </thead>
                 <tbody>
                   {WAVES.map((wave) => (
-                    <tr class={wave.isActive ? 'table-primary-subtle fw-semibold' : ''}>
+                    <tr class={wave.isActive ? 'table-primary-subtle fw-semibold detail-wave-row' : 'detail-wave-row'} data-wave-id={wave.id}>
                       <td class="py-3 px-3">
                         <div class="fw-bold text-dark d-flex align-items-center gap-2">
-                          {wave.name}
-                          {wave.isActive && (
-                            <span class="badge bg-warning text-dark rounded-pill fs-8">Aktif</span>
-                          )}
+                          <span class="detail-wave-name" data-wave-id={wave.id}>{wave.name}</span>
+                          <span class="detail-wave-badge" data-wave-id={wave.id}>
+                            {wave.isActive && (
+                              <span class="badge bg-warning text-dark rounded-pill fs-8">Aktif</span>
+                            )}
+                          </span>
                         </div>
-                        <div class="text-muted small fs-8">({wave.period})</div>
+                        <div class="text-muted small fs-8 detail-wave-period" data-wave-id={wave.id}>({wave.period})</div>
                       </td>
-                      <td class="py-3 px-3 text-center text-dark">{formatRupiah(wave.prices.sd)}</td>
-                      <td class="py-3 px-3 text-center text-dark">{formatRupiah(wave.prices.smp)}</td>
-                      <td class="py-3 px-3 text-center text-dark">{formatRupiah(wave.prices.sma)}</td>
+                      <td class="py-3 px-3 text-center text-dark detail-wave-sd" data-wave-id={wave.id}>{formatRupiah(wave.prices.sd)}</td>
+                      <td class="py-3 px-3 text-center text-dark detail-wave-smp" data-wave-id={wave.id}>{formatRupiah(wave.prices.smp)}</td>
+                      <td class="py-3 px-3 text-center text-dark detail-wave-sma" data-wave-id={wave.id}>{formatRupiah(wave.prices.sma)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -295,7 +297,7 @@ import { formatRupiah } from '../lib/pricing';
                 style="aspect-ratio: 4/3; max-height: 380px;"
                 loading="lazy"
               />
-              <div class="detail-image-badge position-absolute bottom-0 start-0 m-3 px-3 py-1.5 rounded-pill bg-dark bg-opacity-75 text-white small fw-medium backdrop-blur">
+              <div class="detail-image-badge position-absolute bottom-0 start-0 m-3 px-3 py-1.5 rounded-pill bg-dark bg-opacity-75 text-white small fw-medium backdrop-blur" id="detailWaveHeroBadge">
                 Tarif Terbaik di Gelombang 1
               </div>
             </div>
@@ -385,6 +387,80 @@ import { formatRupiah } from '../lib/pricing';
 </section>
 
 <script>
+  import { supabase } from '../lib/supabase';
+
+  function formatRp(val: number) {
+    return 'Rp ' + Number(val).toLocaleString('id-ID');
+  }
+
+  function applyDetailWaveHydration(cfg: any) {
+    if (!cfg) return;
+
+    const activeWaveId = Number(cfg.activeWave) || 1;
+
+    // 1. Update Active Row Styling and Badge
+    document.querySelectorAll('.detail-wave-row').forEach((row) => {
+      const wId = Number(row.getAttribute('data-wave-id'));
+      const isActive = (wId === activeWaveId);
+
+      if (isActive) {
+        row.classList.add('table-primary-subtle', 'fw-semibold');
+      } else {
+        row.classList.remove('table-primary-subtle', 'fw-semibold');
+      }
+
+      const badgeSpan = row.querySelector(`.detail-wave-badge[data-wave-id="${wId}"]`);
+      if (badgeSpan) {
+        badgeSpan.innerHTML = isActive 
+          ? '<span class="badge bg-warning text-dark rounded-pill fs-8">Aktif</span>'
+          : '';
+      }
+    });
+
+    // 2. Update Image Hero Badge
+    const heroBadge = document.getElementById('detailWaveHeroBadge');
+    if (heroBadge) {
+      heroBadge.textContent = `Tarif Aktif di Gelombang ${activeWaveId}`;
+    }
+
+    // 3. Update Periods & Prices
+    if (Array.isArray(cfg.waves)) {
+      cfg.waves.forEach((w: any) => {
+        const periodEl = document.querySelector(`.detail-wave-period[data-wave-id="${w.id}"]`);
+        if (periodEl && w.period) periodEl.textContent = `(${w.period})`;
+
+        if (w.prices) {
+          const sdEl = document.querySelector(`.detail-wave-sd[data-wave-id="${w.id}"]`);
+          const smpEl = document.querySelector(`.detail-wave-smp[data-wave-id="${w.id}"]`);
+          const smaEl = document.querySelector(`.detail-wave-sma[data-wave-id="${w.id}"]`);
+
+          if (sdEl && w.prices.sd != null) sdEl.textContent = formatRp(w.prices.sd);
+          if (smpEl && w.prices.smp != null) smpEl.textContent = formatRp(w.prices.smp);
+          if (smaEl && w.prices.sma != null) smaEl.textContent = formatRp(w.prices.sma);
+        }
+      });
+    }
+  }
+
+  function initDetailWaveHydration() {
+    try {
+      const stored = localStorage.getItem('kka_admin_system_settings');
+      if (stored) applyDetailWaveHydration(JSON.parse(stored));
+    } catch (e) {}
+
+    supabase
+      .from('app_settings')
+      .select('value')
+      .eq('key', 'system_settings')
+      .single()
+      .then(({ data, error }) => {
+        if (!error && data?.value) {
+          applyDetailWaveHydration(data.value);
+          localStorage.setItem('kka_admin_system_settings', JSON.stringify(data.value));
+        }
+      });
+  }
+
   function setupDetailTabs() {
     const tabButtons = document.querySelectorAll<HTMLButtonElement>('.detail-tab-btn');
     const tabPanes = document.querySelectorAll<HTMLElement>('.detail-tab-pane');
@@ -412,6 +488,8 @@ import { formatRupiah } from '../lib/pricing';
         }
       });
     });
+
+    initDetailWaveHydration();
   }
 
   if (document.readyState === 'loading') {

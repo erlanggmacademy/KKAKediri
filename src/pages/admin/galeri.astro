@@ -28,10 +28,10 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
     <!-- FILTER KATEGORI BAR -->
     <div class="dashboard-panel mb-4">
-      <div class="dashboard-panel-header compact py-2.5 px-3.5 d-flex align-items-center justify-content-between flex-wrap gap-2">
+      <div class="dashboard-panel-header compact py-3 px-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
         <div class="d-flex align-items-center gap-2">
           <span class="dashboard-section-kicker">KATEGORI FOTO</span>
-          <div class="d-flex align-items-center gap-1.5 flex-wrap" id="galleryCategoryFilterGroup">
+          <div class="d-flex align-items-center gap-2 flex-wrap" id="galleryCategoryFilterGroup">
             <button class="btn btn-sm btn-primary active fs-9 px-3 py-1 rounded-pill" data-cat="all">Semua Foto</button>
             <button class="btn btn-sm btn-light border fs-9 px-3 py-1 rounded-pill" data-cat="grand-final">Grand Final</button>
             <button class="btn btn-sm btn-light border fs-9 px-3 py-1 rounded-pill" data-cat="juara">Juara & Penghargaan</button>
@@ -107,7 +107,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
           <div class="modal-footer bg-light px-4 py-3 d-flex align-items-center justify-content-between">
             <button type="button" class="btn btn-light btn-sm border fs-8" id="galleryModalCancelBtn">Batal</button>
-            <button type="submit" class="btn btn-primary btn-sm fw-bold px-3.5 py-1.5 fs-8">
+            <button type="submit" class="btn btn-primary btn-sm fw-bold px-3 py-2 fs-8">
               <i class="bi bi-check-circle me-1"></i>
               <span>Simpan Foto</span>
             </button>
@@ -357,10 +357,10 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             <div class="px-3 pb-3 pt-0 d-flex align-items-center justify-content-between border-top pt-2">
               <span class="fs-9 text-muted font-monospace text-truncate" style="max-width: 140px;">${item.image}</span>
               <div class="d-flex align-items-center gap-1">
-                <button type="button" class="btn btn-sm btn-outline-primary px-2 py-0.5 fs-9 btn-edit-gal" data-id="${item.id}">
+                <button type="button" class="btn btn-sm btn-outline-primary px-2 py-1 fs-9 btn-edit-gal" data-id="${item.id}">
                   <i class="bi bi-pencil"></i> Edit
                 </button>
-                <button type="button" class="btn btn-sm btn-outline-danger px-2 py-0.5 fs-9 btn-delete-gal" data-id="${item.id}">
+                <button type="button" class="btn btn-sm btn-outline-danger px-2 py-1 fs-9 btn-delete-gal" data-id="${item.id}">
                   <i class="bi bi-trash"></i>
                 </button>
               </div>

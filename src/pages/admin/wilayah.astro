@@ -32,11 +32,11 @@ import { DISTRICTS, REGIONS } from '../../data/competition';
       {REGIONS.map((reg, idx) => (
         <div class="col-12 col-md-4">
           <div class="dashboard-panel h-100">
-            <div class="dashboard-panel-header compact py-2.5 px-3.5">
+            <div class="dashboard-panel-header compact py-3 px-3">
               <span class="fw-bold fs-8 text-primary text-uppercase">{reg.name}</span>
-              <span class="badge bg-light text-secondary border rounded-pill px-2.5 py-0.5 fs-9">Regional</span>
+              <span class="badge bg-light text-secondary border rounded-pill px-3 py-1 fs-9">Regional</span>
             </div>
-            <div class="dashboard-panel-body py-3 px-3.5">
+            <div class="dashboard-panel-body p-3">
               <h3 class="h6 fw-bold text-dark mb-1">{reg.description}</h3>
               <p class="fs-9 text-muted mb-0">Cakupan kompetisi & babak penyisihan CBT terpadu.</p>
             </div>
@@ -47,28 +47,28 @@ import { DISTRICTS, REGIONS } from '../../data/competition';
 
     <!-- DAFTAR 7 WILAYAH -->
     <div class="dashboard-panel mb-4">
-      <div class="dashboard-panel-header px-3.5 py-3">
+      <div class="dashboard-panel-header px-4 py-3">
         <div class="d-flex align-items-center gap-2">
           <span class="dashboard-section-kicker">DATA WILAYAH</span>
           <h2 class="fs-6 mb-0">Daftar 7 Kota & Kabupaten</h2>
-          <span class="badge bg-primary rounded-pill px-2.5 py-1 fs-9 ms-1">7 Wilayah Aktif</span>
+          <span class="badge bg-primary rounded-pill px-3 py-1 fs-9 ms-1">7 Wilayah Aktif</span>
         </div>
         <div class="fs-8 text-secondary">
           Klik tombol <strong>Edit</strong> untuk mengubah data venue, kuota, atau kontak PIC
         </div>
       </div>
 
-      <div class="table-responsive px-3 pb-3">
-        <table class="table table-hover align-middle mb-0 fs-8">
-          <thead class="table-light text-uppercase text-secondary fs-9">
+      <div class="dashboard-orders-table">
+        <table class="table align-middle mb-0 fs-8">
+          <thead>
             <tr>
-              <th class="ps-3 py-3 text-nowrap" style="width: 50px;">No</th>
+              <th class="ps-4 py-3 text-nowrap" style="width: 50px;">No</th>
               <th class="py-3 text-nowrap">Wilayah & Region</th>
               <th class="py-3 text-nowrap">Lokasi Venue Tes CBT</th>
               <th class="py-3 text-nowrap">Kuota Maksimal</th>
               <th class="py-3 text-nowrap">Kontak PIC / Hotline</th>
               <th class="py-3 text-nowrap">Status Pendaftaran</th>
-              <th class="pe-3 text-end py-3 text-nowrap">Aksi</th>
+              <th class="pe-4 text-end py-3 text-nowrap">Aksi</th>
             </tr>
           </thead>
           <tbody id="wilayahTableBody">
@@ -190,13 +190,26 @@ import { DISTRICTS, REGIONS } from '../../data/competition';
             </a>
             <div class="d-flex align-items-center gap-2">
               <button type="button" class="btn btn-light btn-sm border fs-8" id="modalWilayahCancelBtn">Batal</button>
-              <button type="submit" class="btn btn-primary btn-sm fw-bold px-3 py-1.5 fs-8">
+              <button type="submit" class="btn btn-primary btn-sm fw-bold px-3 py-2 fs-8">
                 <i class="bi bi-check-circle me-1"></i>
                 <span>Simpan Perubahan</span>
               </button>
             </div>
           </div>
         </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFIKASI SUKSES (IN-PAGE FEEDBACK) -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 2050;">
+    <div id="wilayahToast" class="toast align-items-center text-bg-success border-0 shadow-lg rounded-3" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex align-items-center p-2">
+        <div class="toast-body d-flex align-items-center gap-2 fs-8 fw-semibold text-white py-1" id="wilayahToastText">
+          <i class="bi bi-check-circle-fill fs-6 text-white"></i>
+          <span>Data wilayah berhasil disimpan ke database cloud.</span>
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close" id="btnCloseWilayahToast"></button>
       </div>
     </div>
   </div>
@@ -232,26 +245,65 @@ import { DISTRICTS, REGIONS } from '../../data/competition';
     let currentEditingDistrict: any = null;
 
     async function loadDistrictSettingsFromCloud() {
+      // 1. Ambil data dari app_settings (JSONB lengkap: venue, quota, contact, status, logoUrl, description)
+      try {
+        const { data: appData } = await supabase
+          .from('app_settings')
+          .select('value')
+          .eq('key', 'district_settings')
+          .maybeSingle();
+
+        if (appData?.value && typeof appData.value === 'object') {
+          Object.assign(allDistrictSettings, appData.value);
+        }
+      } catch (appErr) {
+        console.warn('[Supabase] Fetch app_settings error:', appErr);
+      }
+
+      // 2. Ambil data dari tabel relasional district_settings
       try {
         const { data, error } = await supabase.from('district_settings').select('*');
         if (!error && data && data.length > 0) {
-          const map: Record<string, any> = {};
           data.forEach((row: any) => {
-            map[row.slug] = {
-              venue: row.venue,
-              quota: row.quota,
-              contact: row.contact,
-              status: row.status,
-              logoUrl: row.logo_url || row.image_url || undefined,
-              description: row.description || undefined
+            const existing = allDistrictSettings[row.slug] || {};
+            allDistrictSettings[row.slug] = {
+              venue: row.venue || existing.venue || DEFAULT_VENUES[row.slug]?.venue,
+              quota: row.quota !== undefined ? row.quota : (existing.quota || DEFAULT_VENUES[row.slug]?.quota),
+              contact: row.contact !== undefined ? row.contact : (existing.contact || DEFAULT_VENUES[row.slug]?.contact),
+              status: row.status || existing.status || DEFAULT_VENUES[row.slug]?.status || 'buka',
+              logoUrl: row.logo_url || row.image_url || existing.logoUrl || existing.logo_url,
+              description: row.description !== undefined ? row.description : existing.description
             };
           });
-          allDistrictSettings = map;
-          localStorage.setItem('kka_admin_district_settings', JSON.stringify(map));
-          renderWilayahTable();
         }
       } catch (e) {
         console.warn('[Supabase] Gagal fetch district_settings:', e);
+      }
+
+      // 3. Gabungkan dengan data localStorage jika ada data lokal tersimpan
+      try {
+        const storedStr = localStorage.getItem('kka_admin_district_settings');
+        if (storedStr) {
+          const stored = JSON.parse(storedStr);
+          Object.keys(stored).forEach((slug) => {
+            if (!allDistrictSettings[slug]) {
+              allDistrictSettings[slug] = stored[slug];
+            } else {
+              if (!allDistrictSettings[slug].logoUrl && stored[slug].logoUrl) {
+                allDistrictSettings[slug].logoUrl = stored[slug].logoUrl;
+              }
+              if (!allDistrictSettings[slug].description && stored[slug].description) {
+                allDistrictSettings[slug].description = stored[slug].description;
+              }
+            }
+          });
+        }
+      } catch (locErr) {}
+
+      // Simpan gabungan mutakhir ke localStorage dan render tabel
+      if (Object.keys(allDistrictSettings).length > 0) {
+        localStorage.setItem('kka_admin_district_settings', JSON.stringify(allDistrictSettings));
+        renderWilayahTable();
       }
     }
 
@@ -274,6 +326,20 @@ import { DISTRICTS, REGIONS } from '../../data/competition';
       localStorage.setItem('kka_admin_district_settings', JSON.stringify(settings));
     }
 
+    function showWilayahToast(msg: string) {
+      const toastEl = document.getElementById('wilayahToast');
+      const textEl = document.getElementById('wilayahToastText');
+      if (textEl) {
+        textEl.innerHTML = `<i class="bi bi-check-circle-fill fs-6 text-white me-1"></i> ${msg}`;
+      }
+      if (toastEl) {
+        toastEl.classList.add('show');
+        setTimeout(() => {
+          toastEl.classList.remove('show');
+        }, 4000);
+      }
+    }
+
     function renderWilayahTable() {
       const tbody = document.getElementById('wilayahTableBody');
       if (!tbody) return;
@@ -292,29 +358,29 @@ import { DISTRICTS, REGIONS } from '../../data/competition';
         const defaultLogo = d.logoUrl || `/images/wilayah/${d.slug}.webp`;
         const currentLogo = custom.logoUrl || custom.logo_url || custom.image_url || defaultLogo;
 
-        let statusBadge = '<span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2.5 py-1">Buka</span>';
+        let statusBadge = '<span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1">Buka</span>';
         if (custom.status === 'menipis') {
-          statusBadge = '<span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill px-2.5 py-1">Kuota Menipis</span>';
+          statusBadge = '<span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill px-3 py-1">Kuota Menipis</span>';
         } else if (custom.status === 'penuh') {
-          statusBadge = '<span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2.5 py-1">Penuh</span>';
+          statusBadge = '<span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-3 py-1">Penuh</span>';
         } else if (custom.status === 'tutup') {
-          statusBadge = '<span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill px-2.5 py-1">Ditutup</span>';
+          statusBadge = '<span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill px-3 py-1">Ditutup</span>';
         }
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td class="ps-3 text-center text-muted fw-semibold">${idx + 1}</td>
+          <td class="ps-4 text-center text-muted fw-semibold">${idx + 1}</td>
           <td class="text-nowrap">
-            <div class="d-flex align-items-center gap-2.5">
+            <div class="d-flex align-items-center gap-3">
               <div class="rounded-circle border bg-white p-1 d-flex align-items-center justify-content-center shadow-2xs shrink-0" style="width: 42px; height: 42px;">
                 <img src="${currentLogo}" alt="${d.name}" style="max-width: 100%; max-height: 100%; object-fit: contain;" />
               </div>
               <div>
-                <div class="d-flex align-items-center gap-1.5">
-                  <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-0.5 rounded fs-9">${d.regionName}</span>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1 rounded fs-9">${d.regionName}</span>
                   <strong class="text-dark fs-8">${d.name}</strong>
                 </div>
-                <div class="fs-9 text-muted mt-0.5">Slug: /wilayah/${d.slug}</div>
+                <div class="fs-9 text-muted mt-1">Slug: /wilayah/${d.slug}</div>
               </div>
             </div>
           </td>
@@ -326,17 +392,17 @@ import { DISTRICTS, REGIONS } from '../../data/competition';
             ${custom.quota} Peserta
           </td>
           <td class="text-nowrap fs-9 text-secondary">
-            ${custom.contact}
+            ${custom.contact || '-'}
           </td>
           <td class="text-nowrap">
             ${statusBadge}
           </td>
-          <td class="pe-3 text-end text-nowrap">
-            <button type="button" class="btn btn-sm btn-primary rounded-2 px-2.5 py-1 fw-bold fs-8 btn-edit-wilayah d-inline-flex align-items-center gap-1" data-slug="${d.slug}">
+          <td class="pe-4 text-end text-nowrap">
+            <button type="button" class="btn btn-sm btn-primary rounded-pill px-3 py-1 fw-bold fs-8 btn-edit-wilayah d-inline-flex align-items-center gap-2" data-slug="${d.slug}">
               <i class="bi bi-pencil-square"></i>
               <span>Edit</span>
             </button>
-            <a href="/wilayah/${d.slug}" target="_blank" class="btn btn-sm btn-light border rounded-2 px-2 py-1 text-secondary ms-1 fs-8" title="Lihat Halaman Publik">
+            <a href="/wilayah/${d.slug}" target="_blank" class="btn btn-sm btn-light border rounded-pill px-3 py-1 text-secondary ms-1 fs-8" title="Lihat Halaman Publik">
               <i class="bi bi-box-arrow-up-right"></i>
             </a>
           </td>
@@ -415,6 +481,21 @@ import { DISTRICTS, REGIONS } from '../../data/competition';
 
       document.getElementById('modalWilayahCloseBtn')?.addEventListener('click', closeEditModal);
       document.getElementById('modalWilayahCancelBtn')?.addEventListener('click', closeEditModal);
+      document.getElementById('btnCloseWilayahToast')?.addEventListener('click', () => {
+        document.getElementById('wilayahToast')?.classList.remove('show');
+      });
+
+      // Close modal on click backdrop
+      document.getElementById('editWilayahModal')?.addEventListener('click', (e) => {
+        if (e.target === document.getElementById('editWilayahModal')) {
+          closeEditModal();
+        }
+      });
+
+      // Close modal on Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeEditModal();
+      });
 
       // Listener URL Logo
       const inputLogo = document.getElementById('editWilayahLogoUrl') as HTMLInputElement;
@@ -453,16 +534,59 @@ import { DISTRICTS, REGIONS } from '../../data/competition';
         }
       });
 
-      document.getElementById('btnResetAllWilayah')?.addEventListener('click', () => {
-        if (confirm('Apakah Anda yakin ingin mengembalikan seluruh data wilayah & kuota ke pengaturan awal?')) {
-          saveDistrictSettings(DEFAULT_VENUES);
-          renderWilayahTable();
-          alert('Data wilayah berhasil di-reset ke nilai default.');
+      document.getElementById('btnResetAllWilayah')?.addEventListener('click', async () => {
+        if (!confirm('Apakah Anda yakin ingin mengembalikan seluruh data wilayah & kuota ke pengaturan awal?')) {
+          return;
         }
+
+        const resetBtn = document.getElementById('btnResetAllWilayah') as HTMLButtonElement | null;
+        if (resetBtn) resetBtn.disabled = true;
+
+        saveDistrictSettings(DEFAULT_VENUES);
+        renderWilayahTable();
+
+        try {
+          // Reset di app_settings
+          await supabase.from('app_settings').upsert({
+            key: 'district_settings',
+            value: DEFAULT_VENUES,
+            updated_at: new Date().toISOString()
+          });
+
+          // Reset di tabel relasional district_settings
+          for (const d of DISTRICTS) {
+            const def = DEFAULT_VENUES[d.slug];
+            if (def) {
+              await supabase.from('district_settings').upsert({
+                slug: d.slug,
+                name: d.name,
+                venue: def.venue,
+                quota: def.quota,
+                contact: def.contact,
+                status: def.status,
+                updated_at: new Date().toISOString()
+              });
+            }
+          }
+        } catch (err) {
+          console.warn('[Supabase] Reset error:', err);
+        } finally {
+          if (resetBtn) resetBtn.disabled = false;
+        }
+
+        showWilayahToast('Seluruh data wilayah & kuota berhasil di-reset ke nilai default!');
       });
 
       document.getElementById('formEditWilayah')?.addEventListener('submit', async (e) => {
         e.preventDefault();
+        const submitBtn = document.querySelector('#formEditWilayah button[type="submit"]') as HTMLButtonElement | null;
+        const originalBtnHtml = submitBtn?.innerHTML || '<span>Simpan Perubahan</span>';
+
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span> Menyimpan...';
+        }
+
         const slug = (document.getElementById('editDistrictSlug') as HTMLInputElement).value;
         const venue = (document.getElementById('editVenueName') as HTMLInputElement).value;
         const quota = Number((document.getElementById('editQuotaLimit') as HTMLInputElement).value) || 1000;
@@ -482,28 +606,57 @@ import { DISTRICTS, REGIONS } from '../../data/competition';
         };
         saveDistrictSettings(currentSettings);
 
-        // Simpan langsung ke Supabase Cloud
+        const districtObj = DISTRICTS.find(d => d.slug === slug);
+        const districtName = districtObj?.name || slug;
+
+        // 1. Simpan ke app_settings (JSONB lengkap: logoUrl, description, venue, quota, contact, status)
         try {
-          const districtObj = DISTRICTS.find(d => d.slug === slug);
-          await supabase.from('district_settings').upsert({
+          await supabase.from('app_settings').upsert({
+            key: 'district_settings',
+            value: currentSettings,
+            updated_at: new Date().toISOString()
+          });
+        } catch (appErr) {
+          console.warn('[Supabase] Gagal menyimpan app_settings:', appErr);
+        }
+
+        // 2. Simpan ke tabel relasional district_settings (dengan graceful fallback jika kolom belum dimigrasi)
+        try {
+          const corePayload = {
             slug,
-            name: districtObj?.name || slug,
+            name: districtName,
             venue,
             quota,
             contact,
             status,
+            updated_at: new Date().toISOString()
+          };
+
+          const extendedPayload = {
+            ...corePayload,
             logo_url: logoUrl,
             image_url: logoUrl,
-            description,
-            updated_at: new Date().toISOString()
-          });
+            description: description
+          };
+
+          const { error: extErr } = await supabase.from('district_settings').upsert(extendedPayload);
+          if (extErr) {
+            console.warn('[Supabase] Extended upsert warning (kolom belum dimigrasi), menyimpan core fields:', extErr.message);
+            await supabase.from('district_settings').upsert(corePayload);
+          }
         } catch (err) {
           console.warn('[Supabase] Gagal menyimpan district_settings:', err);
         }
 
         renderWilayahTable();
         closeEditModal();
-        alert(`Pengaturan wilayah & foto ${slug} berhasil disimpan ke Supabase Cloud!`);
+
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnHtml;
+        }
+
+        showWilayahToast(`Pengaturan wilayah ${districtName} berhasil disimpan ke database cloud!`);
       });
     }
 
@@ -514,4 +667,34 @@ import { DISTRICTS, REGIONS } from '../../data/competition';
     }
     document.addEventListener('astro:page-load', setupWilayahPage);
   </script>
+
+  <style>
+    .fs-7 { font-size: 0.9rem !important; }
+    .fs-8 { font-size: 0.82rem !important; }
+    .fs-9 { font-size: 0.72rem !important; }
+
+    .dashboard-orders-table .table {
+      margin-bottom: 0;
+      white-space: nowrap;
+    }
+    .dashboard-orders-table .table th {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted-color);
+      background-color: color-mix(in srgb, var(--background-color), var(--surface-color) 60%);
+      padding: 0.95rem 1.15rem;
+      border-bottom: 1px solid var(--border-color-light);
+    }
+    .dashboard-orders-table .table td {
+      padding: 0.95rem 1.15rem;
+      font-size: 0.85rem;
+      border-bottom: 1px solid var(--border-color-light);
+      vertical-align: middle;
+    }
+    .dashboard-orders-table .table tbody tr:hover td {
+      background-color: color-mix(in srgb, var(--accent-color), transparent 97%);
+    }
+  </style>
 </AdminLayout>

@@ -37,7 +37,7 @@ import { SCHOOL_DATABASE } from '../../data/schools';
         <div class="dashboard-panel stat-card-panel h-100 p-4">
           <div class="d-flex align-items-center justify-content-between mb-2">
             <span class="fs-9 text-muted text-uppercase fw-bold">Total Sekolah</span>
-            <span class="badge bg-primary-subtle text-primary rounded-pill px-2.5 py-1 fs-9">Database</span>
+            <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-1 fs-9">Database</span>
           </div>
           <div class="h3 fw-bold text-dark mb-0" id="statTotalSchools">350+</div>
           <div class="fs-9 text-muted mt-1">7 Kab/Kota Karesidenan Kediri</div>
@@ -47,7 +47,7 @@ import { SCHOOL_DATABASE } from '../../data/schools';
         <div class="dashboard-panel stat-card-panel h-100 p-4">
           <div class="d-flex align-items-center justify-content-between mb-2">
             <span class="fs-9 text-muted text-uppercase fw-bold">Jenjang SD / MI</span>
-            <span class="badge bg-primary-subtle text-primary rounded-pill px-2.5 py-1 fs-9">SD</span>
+            <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-1 fs-9">SD</span>
           </div>
           <div class="h3 fw-bold text-primary mb-0" id="statTotalSd">0</div>
           <div class="fs-9 text-muted mt-1">Sekolah Dasar & Madrasah</div>
@@ -57,7 +57,7 @@ import { SCHOOL_DATABASE } from '../../data/schools';
         <div class="dashboard-panel stat-card-panel h-100 p-4">
           <div class="d-flex align-items-center justify-content-between mb-2">
             <span class="fs-9 text-muted text-uppercase fw-bold">Jenjang SMP / MTs</span>
-            <span class="badge bg-info-subtle text-info rounded-pill px-2.5 py-1 fs-9">SMP</span>
+            <span class="badge bg-info-subtle text-info rounded-pill px-3 py-1 fs-9">SMP</span>
           </div>
           <div class="h3 fw-bold text-info mb-0" id="statTotalSmp">0</div>
           <div class="fs-9 text-muted mt-1">Sekolah Menengah Pertama</div>
@@ -67,7 +67,7 @@ import { SCHOOL_DATABASE } from '../../data/schools';
         <div class="dashboard-panel stat-card-panel h-100 p-4">
           <div class="d-flex align-items-center justify-content-between mb-2">
             <span class="fs-9 text-muted text-uppercase fw-bold">Jenjang SMA / SMK / MA</span>
-            <span class="badge bg-danger-subtle text-danger rounded-pill px-2.5 py-1 fs-9">SMA</span>
+            <span class="badge bg-danger-subtle text-danger rounded-pill px-3 py-1 fs-9">SMA</span>
           </div>
           <div class="h3 fw-bold text-danger mb-0" id="statTotalSma">0</div>
           <div class="fs-9 text-muted mt-1">Sekolah Menengah Atas / Kejuruan</div>
@@ -135,8 +135,8 @@ import { SCHOOL_DATABASE } from '../../data/schools';
       </div>
 
       <!-- TABEL DAFTAR SEKOLAH -->
-      <div class="table-responsive p-0">
-        <table class="table table-hover align-middle mb-0 fs-8">
+      <div class="dashboard-orders-table">
+        <table class="table align-middle mb-0 fs-8">
           <thead class="table-light text-uppercase text-secondary fs-9">
             <tr>
               <th class="ps-4 py-3 text-nowrap" style="width: 60px;">No</th>
@@ -234,7 +234,7 @@ import { SCHOOL_DATABASE } from '../../data/schools';
 
           <div class="modal-footer bg-light px-4 py-3 d-flex align-items-center justify-content-between">
             <button type="button" class="btn btn-light btn-sm border fs-8" id="schoolModalCancelBtn">Batal</button>
-            <button type="submit" class="btn btn-primary btn-sm fw-bold px-3.5 py-1.5 fs-8" id="btnSubmitSchool">
+            <button type="submit" class="btn btn-primary btn-sm fw-bold px-3 py-2 fs-8" id="btnSubmitSchool">
               <i class="bi bi-check-circle me-1"></i>
               <span>Simpan Sekolah</span>
             </button>
@@ -259,6 +259,18 @@ import { SCHOOL_DATABASE } from '../../data/schools';
           <button type="button" class="btn btn-light btn-sm border px-3 fs-8" id="btnCancelDeleteSchool">Batal</button>
           <button type="button" class="btn btn-danger btn-sm px-3 fs-8 fw-semibold" id="btnConfirmDeleteSchool">Ya, Hapus</button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFIKASI IN-PAGE -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1080;">
+    <div id="sekolahToast" class="toast align-items-center text-white bg-dark border-0 shadow-lg rounded-3" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body fs-8 d-flex align-items-center gap-2" id="sekolahToastText">
+          <i class="bi bi-check-circle-fill text-success fs-6"></i> Perubahan berhasil disimpan!
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" id="btnCloseSekolahToast" aria-label="Close"></button>
       </div>
     </div>
   </div>
@@ -326,15 +338,14 @@ import { SCHOOL_DATABASE } from '../../data/schools';
       'kabupaten-trenggalek': 'Kabupaten Trenggalek'
     };
 
-    // Flatten database sekolah bawaan dari schools.ts
-    function getInitialSchools(): SchoolItem[] {
+    // Static fallback jika offline dan cache belum ada
+    function getStaticFallbackSchools(): SchoolItem[] {
       const items: SchoolItem[] = [];
-      let count = 1;
-
       Object.keys(SCHOOL_DATABASE).forEach((rSlug) => {
         const reg = SCHOOL_DATABASE[rSlug];
         const rName = reg.name || REGION_MAP[rSlug] || rSlug;
         const districts = reg.districts || {};
+        let idx = 1;
 
         Object.keys(districts).forEach((kec) => {
           const dist = districts[kec];
@@ -342,7 +353,7 @@ import { SCHOOL_DATABASE } from '../../data/schools';
             const list = (dist as any)[j] || [];
             list.forEach((name: string) => {
               items.push({
-                id: `init-${count++}`,
+                id: `sch_${rSlug}_${idx++}`,
                 regionSlug: rSlug,
                 regionName: rName,
                 kecamatan: kec,
@@ -354,7 +365,6 @@ import { SCHOOL_DATABASE } from '../../data/schools';
           });
         });
       });
-
       return items;
     }
 
@@ -368,76 +378,104 @@ import { SCHOOL_DATABASE } from '../../data/schools';
     let pendingDeleteId: string | null = null;
     let isManualKecamatan = false;
 
-    function getSchoolKey(regionSlug: string, kecamatan: string, jenjang: string, namaSekolah: string): string {
-      return `${regionSlug}|${kecamatan}|${jenjang}|${namaSekolah}`.toLowerCase().trim();
+    function showSekolahToast(msg: string, type: 'success' | 'danger' = 'success') {
+      const toastEl = document.getElementById('sekolahToast');
+      const textEl = document.getElementById('sekolahToastText');
+      if (textEl) {
+        const icon = type === 'success' 
+          ? '<i class="bi bi-check-circle-fill text-success fs-6 me-1"></i>' 
+          : '<i class="bi bi-exclamation-triangle-fill text-danger fs-6 me-1"></i>';
+        textEl.innerHTML = `${icon} ${msg}`;
+      }
+      if (toastEl) {
+        toastEl.classList.add('show');
+        setTimeout(() => {
+          toastEl.classList.remove('show');
+        }, 4000);
+      }
     }
 
-    // Load data sekolah dari Supabase dan LocalStorage
-    async function loadSchools() {
-      const initial = getInitialSchools();
-      const mergedMap = new Map<string, SchoolItem>();
-
-      // 1. Masukkan semua data sekolah terkini dari database lokal schools.ts dengan key unik
-      initial.forEach(s => {
-        const key = getSchoolKey(s.regionSlug, s.kecamatan, s.jenjang, s.namaSekolah);
-        mergedMap.set(key, s);
-      });
-
-      // 2. Ambil penambahan/perubahan sekolah kustom yang pernah dibuat admin
+    function saveSchoolsCache() {
       try {
-        const stored = localStorage.getItem('kka_custom_schools');
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          if (Array.isArray(parsed)) {
-            parsed.forEach((s: SchoolItem) => {
-              if (s.isCustom) {
-                const key = getSchoolKey(s.regionSlug, s.kecamatan, s.jenjang, s.namaSekolah);
-                mergedMap.set(key, s);
-              }
+        localStorage.setItem('kka_admin_schools_cache_v3', JSON.stringify(allSchools));
+      } catch (e) {
+        console.warn('Gagal menyimpan cache sekolah ke localStorage:', e);
+      }
+    }
+
+    // Load data sekolah: gunakan cache lokal terlebih dahulu, lalu sinkronkan penuh dari Supabase Cloud
+    async function loadSchools() {
+      // 1. Bersihkan key cache lama yang rawan duplikasi
+      try {
+        localStorage.removeItem('kka_custom_schools');
+      } catch (_) {}
+
+      // 2. Ambil dari cache instan jika ada
+      let hasCache = false;
+      try {
+        const cached = localStorage.getItem('kka_admin_schools_cache_v3');
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            allSchools = parsed;
+            hasCache = true;
+            updateStatistics();
+            populateKecamatanFilter();
+            renderTable();
+          }
+        }
+      } catch (cacheErr) {}
+
+      // 3. Jika belum ada cache sama sekali, gunakan fallback statis sementara agar tampilan tidak kosong
+      if (!hasCache) {
+        allSchools = getStaticFallbackSchools();
+        updateStatistics();
+        populateKecamatanFilter();
+        renderTable();
+      }
+
+      // 4. Query penuh dari Supabase Cloud (5.600+ sekolah resmi dengan ID permanen)
+      try {
+        const summaryText = document.getElementById('schoolSummaryText');
+        if (summaryText && !hasCache) {
+          summaryText.innerHTML = '<span class="spinner-border spinner-border-sm me-1 text-primary"></span> Menyinkronkan basis data cloud...';
+        }
+
+        const step = 1000;
+        const promises = [];
+        for (let from = 0; from < 7000; from += step) {
+          promises.push(
+            supabase
+              .from('schools')
+              .select('id, region_slug, region_name, kecamatan, jenjang, nama_sekolah, is_custom')
+              .order('id', { ascending: true })
+              .range(from, from + step - 1)
+          );
+        }
+
+        const results = await Promise.all(promises);
+        const schoolMap = new Map<string, SchoolItem>();
+
+        for (const res of results) {
+          if (res.data && res.data.length > 0) {
+            res.data.forEach((d: any) => {
+              // Kunci unik secara presisi berdasarkan id baris di database cloud
+              schoolMap.set(d.id, {
+                id: d.id,
+                regionSlug: d.region_slug,
+                regionName: d.region_name || REGION_MAP[d.region_slug] || d.region_slug,
+                kecamatan: d.kecamatan,
+                jenjang: d.jenjang,
+                namaSekolah: d.nama_sekolah,
+                isCustom: d.is_custom === true
+              });
             });
           }
         }
-      } catch (e) {}
 
-      allSchools = Array.from(mergedMap.values());
-      updateStatistics();
-      populateKecamatanFilter();
-      renderTable();
-
-      // 3. Sinkronkan dengan Supabase Cloud (ambil SEMUA baris dengan pagination range)
-      try {
-        let allCloudRows: any[] = [];
-        let from = 0;
-        const step = 1000;
-        while (true) {
-          const { data, error } = await supabase
-            .from('schools')
-            .select('*')
-            .range(from, from + step - 1);
-
-          if (error || !data || data.length === 0) break;
-          allCloudRows.push(...data);
-          if (data.length < step) break;
-          from += step;
-        }
-
-        if (allCloudRows.length > 0) {
-          allCloudRows.forEach((d: any) => {
-            const key = getSchoolKey(d.region_slug, d.kecamatan, d.jenjang, d.nama_sekolah);
-            // Timpa data init dengan data resmi dari Supabase (termasuk ID sch_ aslinya)
-            mergedMap.set(key, {
-              id: d.id,
-              regionSlug: d.region_slug,
-              regionName: d.region_name || REGION_MAP[d.region_slug] || '',
-              kecamatan: d.kecamatan,
-              jenjang: d.jenjang,
-              namaSekolah: d.nama_sekolah,
-              isCustom: d.is_custom !== false
-            });
-          });
-
-          allSchools = Array.from(mergedMap.values());
-          localStorage.setItem('kka_custom_schools', JSON.stringify(allSchools));
+        if (schoolMap.size > 0) {
+          allSchools = Array.from(schoolMap.values());
+          saveSchoolsCache();
           updateStatistics();
           populateKecamatanFilter();
           renderTable();
@@ -445,11 +483,6 @@ import { SCHOOL_DATABASE } from '../../data/schools';
       } catch (err) {
         console.warn('[Supabase] Gagal mengambil data schools:', err);
       }
-    }
-
-    function saveSchoolsToLocal() {
-      localStorage.setItem('kka_custom_schools', JSON.stringify(allSchools));
-      updateStatistics();
     }
 
     function updateStatistics() {
@@ -563,16 +596,16 @@ import { SCHOOL_DATABASE } from '../../data/schools';
 
         let jenjangBadge = '';
         if (item.jenjang === 'sd') {
-          jenjangBadge = '<span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2 py-0.5 fs-9 fw-bold">SD / MI</span>';
+          jenjangBadge = '<span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2 py-1 fs-9 fw-bold">SD / MI</span>';
         } else if (item.jenjang === 'smp') {
-          jenjangBadge = '<span class="badge bg-info-subtle text-info border border-info-subtle rounded-pill px-2 py-0.5 fs-9 fw-bold">SMP / MTs</span>';
+          jenjangBadge = '<span class="badge bg-info-subtle text-info border border-info-subtle rounded-pill px-2 py-1 fs-9 fw-bold">SMP / MTs</span>';
         } else {
-          jenjangBadge = '<span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2 py-0.5 fs-9 fw-bold">SMA / SMK / MA</span>';
+          jenjangBadge = '<span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2 py-1 fs-9 fw-bold">SMA / SMK / MA</span>';
         }
 
         const statusBadge = item.isCustom
-          ? '<span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0.5 fs-9">Admin Added</span>'
-          : '<span class="badge bg-light text-muted border rounded-pill px-2 py-0.5 fs-9">Bawaan Sistem</span>';
+          ? '<span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1 fs-9">Admin Added</span>'
+          : '<span class="badge bg-light text-muted border rounded-pill px-2 py-1 fs-9">Bawaan Sistem</span>';
 
         tr.innerHTML = `
           <td class="ps-4 text-muted fs-9">${rowNo}</td>
@@ -810,6 +843,9 @@ import { SCHOOL_DATABASE } from '../../data/schools';
       document.getElementById('btnOpenAddSchoolModal')?.addEventListener('click', () => openSchoolModal());
       document.getElementById('schoolModalCloseBtn')?.addEventListener('click', closeSchoolModal);
       document.getElementById('schoolModalCancelBtn')?.addEventListener('click', closeSchoolModal);
+      document.getElementById('btnCloseSekolahToast')?.addEventListener('click', () => {
+        document.getElementById('sekolahToast')?.classList.remove('show');
+      });
 
       document.getElementById('modalSchoolRegion')?.addEventListener('change', (e) => {
         const val = (e.target as HTMLSelectElement).value;
@@ -853,12 +889,21 @@ import { SCHOOL_DATABASE } from '../../data/schools';
         const namaSekolah = (document.getElementById('modalSchoolName') as HTMLInputElement).value.trim();
 
         if (!regionSlug || !kecamatan || !namaSekolah) {
-          alert('Mohon lengkapi seluruh kolom formulir sekolah!');
+          showSekolahToast('Mohon lengkapi seluruh kolom formulir sekolah!', 'danger');
           return;
         }
 
-        const targetId = id || ('sch-' + Date.now());
-        const newItem: SchoolItem = {
+        const submitBtn = document.getElementById('btnSubmitSchool') as HTMLButtonElement | null;
+        const originalBtnHtml = submitBtn?.innerHTML || '<span>Simpan Sekolah</span>';
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Menyimpan...';
+        }
+
+        const isEdit = Boolean(id);
+        const targetId = isEdit ? id : `sch_custom_${Date.now()}`;
+
+        const schoolItem: SchoolItem = {
           id: targetId,
           regionSlug,
           regionName,
@@ -868,30 +913,60 @@ import { SCHOOL_DATABASE } from '../../data/schools';
           isCustom: true
         };
 
-        // 1. Simpan ke Supabase Cloud jika tabel tersedia
         try {
-          await supabase.from('schools').upsert({
-            id: targetId,
-            region_slug: regionSlug,
-            region_name: regionName,
-            kecamatan: kecamatan,
-            jenjang: jenjang,
-            nama_sekolah: namaSekolah,
-            is_custom: true
-          });
-        } catch (dbErr) {
+          if (isEdit) {
+            // Update baris sekolah yang diedit secara presisi berdasarkan id (TIDAK MENAMBAH BARIS BARU)
+            const { error: upErr } = await supabase.from('schools').upsert({
+              id: targetId,
+              region_slug: regionSlug,
+              region_name: regionName,
+              kecamatan: kecamatan,
+              jenjang: jenjang,
+              nama_sekolah: namaSekolah,
+              is_custom: true,
+              updated_at: new Date().toISOString()
+            });
+
+            if (upErr) throw upErr;
+
+            // Perbarui array lokal secara in-place
+            const existingIdx = allSchools.findIndex(s => s.id === targetId);
+            if (existingIdx >= 0) {
+              allSchools[existingIdx] = schoolItem;
+            } else {
+              allSchools.unshift(schoolItem);
+            }
+
+            showSekolahToast(`Data sekolah "${namaSekolah}" berhasil diperbarui!`, 'success');
+          } else {
+            // Tambah sekolah baru
+            const { error: insErr } = await supabase.from('schools').insert({
+              id: targetId,
+              region_slug: regionSlug,
+              region_name: regionName,
+              kecamatan: kecamatan,
+              jenjang: jenjang,
+              nama_sekolah: namaSekolah,
+              is_custom: true,
+              updated_at: new Date().toISOString()
+            });
+
+            if (insErr) throw insErr;
+
+            allSchools.unshift(schoolItem);
+            showSekolahToast(`Sekolah baru "${namaSekolah}" berhasil ditambahkan!`, 'success');
+          }
+        } catch (dbErr: any) {
           console.warn('[Supabase] Gagal menyimpan sekolah:', dbErr);
+          showSekolahToast('Gagal menyimpan ke database cloud: ' + (dbErr?.message || 'Error'), 'danger');
+        } finally {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnHtml;
+          }
         }
 
-        // 2. Perbarui state lokal
-        const existingIdx = allSchools.findIndex(s => s.id === targetId);
-        if (existingIdx >= 0) {
-          allSchools[existingIdx] = newItem;
-        } else {
-          allSchools.unshift(newItem);
-        }
-
-        saveSchoolsToLocal();
+        saveSchoolsCache();
         populateKecamatanFilter();
         renderTable();
         closeSchoolModal();
@@ -901,27 +976,41 @@ import { SCHOOL_DATABASE } from '../../data/schools';
       document.getElementById('btnConfirmDeleteSchool')?.addEventListener('click', async () => {
         if (!pendingDeleteId) return;
 
-        // 1. Hapus dari Supabase jika ada
+        const delBtn = document.getElementById('btnConfirmDeleteSchool') as HTMLButtonElement | null;
+        if (delBtn) delBtn.disabled = true;
+
         try {
           await supabase.from('schools').delete().eq('id', pendingDeleteId);
+          allSchools = allSchools.filter(s => s.id !== pendingDeleteId);
+          saveSchoolsCache();
+          populateKecamatanFilter();
+          renderTable();
+          showSekolahToast('Sekolah berhasil dihapus dari database.', 'success');
         } catch (dbErr) {
           console.warn('[Supabase] Gagal menghapus sekolah:', dbErr);
+          showSekolahToast('Gagal menghapus sekolah dari database.', 'danger');
+        } finally {
+          if (delBtn) delBtn.disabled = false;
+          closeDeleteModal();
         }
-
-        // 2. Hapus dari state lokal
-        allSchools = allSchools.filter(s => s.id !== pendingDeleteId);
-        saveSchoolsToLocal();
-        populateKecamatanFilter();
-        renderTable();
-        closeDeleteModal();
       });
 
       document.getElementById('btnCancelDeleteSchool')?.addEventListener('click', closeDeleteModal);
 
       // Sinkronkan Data
-      document.getElementById('btnSyncSchools')?.addEventListener('click', () => {
-        loadSchools();
-        alert('Data sekolah berhasil disinkronkan!');
+      document.getElementById('btnSyncSchools')?.addEventListener('click', async () => {
+        const btn = document.getElementById('btnSyncSchools') as HTMLButtonElement | null;
+        if (btn) {
+          btn.disabled = true;
+          btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Menyinkronkan...';
+        }
+        localStorage.removeItem('kka_admin_schools_cache_v3');
+        await loadSchools();
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="bi bi-arrow-repeat"></i> <span>Sinkronkan Data</span>';
+        }
+        showSekolahToast('Basis data 5.600+ sekolah berhasil disinkronkan dari database cloud!', 'success');
       });
     }
 
@@ -932,4 +1021,34 @@ import { SCHOOL_DATABASE } from '../../data/schools';
     }
     document.addEventListener('astro:page-load', setupSchoolPage);
   </script>
+
+  <style>
+    .fs-7 { font-size: 0.9rem !important; }
+    .fs-8 { font-size: 0.82rem !important; }
+    .fs-9 { font-size: 0.72rem !important; }
+
+    .dashboard-orders-table .table {
+      margin-bottom: 0;
+      white-space: nowrap;
+    }
+    .dashboard-orders-table .table th {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted-color);
+      background-color: color-mix(in srgb, var(--background-color), var(--surface-color) 60%);
+      padding: 0.95rem 1.15rem;
+      border-bottom: 1px solid var(--border-color-light);
+    }
+    .dashboard-orders-table .table td {
+      padding: 0.95rem 1.15rem;
+      font-size: 0.85rem;
+      border-bottom: 1px solid var(--border-color-light);
+      vertical-align: middle;
+    }
+    .dashboard-orders-table .table tbody tr:hover td {
+      background-color: color-mix(in srgb, var(--accent-color), transparent 97%);
+    }
+  </style>
 </AdminLayout>

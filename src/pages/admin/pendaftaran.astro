@@ -1,17 +1,24 @@
 ---
-import AdminLayout from '../../layouts/AdminLayout.astro';
-import { DISTRICTS, LEVELS } from '../../data/competition';
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import { DISTRICTS, LEVELS } from "../../data/competition";
 ---
 
-<AdminLayout title="Manajemen Data Pendaftaran" activeMenu="pendaftaran">
+<AdminLayout
+  title="Manajemen Data Pendaftaran"
+  activeMenu="pendaftaran"
+  pageClass="page-dashboard"
+>
   <div class="page-dashboard">
     <!-- PAGE HERO BANNER -->
     <div class="dashboard-hero mb-4">
       <div class="dashboard-hero-copy">
-        <span class="dashboard-eyebrow">DATABASE & VERIFIKASI &bull; KKA 2026</span>
+        <span class="dashboard-eyebrow"
+          >DATABASE & VERIFIKASI &bull; KKA 2026</span
+        >
         <h1>Master Data Pendaftaran</h1>
         <p>
-          Kelola berkas pendaftar mandiri & kolektif, verifikasi bukti transfer pembayaran, dan ekspor data resmi peserta try out CBT Neutron.
+          Kelola berkas pendaftar mandiri & kolektif, verifikasi bukti transfer
+          pembayaran, dan ekspor data resmi peserta try out CBT Neutron.
         </p>
       </div>
 
@@ -29,36 +36,46 @@ import { DISTRICTS, LEVELS } from '../../data/competition';
 
     <!-- FILTER & SEARCH PANEL -->
     <div class="dashboard-panel mb-4">
-      <div class="dashboard-panel-header compact py-2.5 px-3.5">
+      <div class="dashboard-panel-header compact py-2 px-3">
         <div class="d-flex align-items-center gap-2">
           <i class="bi bi-funnel text-primary fs-6"></i>
-          <span class="fw-bold fs-8 text-dark text-uppercase" style="letter-spacing: 0.05em;">Filter & Pencarian Cepat</span>
+          <span
+            class="fw-bold fs-8 text-dark text-uppercase"
+            style="letter-spacing: 0.05em;">Filter & Pencarian Cepat</span
+          >
         </div>
-        <button type="button" class="btn btn-sm btn-link text-secondary text-decoration-none fs-8 p-0" id="resetFilterTopBtn">
+        <button
+          type="button"
+          class="btn btn-sm btn-link text-secondary text-decoration-none fs-8 p-0"
+          id="resetFilterTopBtn"
+        >
           <i class="bi bi-arrow-counterclockwise"></i> Reset Filter
         </button>
       </div>
 
-      <div class="dashboard-panel-body py-3 px-3.5">
-        <div class="row g-2.5 align-items-center">
+      <div class="dashboard-panel-body py-3 px-3">
+        <div class="row g-3 align-items-center">
           <!-- Search Input -->
           <div class="col-12 col-lg-4">
             <div class="input-group input-group-sm">
               <span class="input-group-text bg-light border-end-0 text-muted">
                 <i class="bi bi-search"></i>
               </span>
-              <input 
-                type="text" 
-                id="filterSearch" 
-                class="form-control border-start-0 fs-8 py-2" 
-                placeholder="Cari kode, sekolah, nama PJ, WA..." 
+              <input
+                type="text"
+                id="filterSearch"
+                class="form-control border-start-0 fs-8 py-2"
+                placeholder="Cari kode, sekolah, nama PJ, WA..."
               />
             </div>
           </div>
 
           <!-- Filter Status -->
           <div class="col-6 col-sm-3 col-lg-2">
-            <select id="filterStatus" class="form-select form-select-sm fs-8 py-2">
+            <select
+              id="filterStatus"
+              class="form-select form-select-sm fs-8 py-2"
+            >
               <option value="all">Semua Status</option>
               <option value="menunggu">Menunggu Verifikasi</option>
               <option value="lunas">Lunas (Terverifikasi)</option>
@@ -68,27 +85,32 @@ import { DISTRICTS, LEVELS } from '../../data/competition';
 
           <!-- Filter Wilayah -->
           <div class="col-6 col-sm-3 col-lg-2">
-            <select id="filterWilayah" class="form-select form-select-sm fs-8 py-2">
+            <select
+              id="filterWilayah"
+              class="form-select form-select-sm fs-8 py-2"
+            >
               <option value="all">Semua Wilayah</option>
-              {DISTRICTS.map(d => (
-                <option value={d.name}>{d.name}</option>
-              ))}
+              {DISTRICTS.map((d) => <option value={d.name}>{d.name}</option>)}
             </select>
           </div>
 
           <!-- Filter Jenjang -->
           <div class="col-6 col-sm-3 col-lg-2">
-            <select id="filterJenjang" class="form-select form-select-sm fs-8 py-2">
+            <select
+              id="filterJenjang"
+              class="form-select form-select-sm fs-8 py-2"
+            >
               <option value="all">Semua Jenjang</option>
-              {LEVELS.map(l => (
-                <option value={l.name}>{l.name}</option>
-              ))}
+              {LEVELS.map((l) => <option value={l.name}>{l.name}</option>)}
             </select>
           </div>
 
           <!-- Filter Tipe -->
           <div class="col-6 col-sm-3 col-lg-2">
-            <select id="filterTipe" class="form-select form-select-sm fs-8 py-2">
+            <select
+              id="filterTipe"
+              class="form-select form-select-sm fs-8 py-2"
+            >
               <option value="all">Semua Tipe</option>
               <option value="mandiri">Mandiri</option>
               <option value="kolektif">Kolektif</option>
@@ -100,22 +122,27 @@ import { DISTRICTS, LEVELS } from '../../data/competition';
 
     <!-- TABLE MASTER PENDAFTARAN -->
     <div class="dashboard-panel mb-4">
-      <div class="dashboard-panel-header px-3.5 py-3">
+      <div class="dashboard-panel-header px-4 py-3">
         <div class="d-flex align-items-center gap-2">
           <span class="dashboard-section-kicker">DATABASE</span>
           <h2 class="fs-6 mb-0">Daftar Berkas Pendaftaran</h2>
-          <span class="badge bg-primary rounded-pill px-2.5 py-1 fs-9 ms-1" id="filteredCountBadge">0 Berkas</span>
+          <span
+            class="badge bg-primary rounded-pill px-3 py-1 fs-9 ms-1"
+            id="filteredCountBadge">0 Berkas</span
+          >
         </div>
         <div class="fs-8 text-secondary" id="totalSummaryText">
           Memuat data...
         </div>
       </div>
 
-      <div class="table-responsive px-3 pb-3">
-        <table class="table table-hover align-middle mb-0 fs-8">
-          <thead class="table-light text-uppercase text-secondary fs-9">
+      <div class="dashboard-orders-table">
+        <table class="table align-middle mb-0 fs-8">
+          <thead>
             <tr>
-              <th class="ps-3 py-3 text-center text-nowrap" style="width: 50px;">No</th>
+              <th class="ps-4 text-center text-nowrap" style="width: 50px;"
+                >No</th
+              >
               <th class="py-3 text-nowrap">Kode Registrasi</th>
               <th class="py-3 text-nowrap">Tipe / Jenjang</th>
               <th class="py-3 text-nowrap">Sekolah / Lembaga</th>
@@ -123,13 +150,17 @@ import { DISTRICTS, LEVELS } from '../../data/competition';
               <th class="py-3 text-nowrap">Wilayah</th>
               <th class="py-3 text-nowrap">Total Biaya</th>
               <th class="py-3 text-nowrap">Status Pembayaran</th>
-              <th class="pe-3 text-end py-3 text-nowrap">Aksi Verifikasi</th>
+              <th class="pe-4 text-end py-3 text-nowrap">Aksi Kelola</th>
             </tr>
           </thead>
           <tbody id="registrationsTbody">
             <tr>
               <td colspan="9" class="text-center py-5 text-muted">
-                <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
+                <div
+                  class="spinner-border spinner-border-sm text-primary me-2"
+                  role="status"
+                >
+                </div>
                 <span>Mengambil database pendaftaran Supabase...</span>
               </td>
             </tr>
@@ -140,62 +171,132 @@ import { DISTRICTS, LEVELS } from '../../data/competition';
   </div>
 
   <!-- MODAL DETAIL & VERIFIKASI PEMBAYARAN -->
-  <div class="modal fade" id="verificationModal" tabindex="-1" aria-labelledby="verificationModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-      <div class="modal-content border-0 rounded-4 shadow-2xl overflow-hidden">
+  <div
+    class="modal fade"
+    id="verificationModal"
+    tabindex="-1"
+    aria-labelledby="verificationModalLabel"
+    aria-hidden="true"
+  >
+    <div
+      class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable"
+    >
+      <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
         <!-- Modal Header -->
-        <div class="modal-header bg-dark text-white px-4 py-3">
-          <div class="d-flex align-items-center gap-2.5">
-            <span class="badge bg-warning text-dark fw-bold rounded-pill px-2.5 py-1 fs-8" id="modalTipeBadge">MANDIRI</span>
-            <h5 class="modal-title fw-bold font-monospace fs-6 text-white mb-0" id="modalKodeReg">-</h5>
+        <div
+          class="modal-header bg-white border-bottom px-4 py-3 align-items-center"
+        >
+          <div class="d-flex align-items-center gap-3">
+            <div
+              class="modal-header-icon rounded-circle d-flex align-items-center justify-content-center"
+            >
+              <i class="bi bi-shield-check text-primary fs-5"></i>
+            </div>
+            <div>
+              <div class="d-flex align-items-center gap-2 flex-wrap">
+                <span
+                  class="badge bg-warning-subtle text-warning border border-warning-subtle fw-bold rounded-pill px-3 py-1 fs-8"
+                  id="modalTipeBadge">MANDIRI</span
+                >
+                <h5
+                  class="modal-title fw-bold font-monospace fs-6 text-dark mb-0"
+                  id="modalKodeReg"
+                >
+                  -
+                </h5>
+              </div>
+              <div class="fs-9 text-muted mt-1">
+                Kelola Berkas Pendaftar & Status Pembayaran
+              </div>
+            </div>
           </div>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" id="modalCloseBtn"></button>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+            id="modalCloseBtn"></button>
         </div>
 
         <!-- Modal Body -->
-        <div class="modal-body p-4">
+        <div class="modal-body p-4" style="background-color: #f8fafc;">
           <!-- Status Banner inside modal -->
-          <div class="p-3 rounded-3 mb-3 d-flex align-items-center justify-content-between flex-wrap gap-2" id="modalStatusBanner">
+          <div
+            class="p-3 rounded-3 mb-3 d-flex align-items-center justify-content-between flex-wrap gap-2 shadow-sm"
+            id="modalStatusBanner"
+          >
             <div class="d-flex align-items-center gap-2">
-              <span class="fw-bold fs-8" id="modalStatusTitle">STATUS: MENUNGGU VERIFIKASI</span>
+              <span class="fw-bold fs-8" id="modalStatusTitle"
+                >STATUS: MENUNGGU VERIFIKASI</span
+              >
             </div>
-            <span class="small font-monospace fs-9" id="modalWaktuDaftar">-</span>
+            <span class="small font-monospace fs-9" id="modalWaktuDaftar"
+              >-</span
+            >
           </div>
 
           <!-- Alert Box Catatan Penolakan (Jika status ditolak) -->
-          <div class="alert alert-danger border-danger-subtle rounded-3 p-3 mb-3 d-none shadow-2xs" id="modalRejectionAlertBox">
-            <div class="d-flex align-items-start gap-2.5">
-              <i class="bi bi-exclamation-octagon-fill text-danger fs-5 shrink-0 mt-0.5"></i>
+          <div
+            class="alert alert-danger border-danger-subtle rounded-3 p-3 mb-3 d-none shadow-sm"
+            id="modalRejectionAlertBox"
+          >
+            <div class="d-flex align-items-start gap-2">
+              <i
+                class="bi bi-exclamation-octagon-fill text-danger fs-5 flex-shrink-0 mt-1"
+              ></i>
               <div class="flex-grow-1">
-                <div class="d-flex align-items-center justify-content-between mb-1">
-                  <strong class="fs-8 text-danger text-uppercase fw-bold">Alasan / Catatan Penolakan Panitia:</strong>
-                  <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2 rounded fs-9 fw-semibold" id="btnEditRejectReason">
+                <div
+                  class="d-flex align-items-center justify-content-between mb-1"
+                >
+                  <strong class="fs-8 text-danger text-uppercase fw-bold"
+                    >Alasan / Catatan Penolakan Panitia:</strong
+                  >
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-danger py-1 px-3 rounded-pill fs-9 fw-semibold"
+                    id="btnEditRejectReason"
+                  >
                     <i class="bi bi-pencil-square"></i> Ubah Catatan
                   </button>
                 </div>
-                <div class="fs-8 text-dark fw-semibold lh-base" id="modalRejectionAlertText">-</div>
+                <div
+                  class="fs-8 text-dark fw-semibold lh-base"
+                  id="modalRejectionAlertText"
+                >
+                  -
+                </div>
               </div>
             </div>
           </div>
 
-          <!-- 2 Columns Info -->
-          <div class="row g-3 mb-4">
+          <!-- 2 Columns Info Cards -->
+          <div class="row g-3 mb-3">
             <!-- Info Pendaftar -->
             <div class="col-md-6">
-              <div class="p-3.5 bg-light rounded-3 h-100 border">
-                <div class="text-uppercase text-secondary fs-9 fw-bold mb-2 pb-1 border-bottom">Informasi Sekolah & PJ</div>
-                <div class="mb-2">
-                  <div class="text-secondary fs-9">Sekolah:</div>
-                  <div class="fw-bold text-dark fs-8" id="modalSekolah">-</div>
+              <div class="modal-info-card">
+                <div class="modal-info-card-header">
+                  <i class="bi bi-building text-primary fs-6"></i>
+                  <span>Informasi Sekolah & PJ</span>
                 </div>
-                <div class="mb-2">
-                  <div class="text-secondary fs-9">Wilayah & Jenjang:</div>
-                  <div class="fw-bold text-dark fs-8" id="modalWilayahJenjang">-</div>
+                <div class="modal-info-item">
+                  <span class="modal-info-label">Sekolah / Lembaga:</span>
+                  <div class="modal-info-value" id="modalSekolah">-</div>
                 </div>
-                <div class="mb-0">
-                  <div class="text-secondary fs-9">Kontak PJ / Siswa:</div>
-                  <div class="fw-bold text-dark fs-8" id="modalKontak">-</div>
-                  <a href="#" id="modalWaDirectLink" target="_blank" class="btn btn-sm btn-outline-success rounded-pill px-2.5 py-0.5 mt-1.5 fs-9 d-inline-flex align-items-center gap-1">
+                <div class="modal-info-item">
+                  <span class="modal-info-label">Wilayah & Jenjang:</span>
+                  <div class="modal-info-subvalue" id="modalWilayahJenjang">
+                    -
+                  </div>
+                </div>
+                <div class="modal-info-item mb-0">
+                  <span class="modal-info-label">Kontak PJ / Siswa:</span>
+                  <div class="modal-info-value mb-2" id="modalKontak">-</div>
+                  <a
+                    href="#"
+                    id="modalWaDirectLink"
+                    target="_blank"
+                    class="btn btn-sm btn-success rounded-pill px-3 py-1 fs-8 fw-semibold d-inline-flex align-items-center gap-2 shadow-sm"
+                  >
                     <i class="bi bi-whatsapp"></i>
                     <span>Hubungi WA</span>
                   </a>
@@ -205,16 +306,26 @@ import { DISTRICTS, LEVELS } from '../../data/competition';
 
             <!-- Info Pembayaran & Bukti -->
             <div class="col-md-6">
-              <div class="p-3.5 bg-light rounded-3 h-100 border">
-                <div class="text-uppercase text-secondary fs-9 fw-bold mb-2 pb-1 border-bottom">Biaya & Bukti Transfer</div>
-                <div class="mb-2">
-                  <div class="text-secondary fs-9">Total Biaya Pendaftaran:</div>
-                  <div class="h5 fw-bold text-primary font-monospace mb-0" id="modalTotalBiaya">Rp 0</div>
+              <div class="modal-info-card">
+                <div class="modal-info-card-header">
+                  <i class="bi bi-receipt text-primary fs-6"></i>
+                  <span>Biaya & Bukti Transfer</span>
                 </div>
-                <div class="mb-0">
-                  <div class="text-secondary fs-9 mb-1">Bukti Transfer:</div>
+                <div class="modal-tagihan-box">
+                  <span class="text-secondary fs-8 fw-semibold"
+                    >Total Tagihan:</span
+                  >
+                  <span
+                    class="h5 fw-bold text-primary font-monospace mb-0"
+                    id="modalTotalBiaya">Rp 0</span
+                  >
+                </div>
+                <div class="modal-info-item mb-0">
+                  <span class="modal-info-label mb-2">Bukti Transfer:</span>
                   <div id="modalBuktiContainer">
-                    <span class="text-muted small">Tidak ada lampiran foto bukti.</span>
+                    <span class="text-muted small"
+                      >Tidak ada lampiran foto bukti.</span
+                    >
                   </div>
                 </div>
               </div>
@@ -222,16 +333,27 @@ import { DISTRICTS, LEVELS } from '../../data/competition';
           </div>
 
           <!-- Daftar Siswa -->
-          <div class="card border rounded-3 overflow-hidden">
-            <div class="bg-light px-3 py-2 border-bottom d-flex align-items-center justify-content-between">
-              <span class="fw-bold fs-9 text-dark text-uppercase">Daftar Peserta Siswa</span>
-              <span class="badge bg-secondary rounded-pill px-2 py-0.5 fs-9" id="modalStudentCountBadge">0 Siswa</span>
+          <div class="card border rounded-3 overflow-hidden shadow-sm mt-3">
+            <div
+              class="bg-white px-4 py-3 border-bottom d-flex align-items-center justify-content-between"
+            >
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-people-fill text-primary"></i>
+                <span
+                  class="fw-bold fs-8 text-dark text-uppercase"
+                  style="letter-spacing: 0.04em;">Daftar Peserta Siswa</span
+                >
+              </div>
+              <span
+                class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-1 fs-8 fw-bold"
+                id="modalStudentCountBadge">0 Siswa</span
+              >
             </div>
-            <div class="table-responsive" style="max-height: 240px;">
-              <table class="table table-sm table-striped align-middle mb-0 fs-8">
-                <thead class="table-light">
+            <div class="table-responsive" style="max-height: 220px;">
+              <table class="table align-middle mb-0 fs-8 modal-student-table">
+                <thead>
                   <tr>
-                    <th class="ps-3" style="width: 40px;">No</th>
+                    <th class="ps-3 text-center" style="width: 45px;">No</th>
                     <th>Nama Lengkap</th>
                     <th>NISN</th>
                     <th>Gender</th>
@@ -247,9 +369,16 @@ import { DISTRICTS, LEVELS } from '../../data/competition';
         </div>
 
         <!-- Modal Footer Actions -->
-        <div class="modal-footer bg-light px-4 py-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div
+          class="modal-footer bg-white border-top px-4 py-3 d-flex align-items-center justify-content-between flex-wrap gap-2"
+        >
           <div class="d-flex align-items-center gap-2">
-            <a href="#" id="modalPrintDocBtn" target="_blank" class="btn btn-outline-primary btn-sm rounded-3 d-inline-flex align-items-center gap-1.5 fw-semibold fs-8">
+            <a
+              href="#"
+              id="modalPrintDocBtn"
+              target="_blank"
+              class="btn btn-outline-secondary btn-sm rounded-pill px-3 py-2 d-inline-flex align-items-center gap-2 fw-semibold fs-8"
+            >
               <i class="bi bi-printer"></i>
               <span>Cetak Bukti Resmi (PDF)</span>
             </a>
@@ -257,12 +386,21 @@ import { DISTRICTS, LEVELS } from '../../data/competition';
 
           <div class="d-flex align-items-center gap-2">
             <!-- Tombol Tolak -->
-            <button type="button" class="btn btn-outline-danger btn-sm rounded-3 fw-bold px-3 py-1.5 fs-8" id="btnActionReject">
-              <i class="bi bi-x-circle me-1"></i> Tolak / Minta Revisi
+            <button
+              type="button"
+              class="btn btn-outline-danger btn-sm rounded-pill fw-bold px-3 py-2 fs-8 d-inline-flex align-items-center gap-2"
+              id="btnActionReject"
+            >
+              <i class="bi bi-x-circle"></i>
+              <span>Tolak / Minta Revisi</span>
             </button>
             <!-- Tombol Verifikasi Lunas -->
-            <button type="button" class="btn btn-success btn-sm rounded-3 fw-bold px-3.5 py-1.5 d-inline-flex align-items-center gap-1.5 shadow-sm fs-8" id="btnActionApprove">
-              <i class="bi bi-check-circle"></i>
+            <button
+              type="button"
+              class="btn btn-success btn-sm rounded-pill fw-bold px-4 py-2 d-inline-flex align-items-center gap-2 shadow-sm fs-8"
+              id="btnActionApprove"
+            >
+              <i class="bi bi-check-circle-fill"></i>
               <span>Setujui Pembayaran (LUNAS)</span>
             </button>
           </div>
@@ -272,21 +410,51 @@ import { DISTRICTS, LEVELS } from '../../data/competition';
   </div>
 
   <!-- MODAL CATATAN PENOLAKAN / REVISI -->
-  <div class="modal fade" id="rejectReasonModal" tabindex="-1" aria-hidden="true" style="z-index: 1065;">
+  <div
+    class="modal fade"
+    id="rejectReasonModal"
+    tabindex="-1"
+    aria-hidden="true"
+    style="z-index: 1065;"
+  >
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
-        <div class="modal-header bg-danger text-white px-4 py-3">
+        <div
+          class="modal-header bg-white border-bottom px-4 py-3 align-items-center"
+        >
           <div class="d-flex align-items-center gap-2">
-            <i class="bi bi-exclamation-octagon-fill fs-5"></i>
-            <h5 class="modal-title fs-7 fw-bold mb-0 text-white">Beri Catatan Penolakan / Permintaan Revisi</h5>
+            <div
+              class="rounded-circle bg-danger-subtle text-danger d-flex align-items-center justify-content-center"
+              style="width: 38px; height: 38px;"
+            >
+              <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+            </div>
+            <div>
+              <h5 class="modal-title fs-7 fw-bold mb-0 text-dark">
+                Catatan Penolakan / Revisi
+              </h5>
+              <div class="fs-9 text-muted mt-1">
+                Berikan alasan jelas agar pendaftar dapat memperbaiki berkas
+              </div>
+            </div>
           </div>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" id="btnCloseRejectModal"></button>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+            id="btnCloseRejectModal"></button>
         </div>
-        <div class="modal-body p-4">
-          <div class="p-3 bg-light rounded-3 border mb-3">
+        <div class="modal-body p-4" style="background-color: #f8fafc;">
+          <div class="modal-info-card mb-3">
             <div class="d-flex align-items-center justify-content-between mb-1">
-              <span class="fs-9 text-muted text-uppercase fw-semibold">Kode Pendaftaran:</span>
-              <span class="fw-bold font-monospace text-primary fs-8" id="rejectModalKode">-</span>
+              <span class="fs-9 text-muted text-uppercase fw-semibold"
+                >Kode Pendaftaran:</span
+              >
+              <span
+                class="fw-bold font-monospace text-primary fs-8"
+                id="rejectModalKode">-</span
+              >
             </div>
             <div class="fs-8 text-dark fw-bold" id="rejectModalSekolah">-</div>
             <div class="fs-9 text-muted" id="rejectModalKontak">-</div>
@@ -294,37 +462,77 @@ import { DISTRICTS, LEVELS } from '../../data/competition';
 
           <!-- Quick Template Preset -->
           <div class="mb-3">
-            <label class="form-label fs-9 fw-bold text-secondary text-uppercase">Pilih Template Alasan Cepat</label>
-            <select class="form-select form-select-sm fs-8" id="selectRejectPreset">
-              <option value="">-- Pilih template atau ketik kustom di bawah --</option>
-              <option value="Bukti transfer pembayaran buram, terpotong, atau tidak terbaca dengan jelas. Mohon kirim ulang foto struk yang jelas.">Bukti transfer buram / tidak terbaca</option>
-              <option value="Nominal transfer tidak sesuai dengan total tagihan resmi pendaftaran. Mohon lakukan pelunasan kekurangan biaya.">Nominal transfer kurang / tidak sesuai</option>
-              <option value="Transaksi pembayaran belum teridentifikasi pada mutasi bank panitia. Mohon pastikan nomor rekening dan tanggal transfer sesuai.">Transaksi belum teridentifikasi di mutasi bank</option>
-              <option value="Data peserta atau NISN siswa yang diinput tidak lengkap atau terdapat duplikasi.">Data peserta / NISN tidak valid</option>
-              <option value="Terdapat ketidaksesuaian jenjang pendidikan atau pilihan wilayah lomba.">Ketidaksesuaian jenjang / wilayah</option>
+            <label class="form-label fs-9 fw-bold text-secondary text-uppercase"
+              >Pilih Template Alasan Cepat</label
+            >
+            <select
+              class="form-select form-select-sm fs-8 rounded-3"
+              id="selectRejectPreset"
+            >
+              <option value=""
+                >-- Pilih template atau ketik kustom di bawah --</option
+              >
+              <option
+                value="Bukti transfer pembayaran buram, terpotong, atau tidak terbaca dengan jelas. Mohon kirim ulang foto struk yang jelas."
+                >Bukti transfer buram / tidak terbaca</option
+              >
+              <option
+                value="Nominal transfer tidak sesuai dengan total tagihan resmi pendaftaran. Mohon lakukan pelunasan kekurangan biaya."
+                >Nominal transfer kurang / tidak sesuai</option
+              >
+              <option
+                value="Transaksi pembayaran belum teridentifikasi pada mutasi bank panitia. Mohon pastikan nomor rekening dan tanggal transfer sesuai."
+                >Transaksi belum teridentifikasi di mutasi bank</option
+              >
+              <option
+                value="Data peserta atau NISN siswa yang diinput tidak lengkap atau terdapat duplikasi."
+                >Data peserta / NISN tidak valid</option
+              >
+              <option
+                value="Terdapat ketidaksesuaian jenjang pendidikan atau pilihan wilayah lomba."
+                >Ketidaksesuaian jenjang / wilayah</option
+              >
             </select>
           </div>
 
           <!-- Textarea Catatan -->
           <div class="mb-2">
-            <label class="form-label fs-9 fw-bold text-secondary text-uppercase">
-              Catatan & Instruksi Revisi untuk Peserta <span class="text-danger">*</span>
+            <label
+              class="form-label fs-9 fw-bold text-secondary text-uppercase"
+            >
+              Catatan & Instruksi Revisi untuk Peserta <span class="text-danger"
+                >*</span
+              >
             </label>
-            <textarea 
-              class="form-control fs-8" 
-              id="txtRejectReason" 
-              rows="4" 
+            <textarea
+              class="form-control fs-8 rounded-3"
+              id="txtRejectReason"
+              rows="4"
               placeholder="Tuliskan catatan kenapa pendaftaran ini ditolak dan apa yang harus dilakukan peserta..."
-              required
-            ></textarea>
-            <div class="form-text fs-9 text-muted mt-1">
-              <i class="bi bi-info-circle me-1"></i> Catatan ini akan otomatis tampil di halaman <strong>Cek Status Peserta</strong> dan dapat dikirimkan langsung ke nomor WhatsApp pendaftar.
+              required></textarea>
+            <div class="invalid-feedback fs-9 mt-1" id="rejectReasonFeedback">
+              Mohon tuliskan alasan atau catatan instruksi perbaikan untuk pendaftar.
+            </div>
+            <div class="form-text fs-9 text-muted mt-2">
+              <i class="bi bi-info-circle me-1"></i> Catatan ini akan otomatis tampil
+              di halaman <strong>Cek Status Peserta</strong> dan langsung terkirim
+              ke WhatsApp pendaftar.
             </div>
           </div>
         </div>
-        <div class="modal-footer bg-light px-4 py-2.5 d-flex justify-content-between">
-          <button type="button" class="btn btn-secondary btn-sm px-3 rounded-3" id="btnCancelReject">Batal</button>
-          <button type="button" class="btn btn-danger btn-sm px-3.5 rounded-3 fw-bold d-inline-flex align-items-center gap-1.5 shadow-sm" id="btnConfirmReject">
+        <div
+          class="modal-footer bg-white border-top px-4 py-3 d-flex justify-content-between"
+        >
+          <button
+            type="button"
+            class="btn btn-outline-secondary btn-sm px-3 rounded-pill"
+            id="btnCancelReject">Batal</button
+          >
+          <button
+            type="button"
+            class="btn btn-danger btn-sm px-4 rounded-pill fw-bold d-inline-flex align-items-center gap-2 shadow-sm"
+            id="btnConfirmReject"
+          >
             <i class="bi bi-x-circle"></i>
             <span>Simpan & Tolak Pendaftaran</span>
           </button>
@@ -333,56 +541,139 @@ import { DISTRICTS, LEVELS } from '../../data/competition';
     </div>
   </div>
 
-  <style>
-    .fs-7 { font-size: 0.9rem !important; }
-    .fs-8 { font-size: 0.82rem !important; }
-    .fs-9 { font-size: 0.72rem !important; }
-    
-    .dashboard-panel-body {
-      padding: 1.25rem 1.5rem;
-    }
+  <!-- MODAL KONFIRMASI AKSI (VALIDASI TAMPILAN SEBELUM EKSEKUSI STATUS & BUKA WA) -->
+  <div
+    class="modal fade"
+    id="actionConfirmModal"
+    tabindex="-1"
+    aria-hidden="true"
+    style="z-index: 1075; background-color: rgba(0, 0, 0, 0.55);"
+  >
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 440px;">
+      <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden text-center">
+        <div class="modal-body p-4 bg-white">
+          <div
+            class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
+            id="confirmIconWrapper"
+            style="width: 58px; height: 58px; background-color: #dff8f0;"
+          >
+            <i class="bi bi-question-circle-fill text-success fs-3" id="confirmIcon"></i>
+          </div>
+          <h5 class="fw-bold text-dark mb-1 fs-6" id="confirmTitle">
+            Konfirmasi Persetujuan
+          </h5>
+          <div
+            class="badge bg-light text-secondary border font-monospace px-3 py-1 rounded-pill mb-3 fs-8"
+            id="confirmKode"
+          >
+            -
+          </div>
+          <p class="text-secondary fs-8 mb-4 lh-base" id="confirmMessage">
+            Apakah Anda yakin ingin memverifikasi pembayaran pendaftaran ini?
+          </p>
+          <div class="d-flex align-items-center justify-content-center gap-2">
+            <button
+              type="button"
+              class="btn btn-light border rounded-pill px-4 py-2 fs-8 fw-semibold text-secondary"
+              id="btnCancelActionConfirm"
+            >
+              Batal
+            </button>
+            <button
+              type="button"
+              class="btn btn-success rounded-pill px-4 py-2 fs-8 fw-bold d-inline-flex align-items-center gap-2 shadow-sm"
+              id="btnExecuteActionConfirm"
+            >
+              <i class="bi bi-check-circle"></i>
+              <span id="confirmExecuteBtnText">Ya, Lanjutkan</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    .table > :not(caption) > * > * {
-      padding: 0.85rem 0.85rem;
-    }
+  <!-- MODAL FEEDBACK HASIL STATUS (POP UP TAMPILAN ELEGAN, BUKAN BROWSER ALERT) -->
+  <div
+    class="modal fade"
+    id="statusFeedbackModal"
+    tabindex="-1"
+    aria-hidden="true"
+    style="z-index: 1085; background-color: rgba(0, 0, 0, 0.55);"
+  >
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 460px;">
+      <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+        <div class="modal-body p-4 text-center" style="background: #ffffff;">
+          <div
+            class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
+            id="feedbackIconWrapper"
+            style="width: 60px; height: 60px; background-color: #dff8f0;"
+          >
+            <i
+              class="bi bi-check-circle-fill text-success fs-2"
+              id="feedbackIcon"></i>
+          </div>
+          <h4 class="fw-bold text-dark mb-1 fs-5" id="feedbackTitle">
+            Status Berhasil Diperbarui!
+          </h4>
+          <div
+            class="badge bg-light text-secondary border font-monospace px-3 py-1 rounded-pill mb-3 fs-8"
+            id="feedbackKode"
+          >
+            -
+          </div>
+          <p class="text-muted fs-8 mb-4 lh-base" id="feedbackMessage">
+            Pendaftaran berhasil diverifikasi. WhatsApp pendaftar otomatis
+            dibuka untuk mengirimkan pesan konfirmasi.
+          </p>
 
-    .table thead th {
-      letter-spacing: 0.05em;
-      border-bottom: 1px solid #eef2f6;
-    }
-
-    .shadow-2xl {
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
-    }
-    .modal-backdrop.show {
-      opacity: 0.5;
-    }
-  </style>
+          <div class="d-flex flex-column gap-2">
+            <a
+              href="#"
+              target="_blank"
+              class="btn btn-success rounded-pill fw-bold py-2 fs-8 d-inline-flex align-items-center justify-content-center gap-2 shadow-sm"
+              id="btnFeedbackWa"
+            >
+              <i class="bi bi-whatsapp fs-6"></i>
+              <span>Buka WhatsApp Pendaftar</span>
+            </a>
+            <button
+              type="button"
+              class="btn btn-light border rounded-pill py-2 fs-8 fw-semibold text-secondary"
+              id="btnCloseFeedbackModal"
+            >
+              Tutup Dialog
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script>
-    import { supabase } from '../../lib/supabase';
+    import { supabase } from "../../lib/supabase";
 
     let allRegistrations: any[] = [];
     let currentViewingReg: any = null;
 
     function formatRp(num: number) {
-      return new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
-        maximumFractionDigits: 0
+      return new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        maximumFractionDigits: 0,
       }).format(num);
     }
 
     function formatDate(str?: string) {
-      if (!str) return '-';
+      if (!str) return "-";
       try {
         const d = new Date(str);
-        return d.toLocaleDateString('id-ID', {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
+        return d.toLocaleDateString("id-ID", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
         });
       } catch (e) {
         return str;
@@ -391,7 +682,7 @@ import { DISTRICTS, LEVELS } from '../../data/competition';
 
     // Load Data from Supabase
     async function fetchRegistrations() {
-      const tbody = document.getElementById('registrationsTbody');
+      const tbody = document.getElementById("registrationsTbody");
       if (tbody) {
         tbody.innerHTML = `
           <tr>
@@ -405,22 +696,22 @@ import { DISTRICTS, LEVELS } from '../../data/competition';
 
       try {
         const { data, error } = await supabase
-          .from('registrations')
-          .select('*')
-          .order('created_at', { ascending: false });
+          .from("registrations")
+          .select("*")
+          .order("created_at", { ascending: false });
 
         if (error) {
-          console.warn('[Admin] Fetch error:', error.message);
+          console.warn("[Admin] Fetch error:", error.message);
         }
 
         allRegistrations = data || [];
 
         // Merge status overrides (menjaga persistensi status saat hard refresh)
         try {
-          const storedOverrides = localStorage.getItem('kka_status_overrides');
+          const storedOverrides = localStorage.getItem("kka_status_overrides");
           if (storedOverrides) {
             const overrides = JSON.parse(storedOverrides);
-            allRegistrations.forEach(r => {
+            allRegistrations.forEach((r) => {
               const ov = overrides[r.kode] || (r.id && overrides[r.id]);
               if (ov) {
                 r.status = ov.status;
@@ -429,18 +720,20 @@ import { DISTRICTS, LEVELS } from '../../data/competition';
             });
           }
         } catch (ovErr) {
-          console.warn('[Admin] Error merging overrides:', ovErr);
+          console.warn("[Admin] Error merging overrides:", ovErr);
         }
 
         applyFilters();
 
         // Check URL Query Param for auto opening
         const urlParams = new URLSearchParams(window.location.search);
-        const autoKode = urlParams.get('kode');
-        const autoFilter = urlParams.get('filter');
+        const autoKode = urlParams.get("kode");
+        const autoFilter = urlParams.get("filter");
 
         if (autoFilter) {
-          const selectStatus = document.getElementById('filterStatus') as HTMLSelectElement | null;
+          const selectStatus = document.getElementById(
+            "filterStatus",
+          ) as HTMLSelectElement | null;
           if (selectStatus) {
             selectStatus.value = autoFilter;
             applyFilters();
@@ -448,53 +741,70 @@ import { DISTRICTS, LEVELS } from '../../data/competition';
         }
 
         if (autoKode) {
-          const target = allRegistrations.find(r => r.kode === autoKode);
+          const target = allRegistrations.find((r) => r.kode === autoKode);
           if (target) {
             openDetailModal(target);
           }
         }
-
       } catch (err) {
-        console.warn('[Admin] Exception:', err);
+        console.warn("[Admin] Exception:", err);
       }
     }
 
     // Apply Filter & Search
     function applyFilters() {
-      const searchVal = ((document.getElementById('filterSearch') as HTMLInputElement)?.value || '').trim().toLowerCase();
-      const statusVal = ((document.getElementById('filterStatus') as HTMLSelectElement)?.value || 'all').toLowerCase();
-      const wilayahVal = ((document.getElementById('filterWilayah') as HTMLSelectElement)?.value || 'all').toLowerCase();
-      const jenjangVal = ((document.getElementById('filterJenjang') as HTMLSelectElement)?.value || 'all').toLowerCase();
-      const tipeVal = ((document.getElementById('filterTipe') as HTMLSelectElement)?.value || 'all').toLowerCase();
+      const searchVal = (
+        (document.getElementById("filterSearch") as HTMLInputElement)?.value ||
+        ""
+      )
+        .trim()
+        .toLowerCase();
+      const statusVal = (
+        (document.getElementById("filterStatus") as HTMLSelectElement)?.value ||
+        "all"
+      ).toLowerCase();
+      const wilayahVal = (
+        (document.getElementById("filterWilayah") as HTMLSelectElement)
+          ?.value || "all"
+      ).toLowerCase();
+      const jenjangVal = (
+        (document.getElementById("filterJenjang") as HTMLSelectElement)
+          ?.value || "all"
+      ).toLowerCase();
+      const tipeVal = (
+        (document.getElementById("filterTipe") as HTMLSelectElement)?.value ||
+        "all"
+      ).toLowerCase();
 
-      const filtered = allRegistrations.filter(r => {
+      const filtered = allRegistrations.filter((r) => {
         // Search text
         if (searchVal) {
-          const combined = `${r.kode} ${r.sekolah} ${r.nama_kontak} ${r.hp_kontak} ${r.wilayah}`.toLowerCase();
+          const combined =
+            `${r.kode} ${r.sekolah} ${r.nama_kontak} ${r.hp_kontak} ${r.wilayah}`.toLowerCase();
           if (!combined.includes(searchVal)) return false;
         }
 
         // Status
-        if (statusVal !== 'all') {
-          const st = (r.status || 'menunggu').toLowerCase();
+        if (statusVal !== "all") {
+          const st = (r.status || "menunggu").toLowerCase();
           if (st !== statusVal) return false;
         }
 
         // Wilayah
-        if (wilayahVal !== 'all') {
-          const w = (r.wilayah || '').toLowerCase();
+        if (wilayahVal !== "all") {
+          const w = (r.wilayah || "").toLowerCase();
           if (!w.includes(wilayahVal) && !wilayahVal.includes(w)) return false;
         }
 
         // Jenjang
-        if (jenjangVal !== 'all') {
-          const j = (r.jenjang || '').toLowerCase();
+        if (jenjangVal !== "all") {
+          const j = (r.jenjang || "").toLowerCase();
           if (!j.includes(jenjangVal) && !jenjangVal.includes(j)) return false;
         }
 
         // Tipe
-        if (tipeVal !== 'all') {
-          if ((r.tipe || 'mandiri').toLowerCase() !== tipeVal) return false;
+        if (tipeVal !== "all") {
+          if ((r.tipe || "mandiri").toLowerCase() !== tipeVal) return false;
         }
 
         return true;
@@ -504,28 +814,39 @@ import { DISTRICTS, LEVELS } from '../../data/competition';
     }
 
     function resetAllFilters() {
-      const elSearch = document.getElementById('filterSearch') as HTMLInputElement | null;
-      const elStatus = document.getElementById('filterStatus') as HTMLSelectElement | null;
-      const elWilayah = document.getElementById('filterWilayah') as HTMLSelectElement | null;
-      const elJenjang = document.getElementById('filterJenjang') as HTMLSelectElement | null;
-      const elTipe = document.getElementById('filterTipe') as HTMLSelectElement | null;
+      const elSearch = document.getElementById(
+        "filterSearch",
+      ) as HTMLInputElement | null;
+      const elStatus = document.getElementById(
+        "filterStatus",
+      ) as HTMLSelectElement | null;
+      const elWilayah = document.getElementById(
+        "filterWilayah",
+      ) as HTMLSelectElement | null;
+      const elJenjang = document.getElementById(
+        "filterJenjang",
+      ) as HTMLSelectElement | null;
+      const elTipe = document.getElementById(
+        "filterTipe",
+      ) as HTMLSelectElement | null;
 
-      if (elSearch) elSearch.value = '';
-      if (elStatus) elStatus.value = 'all';
-      if (elWilayah) elWilayah.value = 'all';
-      if (elJenjang) elJenjang.value = 'all';
-      if (elTipe) elTipe.value = 'all';
+      if (elSearch) elSearch.value = "";
+      if (elStatus) elStatus.value = "all";
+      if (elWilayah) elWilayah.value = "all";
+      if (elJenjang) elJenjang.value = "all";
+      if (elTipe) elTipe.value = "all";
       applyFilters();
     }
 
     // Render Table Rows
     function renderTable(list: any[]) {
-      const tbody = document.getElementById('registrationsTbody');
-      const badgeCount = document.getElementById('filteredCountBadge');
-      const summaryText = document.getElementById('totalSummaryText');
+      const tbody = document.getElementById("registrationsTbody");
+      const badgeCount = document.getElementById("filteredCountBadge");
+      const summaryText = document.getElementById("totalSummaryText");
 
       if (badgeCount) badgeCount.textContent = `${list.length} Berkas`;
-      if (summaryText) summaryText.textContent = `Menampilkan ${list.length} dari total ${allRegistrations.length} data pendaftaran`;
+      if (summaryText)
+        summaryText.textContent = `Menampilkan ${list.length} dari total ${allRegistrations.length} data pendaftaran`;
 
       if (!tbody) return;
 
@@ -540,47 +861,76 @@ import { DISTRICTS, LEVELS } from '../../data/competition';
             </td>
           </tr>
         `;
-        document.getElementById('resetFilterBtn')?.addEventListener('click', resetAllFilters);
+        document
+          .getElementById("resetFilterBtn")
+          ?.addEventListener("click", resetAllFilters);
         return;
       }
 
-      tbody.innerHTML = '';
+      tbody.innerHTML = "";
       list.forEach((r, idx) => {
-        const tr = document.createElement('tr');
-        const st = (r.status || 'menunggu').toLowerCase();
+        const tr = document.createElement("tr");
+        const st = (r.status || "menunggu").toLowerCase();
 
-        let statusBadge = '<span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill px-2.5 py-1">Menunggu</span>';
-        if (st === 'lunas') {
-          statusBadge = '<span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2.5 py-1">Lunas</span>';
-        } else if (st === 'ditolak') {
-          const hasNote = r.catatan ? `<div class="fs-9 text-danger text-truncate mt-0.5" style="max-width: 130px;" title="${r.catatan}"><i class="bi bi-chat-quote me-0.5"></i> ${r.catatan}</div>` : '';
-          statusBadge = `<div><span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2.5 py-1">Ditolak</span>${hasNote}</div>`;
+        let statusBadge =
+          '<span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill px-3 py-1">Menunggu</span>';
+        if (st === "lunas") {
+          statusBadge =
+            '<span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1">Lunas</span>';
+        } else if (st === "ditolak") {
+          const hasNote = r.catatan
+            ? `<div class="fs-9 text-danger text-truncate mt-1" style="max-width: 130px;" title="${r.catatan}"><i class="bi bi-chat-quote me-1"></i> ${r.catatan}</div>`
+            : "";
+          statusBadge = `<div><span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-3 py-1">Ditolak</span>${hasNote}</div>`;
         }
 
-        const tipeBadge = r.tipe === 'kolektif' 
-          ? '<span class="badge bg-warning text-dark px-2 py-0.5 rounded-pill fs-9">Kolektif</span>' 
-          : '<span class="badge bg-primary text-white px-2 py-0.5 rounded-pill fs-9">Mandiri</span>';
+        const tipeBadge =
+          r.tipe === "kolektif"
+            ? '<span class="badge bg-warning text-dark px-2 py-1 rounded-pill fs-9">Kolektif</span>'
+            : '<span class="badge bg-primary text-white px-2 py-1 rounded-pill fs-9">Mandiri</span>';
+
+        let actionBtn = `
+          <button type="button" class="btn btn-sm btn-primary rounded-pill px-3 py-1 fw-bold fs-8 btn-view-reg d-inline-flex align-items-center gap-2 shadow-sm" data-kode="${r.kode}">
+            <i class="bi bi-shield-check"></i>
+            <span>Verifikasi</span>
+          </button>
+        `;
+        if (st === "lunas") {
+          actionBtn = `
+            <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-3 py-1 fw-bold fs-8 btn-view-reg d-inline-flex align-items-center gap-2" data-kode="${r.kode}">
+              <i class="bi bi-gear-fill"></i>
+              <span>Kelola</span>
+            </button>
+          `;
+        } else if (st === "ditolak") {
+          actionBtn = `
+            <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3 py-1 fw-bold fs-8 btn-view-reg d-inline-flex align-items-center gap-2" data-kode="${r.kode}">
+              <i class="bi bi-sliders"></i>
+              <span>Kelola</span>
+            </button>
+          `;
+        }
 
         tr.innerHTML = `
-          <td class="ps-3 text-center text-muted fw-semibold">${idx + 1}</td>
+          <td class="ps-4 text-center text-muted fw-semibold">${idx + 1}</td>
           <td class="text-nowrap">
             <span class="font-monospace fw-bold text-primary fs-8">${r.kode}</span>
             <div class="fs-9 text-muted">${formatDate(r.created_at)}</div>
           </td>
           <td class="text-nowrap">
             <div class="mb-1">${tipeBadge}</div>
-            <div class="fs-8 text-secondary fw-semibold">${r.jenjang || '-'}</div>
+            <div class="fs-8 text-secondary fw-semibold">${r.jenjang || "-"}</div>
           </td>
           <td>
-            <div class="fw-bold text-dark text-truncate fs-8" style="max-width: 220px;">${r.sekolah || '-'}</div>
-            <div class="fs-9 text-muted">Kec. ${r.kecamatan || '-'}</div>
+            <div class="fw-bold text-dark text-truncate fs-8" style="max-width: 220px;">${r.sekolah || "-"}</div>
+            <div class="fs-9 text-muted">Kec. ${r.kecamatan || "-"}</div>
           </td>
           <td>
-            <div class="text-dark fs-8 text-truncate" style="max-width: 180px;">${r.nama_kontak || '-'}</div>
-            <div class="fs-9 font-monospace text-secondary">${r.hp_kontak || '-'}</div>
+            <div class="text-dark fs-8 text-truncate" style="max-width: 180px;">${r.nama_kontak || "-"}</div>
+            <div class="fs-9 font-monospace text-secondary">${r.hp_kontak || "-"}</div>
           </td>
           <td class="text-nowrap">
-            <span class="text-dark fw-medium fs-8">${r.wilayah || '-'}</span>
+            <span class="text-dark fw-medium fs-8">${r.wilayah || "-"}</span>
           </td>
           <td class="font-monospace fw-bold text-dark fs-8 text-nowrap">
             ${formatRp(r.total_biaya || 0)}
@@ -588,15 +938,12 @@ import { DISTRICTS, LEVELS } from '../../data/competition';
           <td class="text-nowrap">
             ${statusBadge}
           </td>
-          <td class="pe-3 text-end text-nowrap">
-            <button type="button" class="btn btn-sm btn-primary rounded-2 px-2.5 py-1 fw-bold fs-8 btn-view-reg d-inline-flex align-items-center gap-1" data-kode="${r.kode}">
-              <i class="bi bi-search"></i>
-              <span>Periksa</span>
-            </button>
+          <td class="pe-4 text-end text-nowrap">
+            ${actionBtn}
           </td>
         `;
 
-        tr.querySelector('.btn-view-reg')?.addEventListener('click', () => {
+        tr.querySelector(".btn-view-reg")?.addEventListener("click", () => {
           openDetailModal(r);
         });
 
@@ -608,36 +955,57 @@ import { DISTRICTS, LEVELS } from '../../data/competition';
     async function openDetailModal(reg: any) {
       currentViewingReg = reg;
 
-      const elKode = document.getElementById('modalKodeReg');
-      const elTipe = document.getElementById('modalTipeBadge');
-      const elStatusBanner = document.getElementById('modalStatusBanner');
-      const elStatusTitle = document.getElementById('modalStatusTitle');
-      const elWaktu = document.getElementById('modalWaktuDaftar');
-      const elSekolah = document.getElementById('modalSekolah');
-      const elWilayahJenjang = document.getElementById('modalWilayahJenjang');
-      const elKontak = document.getElementById('modalKontak');
-      const elWaLink = document.getElementById('modalWaDirectLink') as HTMLAnchorElement | null;
-      const elBiaya = document.getElementById('modalTotalBiaya');
-      const elBuktiContainer = document.getElementById('modalBuktiContainer');
-      const elPrintBtn = document.getElementById('modalPrintDocBtn') as HTMLAnchorElement | null;
-      const studentTbody = document.getElementById('modalStudentTbody');
-      const studentBadge = document.getElementById('modalStudentCountBadge');
+      const elKode = document.getElementById("modalKodeReg");
+      const elTipe = document.getElementById("modalTipeBadge");
+      const elStatusBanner = document.getElementById("modalStatusBanner");
+      const elStatusTitle = document.getElementById("modalStatusTitle");
+      const elWaktu = document.getElementById("modalWaktuDaftar");
+      const elSekolah = document.getElementById("modalSekolah");
+      const elWilayahJenjang = document.getElementById("modalWilayahJenjang");
+      const elKontak = document.getElementById("modalKontak");
+      const elWaLink = document.getElementById(
+        "modalWaDirectLink",
+      ) as HTMLAnchorElement | null;
+      const elBiaya = document.getElementById("modalTotalBiaya");
+      const elBuktiContainer = document.getElementById("modalBuktiContainer");
+      const elPrintBtn = document.getElementById(
+        "modalPrintDocBtn",
+      ) as HTMLAnchorElement | null;
+      const studentTbody = document.getElementById("modalStudentTbody");
+      const studentBadge = document.getElementById("modalStudentCountBadge");
+      const btnApprove = document.getElementById(
+        "btnActionApprove",
+      ) as HTMLButtonElement | null;
+      const btnReject = document.getElementById(
+        "btnActionReject",
+      ) as HTMLButtonElement | null;
 
       if (elKode) elKode.textContent = reg.kode;
       if (elTipe) {
-        elTipe.textContent = (reg.tipe || 'mandiri').toUpperCase();
-        elTipe.className = reg.tipe === 'kolektif' ? 'badge bg-warning text-dark fw-bold rounded-pill px-2.5 py-1 fs-8' : 'badge bg-light text-primary fw-bold rounded-pill px-2.5 py-1 fs-8';
+        elTipe.textContent = (reg.tipe || "mandiri").toUpperCase();
+        elTipe.className =
+          reg.tipe === "kolektif"
+            ? "badge bg-warning-subtle text-warning border border-warning-subtle fw-bold rounded-pill px-3 py-1 fs-8"
+            : "badge bg-primary-subtle text-primary border border-primary-subtle fw-bold rounded-pill px-3 py-1 fs-8";
       }
-      if (elWaktu) elWaktu.textContent = `Daftar: ${formatDate(reg.created_at)}`;
-      if (elSekolah) elSekolah.textContent = reg.sekolah || '-';
-      if (elWilayahJenjang) elWilayahJenjang.textContent = `${reg.wilayah} (Kec. ${reg.kecamatan}) • ${reg.jenjang}`;
-      if (elKontak) elKontak.textContent = `${reg.nama_kontak || '-'} (${reg.hp_kontak || '-'})`;
-      
+      if (elWaktu) {
+        elWaktu.innerHTML = `<i class="bi bi-calendar3 me-1 text-muted"></i> Daftar: ${formatDate(reg.created_at)}`;
+      }
+      if (elSekolah) elSekolah.textContent = reg.sekolah || "-";
+      if (elWilayahJenjang)
+        elWilayahJenjang.textContent = `${reg.wilayah} (Kec. ${reg.kecamatan}) • ${reg.jenjang}`;
+      if (elKontak)
+        elKontak.textContent = `${reg.nama_kontak || "-"} (${reg.hp_kontak || "-"})`;
+
       // WhatsApp Direct Link
       if (elWaLink) {
-        const cleanWa = (reg.hp_kontak || '').replace(/\D/g, '');
-        const targetWa = cleanWa.startsWith('0') ? '62' + cleanWa.slice(1) : cleanWa;
-        const msg = encodeURIComponent(`Halo Bpk/Ibu ${reg.nama_kontak}, kami dari Admin Verifikasi KKA 2026 Jawa Pos Radar Kediri terkait pendaftaran kode: ${reg.kode}.`);
+        const cleanWa = (reg.hp_kontak || "").replace(/\D/g, "");
+        const targetWa = cleanWa.startsWith("0")
+          ? "62" + cleanWa.slice(1)
+          : cleanWa;
+        const msg = encodeURIComponent(
+          `Halo Bpk/Ibu ${reg.nama_kontak}, kami dari Admin Verifikasi KKA 2026 Jawa Pos Radar Kediri terkait pendaftaran kode: ${reg.kode}.`,
+        );
         elWaLink.href = `https://wa.me/${targetWa}?text=${msg}`;
       }
 
@@ -649,48 +1017,100 @@ import { DISTRICTS, LEVELS } from '../../data/competition';
       }
 
       // Status Banner
-      const st = (reg.status || 'menunggu').toLowerCase();
+      const st = (reg.status || "menunggu").toLowerCase();
       if (elStatusBanner && elStatusTitle) {
-        if (st === 'lunas') {
-          elStatusBanner.className = 'p-3 rounded-3 mb-3 d-flex align-items-center justify-content-between flex-wrap gap-2 bg-success-subtle text-success border border-success-subtle';
-          elStatusTitle.textContent = 'STATUS: PEMBAYARAN TERVERIFIKASI (LUNAS)';
-        } else if (st === 'ditolak') {
-          elStatusBanner.className = 'p-3 rounded-3 mb-3 d-flex align-items-center justify-content-between flex-wrap gap-2 bg-danger-subtle text-danger border border-danger-subtle';
-          elStatusTitle.textContent = 'STATUS: DITOLAK / BUTUH KONFIRMASI';
+        if (st === "lunas") {
+          elStatusBanner.className =
+            "p-3 rounded-3 mb-3 d-flex align-items-center justify-content-between flex-wrap gap-2 status-banner-lunas shadow-sm";
+          elStatusTitle.innerHTML =
+            '<i class="bi bi-patch-check-fill me-2 fs-6"></i> STATUS: PEMBAYARAN TERVERIFIKASI (LUNAS)';
+        } else if (st === "ditolak") {
+          elStatusBanner.className =
+            "p-3 rounded-3 mb-3 d-flex align-items-center justify-content-between flex-wrap gap-2 status-banner-ditolak shadow-sm";
+          elStatusTitle.innerHTML =
+            '<i class="bi bi-exclamation-octagon-fill me-2 fs-6"></i> STATUS: DITOLAK / BUTUH KONFIRMASI';
         } else {
-          elStatusBanner.className = 'p-3 rounded-3 mb-3 d-flex align-items-center justify-content-between flex-wrap gap-2 bg-warning-subtle text-warning border border-warning-subtle';
-          elStatusTitle.textContent = 'STATUS: MENUNGGU VERIFIKASI PEMBAYARAN';
+          elStatusBanner.className =
+            "p-3 rounded-3 mb-3 d-flex align-items-center justify-content-between flex-wrap gap-2 status-banner-menunggu shadow-sm";
+          elStatusTitle.innerHTML =
+            '<i class="bi bi-hourglass-split me-2 fs-6"></i> STATUS: MENUNGGU VERIFIKASI PEMBAYARAN';
+        }
+      }
+
+      // Action buttons dynamic label
+      if (btnApprove) {
+        if (st === "lunas") {
+          btnApprove.innerHTML =
+            '<i class="bi bi-check2-all"></i> <span>Sudah Terverifikasi (LUNAS)</span>';
+          btnApprove.className =
+            "btn btn-success btn-sm rounded-pill fw-bold px-4 py-2 d-inline-flex align-items-center gap-2 shadow-sm fs-8";
+        } else if (st === "ditolak") {
+          btnApprove.innerHTML =
+            '<i class="bi bi-check-circle-fill"></i> <span>Pulihkan & Setujui LUNAS</span>';
+          btnApprove.className =
+            "btn btn-success btn-sm rounded-pill fw-bold px-4 py-2 d-inline-flex align-items-center gap-2 shadow-sm fs-8";
+        } else {
+          btnApprove.innerHTML =
+            '<i class="bi bi-check-circle-fill"></i> <span>Setujui Pembayaran (LUNAS)</span>';
+          btnApprove.className =
+            "btn btn-success btn-sm rounded-pill fw-bold px-4 py-2 d-inline-flex align-items-center gap-2 shadow-sm fs-8";
+        }
+      }
+
+      if (btnReject) {
+        if (st === "ditolak") {
+          btnReject.innerHTML =
+            '<i class="bi bi-pencil-square"></i> <span>Ubah Catatan Penolakan</span>';
+          btnReject.className =
+            "btn btn-outline-danger btn-sm rounded-pill fw-bold px-3 py-2 fs-8 d-inline-flex align-items-center gap-2";
+        } else if (st === "lunas") {
+          btnReject.innerHTML =
+            '<i class="bi bi-arrow-repeat"></i> <span>Ubah Status / Tolak</span>';
+          btnReject.className =
+            "btn btn-outline-danger btn-sm rounded-pill fw-bold px-3 py-2 fs-8 d-inline-flex align-items-center gap-2";
+        } else {
+          btnReject.innerHTML =
+            '<i class="bi bi-x-circle"></i> <span>Tolak / Minta Revisi</span>';
+          btnReject.className =
+            "btn btn-outline-danger btn-sm rounded-pill fw-bold px-3 py-2 fs-8 d-inline-flex align-items-center gap-2";
         }
       }
 
       // Bukti Transfer Preview
       if (elBuktiContainer) {
-        if (reg.bukti_bayar_url && reg.bukti_bayar_url.startsWith('http')) {
+        if (reg.bukti_bayar_url && reg.bukti_bayar_url.startsWith("http")) {
           elBuktiContainer.innerHTML = `
             <div class="mt-1">
-              <a href="${reg.bukti_bayar_url}" target="_blank" class="d-inline-block position-relative rounded-2 overflow-hidden border shadow-sm">
-                <img src="${reg.bukti_bayar_url}" alt="Bukti Transfer" class="img-fluid" style="max-height: 120px; object-fit: cover;" />
-                <div class="p-1 text-center bg-dark text-white fs-9 d-flex align-items-center justify-content-center gap-1">
-                  <i class="bi bi-box-arrow-up-right"></i>
+              <a href="${reg.bukti_bayar_url}" target="_blank" class="modal-proof-thumb d-inline-block position-relative rounded-3 overflow-hidden border shadow-sm">
+                <img src="${reg.bukti_bayar_url}" alt="Bukti Transfer" class="img-fluid d-block" style="max-height: 125px; object-fit: cover;" />
+                <div class="modal-proof-overlay">
+                  <i class="bi bi-arrows-fullscreen"></i>
                   <span>Buka Foto Penuh</span>
                 </div>
               </a>
             </div>
           `;
         } else {
-          elBuktiContainer.innerHTML = `<span class="text-muted small">Tidak ada lampiran foto bukti.</span>`;
+          elBuktiContainer.innerHTML = `
+            <div class="p-3 rounded-3 bg-light text-center border border-dashed mt-1">
+              <i class="bi bi-image text-muted fs-4 d-block mb-1"></i>
+              <span class="text-muted small">Tidak ada lampiran foto bukti.</span>
+            </div>
+          `;
         }
       }
 
       // Rejection Note Alert in Modal
-      const elRejectionBox = document.getElementById('modalRejectionAlertBox');
-      const elRejectionText = document.getElementById('modalRejectionAlertText');
+      const elRejectionBox = document.getElementById("modalRejectionAlertBox");
+      const elRejectionText = document.getElementById(
+        "modalRejectionAlertText",
+      );
       if (elRejectionBox && elRejectionText) {
-        if (st === 'ditolak' && reg.catatan) {
-          elRejectionBox.classList.remove('d-none');
+        if (st === "ditolak" && reg.catatan) {
+          elRejectionBox.classList.remove("d-none");
           elRejectionText.textContent = reg.catatan;
         } else {
-          elRejectionBox.classList.add('d-none');
+          elRejectionBox.classList.add("d-none");
         }
       }
 
@@ -699,10 +1119,10 @@ import { DISTRICTS, LEVELS } from '../../data/competition';
         studentTbody.innerHTML = `<tr><td colspan="5" class="text-center py-3 text-muted">Memuat daftar siswa...</td></tr>`;
         try {
           const { data: students } = await supabase
-            .from('participants')
-            .select('*')
-            .eq('registration_id', reg.id)
-            .order('created_at', { ascending: true });
+            .from("participants")
+            .select("*")
+            .eq("registration_id", reg.id)
+            .order("created_at", { ascending: true });
 
           const sList = students || [];
           studentBadge.textContent = `${sList.length} Siswa`;
@@ -710,15 +1130,20 @@ import { DISTRICTS, LEVELS } from '../../data/competition';
           if (sList.length === 0) {
             studentTbody.innerHTML = `<tr><td colspan="5" class="text-center py-3 text-muted">Tidak ada rincian siswa tersimpan.</td></tr>`;
           } else {
-            studentTbody.innerHTML = '';
+            studentTbody.innerHTML = "";
             sList.forEach((s: any, idx: number) => {
-              const tr = document.createElement('tr');
+              const tr = document.createElement("tr");
+              const genderBadge =
+                s.gender === "Perempuan"
+                  ? '<span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2 py-1 fs-9">Perempuan</span>'
+                  : '<span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2 py-1 fs-9">Laki-laki</span>';
+
               tr.innerHTML = `
-                <td class="ps-3 text-center text-muted">${idx + 1}</td>
+                <td class="ps-3 text-center text-muted fw-semibold">${idx + 1}</td>
                 <td class="fw-bold text-dark">${s.nama}</td>
-                <td class="font-monospace">${s.nisn || '-'}</td>
-                <td>${s.gender || '-'}</td>
-                <td>${s.kelas || '-'}</td>
+                <td class="font-monospace text-secondary">${s.nisn || "-"}</td>
+                <td>${genderBadge}</td>
+                <td><span class="fw-semibold text-dark">${s.kelas ? "Kelas " + s.kelas : "-"}</span></td>
               `;
               studentTbody.appendChild(tr);
             });
@@ -729,216 +1154,348 @@ import { DISTRICTS, LEVELS } from '../../data/competition';
       }
 
       // Show Bootstrap Modal
-      const modalEl = document.getElementById('verificationModal');
+      const modalEl = document.getElementById("verificationModal");
       if (modalEl) {
-        modalEl.classList.add('show');
-        modalEl.style.display = 'block';
-        document.body.classList.add('modal-open');
-        
+        modalEl.classList.add("show");
+        modalEl.style.display = "block";
+        document.body.classList.add("modal-open");
+
         // Add backdrop if not exist
-        if (!document.getElementById('modalCustomBackdrop')) {
-          const back = document.createElement('div');
-          back.id = 'modalCustomBackdrop';
-          back.className = 'modal-backdrop fade show';
+        if (!document.getElementById("modalCustomBackdrop")) {
+          const back = document.createElement("div");
+          back.id = "modalCustomBackdrop";
+          back.className = "modal-backdrop fade show";
           document.body.appendChild(back);
         }
       }
     }
 
     function closeModal() {
-      const modalEl = document.getElementById('verificationModal');
+      const modalEl = document.getElementById("verificationModal");
       if (modalEl) {
-        modalEl.classList.remove('show');
-        modalEl.style.display = 'none';
-        document.body.classList.remove('modal-open');
+        modalEl.classList.remove("show");
+        modalEl.style.display = "none";
+        document.body.classList.remove("modal-open");
       }
       closeRejectModal();
-      const back = document.getElementById('modalCustomBackdrop');
+      const back = document.getElementById("modalCustomBackdrop");
       if (back) back.remove();
     }
 
     // Modal Reject Reason Handlers
     function openRejectModal() {
       if (!currentViewingReg) return;
-      const rejectKode = document.getElementById('rejectModalKode');
-      const rejectSekolah = document.getElementById('rejectModalSekolah');
-      const rejectKontak = document.getElementById('rejectModalKontak');
-      const txtReason = document.getElementById('txtRejectReason') as HTMLTextAreaElement;
-      const selectPreset = document.getElementById('selectRejectPreset') as HTMLSelectElement;
+      const rejectKode = document.getElementById("rejectModalKode");
+      const rejectSekolah = document.getElementById("rejectModalSekolah");
+      const rejectKontak = document.getElementById("rejectModalKontak");
+      const txtReason = document.getElementById(
+        "txtRejectReason",
+      ) as HTMLTextAreaElement;
+      const selectPreset = document.getElementById(
+        "selectRejectPreset",
+      ) as HTMLSelectElement;
 
       if (rejectKode) rejectKode.textContent = currentViewingReg.kode;
-      if (rejectSekolah) rejectSekolah.textContent = currentViewingReg.sekolah || '-';
-      if (rejectKontak) rejectKontak.textContent = `${currentViewingReg.nama_kontak || '-'} (${currentViewingReg.hp_kontak || '-'})`;
-      if (txtReason) txtReason.value = currentViewingReg.catatan || '';
-      if (selectPreset) selectPreset.value = '';
+      if (rejectSekolah)
+        rejectSekolah.textContent = currentViewingReg.sekolah || "-";
+      if (rejectKontak)
+        rejectKontak.textContent = `${currentViewingReg.nama_kontak || "-"} (${currentViewingReg.hp_kontak || "-"})`;
+      if (txtReason) txtReason.value = currentViewingReg.catatan || "";
+      if (selectPreset) selectPreset.value = "";
 
-      const modalEl = document.getElementById('rejectReasonModal');
+      const modalEl = document.getElementById("rejectReasonModal");
       if (modalEl) {
-        modalEl.classList.add('show');
-        modalEl.style.display = 'block';
+        modalEl.classList.add("show");
+        modalEl.style.display = "block";
       }
     }
 
     function closeRejectModal() {
-      const modalEl = document.getElementById('rejectReasonModal');
+      const modalEl = document.getElementById("rejectReasonModal");
       if (modalEl) {
-        modalEl.classList.remove('show');
-        modalEl.style.display = 'none';
+        modalEl.classList.remove("show");
+        modalEl.style.display = "none";
       }
     }
 
-    // Update Status Action
-    async function updateStatus(newStatus: 'lunas' | 'ditolak', rejectionNote: string = '') {
+    let pendingAction: { status: "lunas" | "ditolak"; reason: string } | null = null;
+
+    function openConfirmModal(status: "lunas" | "ditolak", reason: string = "") {
+      if (!currentViewingReg) return;
+      pendingAction = { status, reason };
+
+      const modalEl = document.getElementById("actionConfirmModal");
+      const iconWrapper = document.getElementById("confirmIconWrapper");
+      const icon = document.getElementById("confirmIcon");
+      const title = document.getElementById("confirmTitle");
+      const kode = document.getElementById("confirmKode");
+      const message = document.getElementById("confirmMessage");
+      const btnExec = document.getElementById("btnExecuteActionConfirm") as HTMLButtonElement | null;
+      const btnExecText = document.getElementById("confirmExecuteBtnText");
+
+      if (kode) kode.textContent = currentViewingReg.kode;
+
+      if (status === "lunas") {
+        if (iconWrapper) iconWrapper.style.backgroundColor = "#dff8f0";
+        if (icon) icon.className = "bi bi-check-circle-fill text-success fs-3";
+        if (title) title.textContent = "Konfirmasi Persetujuan Pembayaran";
+        if (message) {
+          message.innerHTML = `Apakah Anda yakin ingin memverifikasi pembayaran berkas <strong>${currentViewingReg.kode}</strong> sebagai <strong>LUNAS</strong>?<br><span class="text-muted fs-9 mt-1 d-block">Setelah dikonfirmasi, WhatsApp pendaftar akan dibuka untuk mengirim konfirmasi resmi.</span>`;
+        }
+        if (btnExec) {
+          btnExec.className = "btn btn-success rounded-pill px-4 py-2 fs-8 fw-bold d-inline-flex align-items-center gap-2 shadow-sm";
+        }
+        if (btnExecText) btnExecText.textContent = "Ya, Setujui Lunas";
+      } else {
+        if (iconWrapper) iconWrapper.style.backgroundColor = "#fde5ea";
+        if (icon) icon.className = "bi bi-exclamation-triangle-fill text-danger fs-3";
+        if (title) title.textContent = "Konfirmasi Penolakan / Revisi";
+        if (message) {
+          message.innerHTML = `Apakah Anda yakin ingin menetapkan berkas <strong>${currentViewingReg.kode}</strong> menjadi <strong>DITOLAK / BUTUH REVISI</strong>?<br><span class="text-muted fs-9 mt-1 d-block">Catatan perbaikan akan disimpan dan pesan WhatsApp instruksi perbaikan akan dibuka.</span>`;
+        }
+        if (btnExec) {
+          btnExec.className = "btn btn-danger rounded-pill px-4 py-2 fs-8 fw-bold d-inline-flex align-items-center gap-2 shadow-sm";
+        }
+        if (btnExecText) btnExecText.textContent = "Ya, Tolak & Kirim WA";
+      }
+
+      if (modalEl) {
+        modalEl.classList.add("show");
+        modalEl.style.display = "block";
+      }
+    }
+
+    function closeConfirmModal() {
+      const modalEl = document.getElementById("actionConfirmModal");
+      if (modalEl) {
+        modalEl.classList.remove("show");
+        modalEl.style.display = "none";
+      }
+      pendingAction = null;
+    }
+
+    function openFeedbackModal(
+      isSuccess: boolean,
+      title: string,
+      kode: string,
+      msg: string,
+      waUrl: string,
+    ) {
+      const modalEl = document.getElementById("statusFeedbackModal");
+      const iconWrapper = document.getElementById("feedbackIconWrapper");
+      const icon = document.getElementById("feedbackIcon");
+      const elTitle = document.getElementById("feedbackTitle");
+      const elKode = document.getElementById("feedbackKode");
+      const elMsg = document.getElementById("feedbackMessage");
+      const btnWa = document.getElementById(
+        "btnFeedbackWa",
+      ) as HTMLAnchorElement | null;
+
+      if (iconWrapper && icon) {
+        if (isSuccess) {
+          iconWrapper.style.backgroundColor = "#dff8f0";
+          icon.className = "bi bi-check-circle-fill text-success fs-2";
+        } else {
+          iconWrapper.style.backgroundColor = "#fde5ea";
+          icon.className = "bi bi-exclamation-triangle-fill text-danger fs-2";
+        }
+      }
+
+      if (elTitle) elTitle.textContent = title;
+      if (elKode) elKode.textContent = kode;
+      if (elMsg) elMsg.textContent = msg;
+      if (btnWa) btnWa.href = waUrl;
+
+      if (modalEl) {
+        modalEl.classList.add("show");
+        modalEl.style.display = "block";
+        document.body.classList.add("modal-open");
+      }
+    }
+
+    function closeFeedbackModal() {
+      const modalEl = document.getElementById("statusFeedbackModal");
+      if (modalEl) {
+        modalEl.classList.remove("show");
+        modalEl.style.display = "none";
+        document.body.classList.remove("modal-open");
+      }
+      const back = document.getElementById("modalCustomBackdrop");
+      if (back) back.remove();
+    }
+
+    // Update Status Action (Cepat & Langsung ke WhatsApp + Pop-up Tampilan)
+    async function updateStatus(
+      newStatus: "lunas" | "ditolak",
+      rejectionNote: string = "",
+    ) {
       if (!currentViewingReg) return;
 
-      if (newStatus === 'ditolak' && !rejectionNote) {
+      if (newStatus === "ditolak" && !rejectionNote) {
         openRejectModal();
         return;
       }
 
-      const actionText = newStatus === 'lunas' ? 'SETUJUI (LUNAS)' : 'TOLAK DENGAN CATATAN';
-      if (!confirm(`Konfirmasi: Apakah Anda yakin ingin mengubah status pendaftaran ${currentViewingReg.kode} menjadi ${actionText}?`)) {
-        return;
-      }
-
-      const approveBtn = document.getElementById('btnActionApprove') as HTMLButtonElement | null;
-      const rejectBtn = document.getElementById('btnActionReject') as HTMLButtonElement | null;
-      const confirmRejectBtn = document.getElementById('btnConfirmReject') as HTMLButtonElement | null;
+      const approveBtn = document.getElementById(
+        "btnActionApprove",
+      ) as HTMLButtonElement | null;
+      const rejectBtn = document.getElementById(
+        "btnActionReject",
+      ) as HTMLButtonElement | null;
+      const confirmRejectBtn = document.getElementById(
+        "btnConfirmReject",
+      ) as HTMLButtonElement | null;
 
       if (approveBtn) approveBtn.disabled = true;
       if (rejectBtn) rejectBtn.disabled = true;
       if (confirmRejectBtn) confirmRejectBtn.disabled = true;
 
       try {
-        const updatePayload: any = { 
+        const updatePayload: any = {
           status: newStatus,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         };
-        if (newStatus === 'ditolak') {
+        if (newStatus === "ditolak") {
           updatePayload.catatan = rejectionNote;
         }
 
-        let cloudUpdated = false;
-        let cloudNotice = '';
-
-        // 1. Eksekusi Update ke Database Cloud Supabase
+        // 1. Simpan ke status overrides & array lokal langsung agar UI responsif seketika
         try {
-          const matchField = currentViewingReg.id ? 'id' : 'kode';
-          const matchVal = currentViewingReg.id || currentViewingReg.kode;
-
-          const { data: updatedRows, error } = await supabase
-            .from('registrations')
-            .update(updatePayload)
-            .eq(matchField, matchVal)
-            .select();
-
-          if (error) {
-            console.warn(`[Supabase Update Notice]: ${error.message}`);
-            cloudNotice = error.message;
-
-            // Jika error karena kolom 'catatan' belum ada di tabel registrations Supabase
-            if (error.message && (error.message.includes('catatan') || error.message.includes('column'))) {
-              console.log('[Supabase] Mencoba fallback update status saja...');
-              const { data: fbRows, error: fbErr } = await supabase
-                .from('registrations')
-                .update({ status: newStatus, updated_at: new Date().toISOString() })
-                .eq(matchField, matchVal)
-                .select();
-
-              if (!fbErr && fbRows && fbRows.length > 0) {
-                cloudUpdated = true;
-              } else if (fbErr) {
-                cloudNotice = fbErr.message;
-              }
-            }
-          } else if (updatedRows && updatedRows.length > 0) {
-            cloudUpdated = true;
-          } else {
-            // Jika error null tapi baris ter-update 0 -> RLS memblokir UPDATE untuk anon
-            cloudNotice = 'Row-Level Security (RLS) di Supabase memblokir izin UPDATE untuk role publik (anon).';
-          }
-        } catch (dbEx: any) {
-          console.warn('[Supabase Exception]:', dbEx);
-          cloudNotice = dbEx.message || 'Koneksi database bermasalah';
-        }
-
-        // 2. Simpan ke status overrides (menjaga persistensi lokal di browser)
-        try {
-          const overrides = JSON.parse(localStorage.getItem('kka_status_overrides') || '{}');
+          const overrides = JSON.parse(
+            localStorage.getItem("kka_status_overrides") || "{}",
+          );
           const ovData = {
             status: newStatus,
             catatan: rejectionNote,
-            updated_at: new Date().toISOString()
+            updated_at: new Date().toISOString(),
           };
-          if (currentViewingReg.kode) overrides[currentViewingReg.kode] = ovData;
+          if (currentViewingReg.kode)
+            overrides[currentViewingReg.kode] = ovData;
           if (currentViewingReg.id) overrides[currentViewingReg.id] = ovData;
-          localStorage.setItem('kka_status_overrides', JSON.stringify(overrides));
+          localStorage.setItem(
+            "kka_status_overrides",
+            JSON.stringify(overrides),
+          );
         } catch (ovSaveErr) {
-          console.warn('[Admin] Error saving status override:', ovSaveErr);
+          console.warn("[Admin] Error saving status override:", ovSaveErr);
         }
 
         currentViewingReg.status = newStatus;
-        if (newStatus === 'ditolak') {
+        if (newStatus === "ditolak") {
           currentViewingReg.catatan = rejectionNote;
         }
-        
-        const found = allRegistrations.find(r => r.id === currentViewingReg.id || r.kode === currentViewingReg.kode);
+
+        const found = allRegistrations.find(
+          (r) =>
+            r.id === currentViewingReg.id || r.kode === currentViewingReg.kode,
+        );
         if (found) {
           found.status = newStatus;
-          if (newStatus === 'ditolak') found.catatan = rejectionNote;
+          if (newStatus === "ditolak") found.catatan = rejectionNote;
         }
 
-        // 3. Sinkronkan Pembaruan Status ke Google Apps Script (Google Spreadsheet)
-        const appsScriptUrl = import.meta.env.PUBLIC_APPS_SCRIPT_URL;
-        if (appsScriptUrl && appsScriptUrl.startsWith('http')) {
-          try {
-            const statusLabel = newStatus === 'lunas' ? 'LUNAS' : 'DITOLAK';
-            await fetch(appsScriptUrl, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                action: 'update_status',
-                kode: currentViewingReg.kode,
-                status: statusLabel,
-                statusBayar: statusLabel,
-                catatan: rejectionNote || ''
-              }),
-              mode: 'no-cors'
-            });
-            console.log(`[Google Apps Script] Status ${currentViewingReg.kode} berhasil dikirim ke Spreadsheet: ${statusLabel}`);
-          } catch (gasErr) {
-            console.warn('[Google Apps Script] Gagal sinkronisasi status:', gasErr);
-          }
+        // 2. Format Pesan WhatsApp Resmi Tanpa Emoji / Ikon (Profesional)
+        const cleanWa = (currentViewingReg.hp_kontak || "").replace(
+          /[^0-9]/g,
+          "",
+        );
+        const targetWa = cleanWa.startsWith("0")
+          ? "62" + cleanWa.slice(1)
+          : cleanWa;
+        const origin = window.location.origin;
+        let waMsg = "";
+
+        if (newStatus === "lunas") {
+          waMsg = encodeURIComponent(
+            `KONFIRMASI PEMBAYARAN RESMI KKA 2026 - RADAR KEDIRI\n\n` +
+            `Yth. Bpk/Ibu ${currentViewingReg.nama_kontak || "-"},\n\n` +
+            `Panitia menginformasikan bahwa pendaftaran Anda telah TERVERIFIKASI dan LUNAS:\n\n` +
+            `- Kode Registrasi: ${currentViewingReg.kode}\n` +
+            `- Sekolah: ${currentViewingReg.sekolah || "-"}\n` +
+            `- Wilayah / Jenjang: ${currentViewingReg.wilayah || "-"} - ${currentViewingReg.jenjang || "-"}\n` +
+            `- Total Biaya: ${formatRp(currentViewingReg.total_biaya || 0)}\n` +
+            `- Status Pembayaran: LUNAS (TERVERIFIKASI)\n\n` +
+            `Bukti konfirmasi pendaftaran resmi dapat Anda periksa melalui tautan:\n` +
+            `${origin}/daftar/status?kode=${currentViewingReg.kode}\n\n` +
+            `Terima kasih atas partisipasi Anda dalam Kompetisi Kompetensi Akademik (KKA) 2026 Jawa Pos Radar Kediri.\n\n` +
+            `Panitia KKA 2026 Jawa Pos Radar Kediri`
+          );
+        } else {
+          waMsg = encodeURIComponent(
+            `PEMBERITAHUAN REVISI PEMBAYARAN KKA 2026 - RADAR KEDIRI\n\n` +
+            `Yth. Bpk/Ibu ${currentViewingReg.nama_kontak || "-"},\n\n` +
+            `Panitia menginformasikan bahwa berkas pendaftaran Anda (${currentViewingReg.kode}) memerlukan perbaikan pembayaran dengan catatan panitia:\n\n` +
+            `Catatan Panitia: "${rejectionNote}"\n\n` +
+            `Silakan mengirimkan bukti transfer perbaikan atau konfirmasi pembayaran secara langsung dengan membalas pesan WhatsApp ini ke nomor panitia.\n\n` +
+            `Rincian status pendaftaran Anda juga dapat dilihat melalui tautan:\n` +
+            `${origin}/daftar/status?kode=${currentViewingReg.kode}\n\n` +
+            `Panitia KKA 2026 Jawa Pos Radar Kediri`
+          );
         }
 
+        const waUrl = `https://wa.me/${targetWa}?text=${waMsg}`;
+
+        // 3. LANGSUNG BUKA WHATSAPP DI TAB BARU SETELAH DIVALIDASI OLEH ADMIN
+        window.open(waUrl, "_blank");
+
+        // 4. Update Tampilan & Tutup Modal Verifikasi
         applyFilters();
         closeRejectModal();
         closeModal();
 
-        // 3. Tampilkan Feedback Hasil ke Admin
-        if (newStatus === 'ditolak') {
-          const cleanWa = (currentViewingReg.hp_kontak || '').replace(/[^0-9]/g, '');
-          const targetWa = cleanWa.startsWith('0') ? '62' + cleanWa.slice(1) : cleanWa;
-          const waMsg = encodeURIComponent(`Halo Bpk/Ibu ${currentViewingReg.nama_kontak || ''}, panitia KKA Radar Kediri menginformasikan bahwa pendaftaran Anda (${currentViewingReg.kode}) membutuhkan perbaikan/ditolak dengan catatan: "${rejectionNote}". Silakan hubungi panitia untuk perbaikan data/kirim ulang bukti transfer. Terima kasih.`);
+        // 5. Buka Popup Tampilan Feedback Cantik
+        const isLunas = newStatus === "lunas";
+        const feedbackTitle = isLunas
+          ? "Status Berhasil Diperbarui: LUNAS"
+          : "Status Berhasil Diubah: PERLU REVISI";
+        const feedbackDesc = isLunas
+          ? `Status pendaftaran ${currentViewingReg.kode} telah diverifikasi lunas. Tab WhatsApp pendaftar (${currentViewingReg.hp_kontak || "peserta"}) telah dibuka untuk mengirimkan konfirmasi.`
+          : `Catatan revisi tersimpan. Tab WhatsApp pendaftar (${currentViewingReg.hp_kontak || "peserta"}) telah dibuka untuk mengirimkan instruksi perbaikan berkas.`;
 
-          let alertMsg = `Status pendaftaran ${currentViewingReg.kode} berhasil diubah menjadi DITOLAK!\n\nCatatan penolakan tersimpan dan langsung muncul di menu Cek Status.`;
-          if (!cloudUpdated) {
-            alertMsg += `\n\n⚠️ PENTING: Perubahan status ini tersimpan di memori browser, namun belum tersimpan permanen di cloud Supabase karena:\n"${cloudNotice}"\n\nSolusi: Silakan jalankan file SQL Policy UPDATE di Supabase SQL Editor agar tersimpan permanen di cloud.`;
-          }
-          alertMsg += `\n\nApakah Anda ingin membuka WhatsApp sekarang untuk mengirim catatan ini ke pendaftar?`;
+        openFeedbackModal(
+          isLunas,
+          feedbackTitle,
+          currentViewingReg.kode,
+          feedbackDesc,
+          waUrl,
+        );
 
-          if (confirm(alertMsg)) {
-            window.open(`https://wa.me/${targetWa}?text=${waMsg}`, '_blank');
+        // 6. Sinkronkan ke Database Cloud Supabase & Google Spreadsheet di Latar Belakang (Non-Blocking)
+        (async () => {
+          try {
+            const matchField = currentViewingReg.id ? "id" : "kode";
+            const matchVal = currentViewingReg.id || currentViewingReg.kode;
+            await supabase
+              .from("registrations")
+              .update(updatePayload)
+              .eq(matchField, matchVal);
+          } catch (dbEx) {
+            console.warn("[Supabase Background Exception]:", dbEx);
           }
-        } else {
-          let alertMsg = `Status pendaftaran ${currentViewingReg.kode} berhasil diperbarui menjadi LUNAS!`;
-          if (!cloudUpdated) {
-            alertMsg += `\n\n⚠️ PENTING: Perubahan tersimpan di browser ini, namun belum tersimpan di cloud Supabase (${cloudNotice}). Harap jalankan script SQL policy di Supabase SQL Editor agar permanen di cloud untuk semua pengguna.`;
+
+          const appsScriptUrl = import.meta.env.PUBLIC_APPS_SCRIPT_URL;
+          if (appsScriptUrl && appsScriptUrl.startsWith("http")) {
+            try {
+              const statusLabel = newStatus === "lunas" ? "LUNAS" : "DITOLAK";
+              await fetch(appsScriptUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  action: "update_status",
+                  kode: currentViewingReg.kode,
+                  status: statusLabel,
+                  statusBayar: statusLabel,
+                  catatan: rejectionNote || "",
+                }),
+                mode: "no-cors",
+              });
+            } catch (gasErr) {
+              console.warn("[Google Apps Script sync warning]:", gasErr);
+            }
           }
-          alert(alertMsg);
-        }
+        })();
       } catch (e: any) {
-        alert(`Terjadi kesalahan: ${e.message}`);
+        console.error("[Update Status Error]:", e);
       } finally {
         if (approveBtn) approveBtn.disabled = false;
         if (rejectBtn) rejectBtn.disabled = false;
@@ -949,36 +1506,55 @@ import { DISTRICTS, LEVELS } from '../../data/competition';
     // Export to CSV
     function exportToCSV() {
       if (allRegistrations.length === 0) {
-        alert('Tidak ada data pendaftaran untuk diekspor.');
+        alert("Tidak ada data pendaftaran untuk diekspor.");
         return;
       }
 
-      const headers = ['No', 'Kode Registrasi', 'Waktu Daftar', 'Tipe', 'Wilayah', 'Kecamatan', 'Sekolah', 'Jenjang', 'Nama Kontak PJ', 'No WhatsApp PJ', 'Total Biaya', 'Status Pembayaran', 'Catatan / Alasan', 'URL Bukti Bayar'];
-      
+      const headers = [
+        "No",
+        "Kode Registrasi",
+        "Waktu Daftar",
+        "Tipe",
+        "Wilayah",
+        "Kecamatan",
+        "Sekolah",
+        "Jenjang",
+        "Nama Kontak PJ",
+        "No WhatsApp PJ",
+        "Total Biaya",
+        "Status Pembayaran",
+        "Catatan / Alasan",
+        "URL Bukti Bayar",
+      ];
+
       const rows = allRegistrations.map((r, idx) => [
         idx + 1,
-        `"${r.kode || ''}"`,
+        `"${r.kode || ""}"`,
         `"${formatDate(r.created_at)}"`,
-        `"${r.tipe || 'mandiri'}"`,
-        `"${r.wilayah || ''}"`,
-        `"${r.kecamatan || ''}"`,
-        `"${(r.sekolah || '').replace(/"/g, '""')}"`,
-        `"${r.jenjang || ''}"`,
-        `"${(r.nama_kontak || '').replace(/"/g, '""')}"`,
-        `"'\t${r.hp_kontak || ''}"`,
+        `"${r.tipe || "mandiri"}"`,
+        `"${r.wilayah || ""}"`,
+        `"${r.kecamatan || ""}"`,
+        `"${(r.sekolah || "").replace(/"/g, '""')}"`,
+        `"${r.jenjang || ""}"`,
+        `"${(r.nama_kontak || "").replace(/"/g, '""')}"`,
+        `"'\t${r.hp_kontak || ""}"`,
         r.total_biaya || 0,
-        `"${r.status || 'menunggu'}"`,
-        `"${(r.catatan || '').replace(/"/g, '""')}"`,
-        `"${r.bukti_bayar_url || ''}"`
+        `"${r.status || "menunggu"}"`,
+        `"${(r.catatan || "").replace(/"/g, '""')}"`,
+        `"${r.bukti_bayar_url || ""}"`,
       ]);
 
-      const csvContent = 'data:text/csv;charset=utf-8,\uFEFF' 
-        + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+      const csvContent =
+        "data:text/csv;charset=utf-8,\uFEFF" +
+        [headers.join(","), ...rows.map((e) => e.join(","))].join("\n");
 
       const encodedUri = encodeURI(csvContent);
-      const link = document.createElement('a');
-      link.setAttribute('href', encodedUri);
-      link.setAttribute('download', `rekap-pendaftaran-kka-radar-kediri-${Date.now()}.csv`);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute(
+        "download",
+        `rekap-pendaftaran-kka-radar-kediri-${Date.now()}.csv`,
+      );
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -988,48 +1564,350 @@ import { DISTRICTS, LEVELS } from '../../data/competition';
     function initPendaftaranPage() {
       fetchRegistrations();
 
-      document.getElementById('filterSearch')?.addEventListener('input', applyFilters);
-      document.getElementById('filterStatus')?.addEventListener('change', applyFilters);
-      document.getElementById('filterWilayah')?.addEventListener('change', applyFilters);
-      document.getElementById('filterJenjang')?.addEventListener('change', applyFilters);
-      document.getElementById('filterTipe')?.addEventListener('change', applyFilters);
-      document.getElementById('btnExportCsv')?.addEventListener('click', exportToCSV);
-      document.getElementById('resetFilterTopBtn')?.addEventListener('click', resetAllFilters);
+      document
+        .getElementById("filterSearch")
+        ?.addEventListener("input", applyFilters);
+      document
+        .getElementById("filterStatus")
+        ?.addEventListener("change", applyFilters);
+      document
+        .getElementById("filterWilayah")
+        ?.addEventListener("change", applyFilters);
+      document
+        .getElementById("filterJenjang")
+        ?.addEventListener("change", applyFilters);
+      document
+        .getElementById("filterTipe")
+        ?.addEventListener("change", applyFilters);
+      document
+        .getElementById("btnExportCsv")
+        ?.addEventListener("click", exportToCSV);
+      document
+        .getElementById("resetFilterTopBtn")
+        ?.addEventListener("click", resetAllFilters);
 
       // Modal buttons
-      document.getElementById('modalCloseBtn')?.addEventListener('click', closeModal);
-      document.getElementById('btnActionApprove')?.addEventListener('click', () => updateStatus('lunas'));
-      document.getElementById('btnActionReject')?.addEventListener('click', openRejectModal);
-      document.getElementById('btnEditRejectReason')?.addEventListener('click', openRejectModal);
+      document
+        .getElementById("modalCloseBtn")
+        ?.addEventListener("click", closeModal);
+      document
+        .getElementById("btnActionApprove")
+        ?.addEventListener("click", () => {
+          openConfirmModal("lunas");
+        });
+      document
+        .getElementById("btnActionReject")
+        ?.addEventListener("click", openRejectModal);
+      document
+        .getElementById("btnEditRejectReason")
+        ?.addEventListener("click", openRejectModal);
 
-      // Reject Modal buttons
-      document.getElementById('btnCloseRejectModal')?.addEventListener('click', closeRejectModal);
-      document.getElementById('btnCancelReject')?.addEventListener('click', closeRejectModal);
-      document.getElementById('selectRejectPreset')?.addEventListener('change', (e) => {
-        const sel = e.target as HTMLSelectElement;
-        const txt = document.getElementById('txtRejectReason') as HTMLTextAreaElement;
-        if (sel.value && txt) {
-          txt.value = sel.value;
-        }
-      });
-      document.getElementById('btnConfirmReject')?.addEventListener('click', () => {
-        const txt = document.getElementById('txtRejectReason') as HTMLTextAreaElement;
-        const reason = txt?.value?.trim() || '';
-        if (!reason) {
-          alert('Mohon tuliskan alasan atau catatan penolakan untuk pendaftar.');
-          txt?.focus();
-          return;
-        }
-        updateStatus('ditolak', reason);
-      });
+      // Reject Modal buttons & inputs
+      document
+        .getElementById("btnCloseRejectModal")
+        ?.addEventListener("click", closeRejectModal);
+      document
+        .getElementById("btnCancelReject")
+        ?.addEventListener("click", closeRejectModal);
+      document
+        .getElementById("selectRejectPreset")
+        ?.addEventListener("change", (e) => {
+          const sel = e.target as HTMLSelectElement;
+          const txt = document.getElementById(
+            "txtRejectReason",
+          ) as HTMLTextAreaElement;
+          if (sel.value && txt) {
+            txt.value = sel.value;
+            txt.classList.remove("is-invalid");
+          }
+        });
+      document
+        .getElementById("txtRejectReason")
+        ?.addEventListener("input", (e) => {
+          (e.target as HTMLTextAreaElement)?.classList.remove("is-invalid");
+        });
+      document
+        .getElementById("btnConfirmReject")
+        ?.addEventListener("click", () => {
+          const txt = document.getElementById(
+            "txtRejectReason",
+          ) as HTMLTextAreaElement;
+          const reason = txt?.value?.trim() || "";
+          if (!reason) {
+            if (txt) {
+              txt.classList.add("is-invalid");
+              txt.focus();
+            }
+            return;
+          }
+          txt?.classList.remove("is-invalid");
+          openConfirmModal("ditolak", reason);
+        });
+
+      // Action Confirm Modal buttons (Validasi Pop-up Tampilan Sebelum Buka WhatsApp)
+      document
+        .getElementById("btnCancelActionConfirm")
+        ?.addEventListener("click", closeConfirmModal);
+      document
+        .getElementById("btnExecuteActionConfirm")
+        ?.addEventListener("click", () => {
+          if (!pendingAction) return;
+          const actionToRun = pendingAction;
+          closeConfirmModal();
+          updateStatus(actionToRun.status, actionToRun.reason);
+        });
+      document
+        .getElementById("actionConfirmModal")
+        ?.addEventListener("click", (e) => {
+          if (e.target === document.getElementById("actionConfirmModal")) {
+            closeConfirmModal();
+          }
+        });
+
+      // Feedback modal button & overlay click
+      document
+        .getElementById("btnCloseFeedbackModal")
+        ?.addEventListener("click", closeFeedbackModal);
+      document
+        .getElementById("statusFeedbackModal")
+        ?.addEventListener("click", (e) => {
+          if (e.target === document.getElementById("statusFeedbackModal")) {
+            closeFeedbackModal();
+          }
+        });
     }
 
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initPendaftaranPage);
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initPendaftaranPage);
     } else {
       initPendaftaranPage();
     }
-    document.addEventListener('astro:page-load', initPendaftaranPage);
-    window.addEventListener('admin:refresh-data', fetchRegistrations);
+    document.addEventListener("astro:page-load", initPendaftaranPage);
+    window.addEventListener("admin:refresh-data", fetchRegistrations);
   </script>
+
+  <style>
+    .fs-7 {
+      font-size: 0.9rem !important;
+    }
+    .fs-8 {
+      font-size: 0.82rem !important;
+    }
+    .fs-9 {
+      font-size: 0.72rem !important;
+    }
+    .shadow-2xs {
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+    }
+
+    /* Modal Styling */
+    .modal-dialog {
+      max-width: 780px;
+    }
+    .modal-content {
+      border: 1px solid var(--border-color, #e2e8f0) !important;
+      border-radius: 1rem !important;
+      box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25) !important;
+    }
+    .modal-header {
+      background: #ffffff !important;
+      border-bottom: 1px solid var(--border-color-light, #f1f5f9) !important;
+      padding: 1.15rem 1.5rem !important;
+    }
+    .modal-header-icon {
+      width: 44px;
+      height: 44px;
+      background-color: color-mix(
+        in srgb,
+        var(--accent-color, #315cf6),
+        transparent 90%
+      );
+      flex-shrink: 0;
+    }
+    .modal-body {
+      padding: 1.5rem !important;
+    }
+    .modal-footer {
+      background: #ffffff !important;
+      border-top: 1px solid var(--border-color-light, #f1f5f9) !important;
+      padding: 1rem 1.5rem !important;
+    }
+
+    /* Modal Information Cards & Anti-Cramped Spacing */
+    .modal-info-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.85rem;
+      padding: 1.5rem 1.6rem !important;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+      height: 100%;
+    }
+    .modal-info-card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-transform: uppercase;
+      color: #475569;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .modal-info-item {
+      margin-bottom: 1.15rem;
+    }
+    .modal-info-label {
+      color: #64748b;
+      font-size: 0.76rem;
+      font-weight: 600;
+      display: block;
+      margin-bottom: 0.35rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .modal-info-value {
+      color: #0f172a;
+      font-size: 0.95rem;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+    .modal-info-subvalue {
+      color: #334155;
+      font-size: 0.88rem;
+      font-weight: 600;
+      line-height: 1.45;
+    }
+    .modal-tagihan-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.65rem;
+      padding: 0.95rem 1.25rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Status Banners */
+    .status-banner-lunas {
+      background-color: #dff8f0 !important;
+      color: #0f9b7a !important;
+      border: 1px solid #b3edd9 !important;
+    }
+    .status-banner-menunggu {
+      background-color: #fff0d7 !important;
+      color: #c87914 !important;
+      border: 1px solid #fde2b4 !important;
+    }
+    .status-banner-ditolak {
+      background-color: #fde5ea !important;
+      color: #e05264 !important;
+      border: 1px solid #f9cad3 !important;
+    }
+
+    /* Proof Image Preview */
+    .modal-proof-thumb {
+      display: inline-block;
+      max-width: 240px;
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+    }
+    .modal-proof-thumb:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15) !important;
+    }
+    .modal-proof-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 0.35rem 0.65rem;
+      background: rgba(17, 24, 39, 0.82);
+      backdrop-filter: blur(4px);
+      color: #ffffff;
+      font-size: 0.72rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      transition: background 0.2s ease;
+    }
+    .modal-proof-thumb:hover .modal-proof-overlay {
+      background: var(--accent-color, #315cf6);
+    }
+
+    /* Modal Student Table */
+    .modal-student-table {
+      margin-bottom: 0;
+      white-space: nowrap;
+    }
+    .modal-student-table thead th {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--muted-color, #687789);
+      background-color: #f8fafc;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border-color-light, #eaf0f7);
+    }
+    .modal-student-table tbody td {
+      padding: 0.75rem 1rem;
+      font-size: 0.82rem;
+      border-bottom: 1px solid var(--border-color-light, #eaf0f7);
+      vertical-align: middle;
+      background-color: #ffffff;
+    }
+    .modal-student-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    .modal-student-table tbody tr:hover td {
+      background-color: color-mix(
+        in srgb,
+        var(--accent-color, #315cf6),
+        transparent 97%
+      );
+    }
+
+    /* Dashboard Master Orders Table */
+    .dashboard-orders-table .table {
+      margin-bottom: 0;
+      white-space: nowrap;
+    }
+    .dashboard-orders-table .table th {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted-color, #687789);
+      background-color: color-mix(
+        in srgb,
+        var(--background-color, #f4f7fb),
+        var(--surface-color, #fff) 60%
+      );
+      padding: 0.95rem 1.15rem;
+      border-bottom: 1px solid var(--border-color-light, #eaf0f7);
+    }
+    .dashboard-orders-table .table td {
+      padding: 0.95rem 1.15rem;
+      font-size: 0.85rem;
+      border-bottom: 1px solid var(--border-color-light, #eaf0f7);
+      vertical-align: middle;
+    }
+    .dashboard-orders-table .table tbody tr:hover td {
+      background-color: color-mix(
+        in srgb,
+        var(--accent-color, #315cf6),
+        transparent 97%
+      );
+    }
+
+    .modal-backdrop.show {
+      opacity: 0.55;
+    }
+  </style>
 </AdminLayout>

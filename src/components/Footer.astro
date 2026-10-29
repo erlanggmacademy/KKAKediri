@@ -107,12 +107,13 @@ const currentYear = new Date().getFullYear();
 
         <div class="footer-wa-list">
           {
-            SITE_INFO.whatsappContacts.map((contact) => (
+            SITE_INFO.whatsappContacts.map((contact, idx) => (
               <a
                 href={`https://wa.me/${contact.number}?text=${encodeURIComponent(`Halo ${contact.name}, saya ingin bertanya seputar KKA Radar Kediri 2026.`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 class="footer-wa-card"
+                id={`footerWaCard${idx + 1}`}
               >
                 <div class="wa-icon-bubble shrink-0">
                   <svg
@@ -129,7 +130,7 @@ const currentYear = new Date().getFullYear();
                   <span class="wa-admin-label">
                     {contact.adminLabel || contact.name}
                   </span>
-                  <span class="wa-admin-number">{contact.display}</span>
+                  <span class="wa-admin-number" id={`footerWaNum${idx + 1}`}>{contact.display}</span>
                 </div>
               </a>
             ))
@@ -296,3 +297,43 @@ const currentYear = new Date().getFullYear();
     }
   }
 </style>
+
+<script>
+  function hydrateFooterWa() {
+    try {
+      const raw = localStorage.getItem('kka_admin_system_settings');
+      if (!raw) return;
+      const cfg = JSON.parse(raw);
+      if (cfg.wa1) {
+        let clean1 = cfg.wa1.replace(/[^0-9]/g, '');
+        if (clean1.startsWith('0')) clean1 = '62' + clean1.slice(1);
+        const card1 = document.getElementById('footerWaCard1') as HTMLAnchorElement | null;
+        const num1 = document.getElementById('footerWaNum1');
+        if (card1) card1.href = `https://wa.me/${clean1}?text=${encodeURIComponent('Halo Pak Endro, saya ingin bertanya seputar KKA Radar Kediri 2026.')}`;
+        if (num1) num1.textContent = cfg.wa1.includes('(') ? cfg.wa1 : `${cfg.wa1} (Pak Endro)`;
+      }
+      if (cfg.wa2) {
+        let clean2 = cfg.wa2.replace(/[^0-9]/g, '');
+        if (clean2.startsWith('0')) clean2 = '62' + clean2.slice(1);
+        const card2 = document.getElementById('footerWaCard2') as HTMLAnchorElement | null;
+        const num2 = document.getElementById('footerWaNum2');
+        if (card2) card2.href = `https://wa.me/${clean2}?text=${encodeURIComponent('Halo Mas Fajar, saya ingin bertanya seputar KKA Radar Kediri 2026.')}`;
+        if (num2) num2.textContent = cfg.wa2.includes('(') ? cfg.wa2 : `${cfg.wa2} (Mas Fajar)`;
+      }
+      if (cfg.wa3) {
+        let clean3 = cfg.wa3.replace(/[^0-9]/g, '');
+        if (clean3.startsWith('0')) clean3 = '62' + clean3.slice(1);
+        const card3 = document.getElementById('footerWaCard3') as HTMLAnchorElement | null;
+        const num3 = document.getElementById('footerWaNum3');
+        if (card3) card3.href = `https://wa.me/${clean3}?text=${encodeURIComponent('Halo Mas Wildan, saya ingin bertanya seputar KKA Radar Kediri 2026.')}`;
+        if (num3) num3.textContent = cfg.wa3.includes('(') ? cfg.wa3 : `${cfg.wa3} (Mas Wildan)`;
+      }
+    } catch (e) {}
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', hydrateFooterWa);
+  } else {
+    hydrateFooterWa();
+  }
+  document.addEventListener('astro:page-load', hydrateFooterWa);
+</script>

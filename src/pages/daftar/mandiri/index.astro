@@ -48,13 +48,14 @@ import { DISTRICTS } from '../../../data/competition';
                     width="50" 
                     height="50" 
                     style="object-fit: contain;" 
+                    data-district-slug={district.slug}
                   />
                 </div>
                 <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2.5 py-1 fs-8 fw-bold mb-2">
                   {district.regionName}
                 </span>
                 <h5 class="fw-bold text-kka-primary mb-2">{district.name}</h5>
-                <p class="text-secondary small mb-3">{district.description}</p>
+                <p class="text-secondary small mb-3" data-district-desc={district.slug}>{district.description}</p>
               </div>
 
               <a 
@@ -72,7 +73,40 @@ import { DISTRICTS } from '../../../data/competition';
 </BaseLayout>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
+  import { supabase } from '../../../lib/supabase';
+
+  async function syncMandiriWilayahData() {
+    // 1. Sync custom logo & description
+    const applyDistrictSettings = (settings: any) => {
+      if (!settings) return;
+      document.querySelectorAll('img[data-district-slug]').forEach((imgEl) => {
+        const slug = imgEl.getAttribute('data-district-slug');
+        if (slug && settings[slug]?.logoUrl) {
+          (imgEl as HTMLImageElement).src = settings[slug].logoUrl;
+        }
+      });
+      document.querySelectorAll('[data-district-desc]').forEach((descEl) => {
+        const slug = descEl.getAttribute('data-district-desc');
+        if (slug && settings[slug]?.description) {
+          descEl.textContent = settings[slug].description;
+        }
+      });
+    };
+
+    try {
+      const storedDist = localStorage.getItem('kka_admin_district_settings');
+      if (storedDist) applyDistrictSettings(JSON.parse(storedDist));
+    } catch (_) {}
+
+    try {
+      const { data: appData } = await supabase.from('app_settings').select('value').eq('key', 'district_settings').maybeSingle();
+      if (appData?.value) {
+        applyDistrictSettings(appData.value);
+        localStorage.setItem('kka_admin_district_settings', JSON.stringify(appData.value));
+      }
+    } catch (_) {}
+
+    // 2. Sync registration status
     try {
       const stored = localStorage.getItem('kka_registration_status_control');
       if (stored) {
@@ -96,7 +130,14 @@ import { DISTRICTS } from '../../../data/competition';
     } catch (e) {
       console.warn('Error reading reg control:', e);
     }
-  });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', syncMandiriWilayahData);
+  } else {
+    syncMandiriWilayahData();
+  }
+  document.addEventListener('astro:page-load', syncMandiriWilayahData);
 </script>
 
 <style>
