@@ -889,15 +889,37 @@ Panduan ini disusun terstruktur untuk kebutuhan rekaman video presentasi (*scree
            - Menghubungkan kotak tarif dan jadwal pendaftaran di seluruh 7 halaman wilayah regional (`/wilayah/kota-kediri`, dsb.) ke Supabase Cloud `system_settings` dan cache lokal.
            - Ketika admin mengaktifkan Gelombang 2 (atau gelombang lainnya) di `/admin/pengaturan`, halaman wilayah otomatis menampilkan nama gelombang aktif, badge status gelombang, nominal tarif (SD, SMP, SMA), dan periode pendaftaran yang sesuai secara realtime.
            - Halaman rincian jenjang pendidikan (`/jenjang/sd`, `/jenjang/smp`, `/jenjang/sma`) juga otomatis memperbarui tarif pendaftaran dan nama gelombang aktif secara realtime.
+        8. **Standardisasi Nomenklatur Kecamatan Kota di Kota Kediri (`Kecamatan Kota`)**:
+           - Menyelaraskan nama kecamatan di Kota Kediri dari yang semula `'Kediri'` menjadi `'Kota'` (sesuai nomenklatur resmi Kemendagri: Kecamatan Kota, Kecamatan Mojoroto, dan Kecamatan Pesantren).
+           - Memperbarui database lokal `src/data/schools.ts`, data mentah `DATA_SEKOLAH_KOTA_KEDIRI.json`, skrip migrasi `seed_schools_kota-kediri.sql`, dan meng-update secara langsung 87 data sekolah di tabel `schools` pada Cloud Supabase.
+           - Menambahkan duplikasi template resmi Excel `Kecamatan Kota.xlsx` serta memperbarui logika pencocokan file di `FormPendaftaranKolektif.astro` sehingga dropdown dan unduhan file template Excel berjalan sinkron sempurna.
+        9. **Penyertaan Waktu & Tanggal Registrasi pada Teks Konfirmasi WhatsApp Pendaftaran**:
+           - Menambahkan penanda waktu (*timestamp*) formal berbahasa Indonesia (`Hari, Tanggal Bulan Tahun | HH.mm WIB`) pada pesan konfirmasi WhatsApp yang digenerate oleh sistem pendaftaran mandiri (`FormPendaftaranMandiri.astro`) dan pendaftaran kolektif (`FormPendaftaranKolektif.astro`).
+           - Memastikan format pesan tetap bersih, profesional, dan bebas emoji sesuai standar korespondensi resmi KKA Radar Kediri.
+        10. **Implementasi Validasi Integritas Keunikan NISN (*Strict NISN Integrity Validation Engine*)**:
+           - **Latar Belakang & Kebutuhan Regulasi**: Sesuai ketentuan resmi KKA 2026, setiap siswa hanya berhak memiliki satu nomor kepesertaan yang sah. Sistem membutuhkan mekanisme penolakan otomatis yang ketat (*strict rejection*) bila ada nomor NISN yang didaftarkan berulang kali, baik karena ketidaksengajaan wali murid di form mandiri maupun kesalahan entri ganda pada template Excel kolektif sekolah.
+           - **Mesin Validasi Terpusat (`src/lib/registrationService.ts`)**:
+             - Menyediakan fungsi `checkNisnDuplicates(nisnList: string[])` dengan arsitektur dua lapis:
+               1. *Pemeriksaan Internal (Intra-Submission)*: Mendeteksi nomor NISN yang diulang di dalam satu formulir mandiri atau file Excel kolektif yang sama.
+               2. *Pemeriksaan Cloud Database (Supabase)*: Mengkueri tabel `participants` dalam batch 50 NISN dengan join ke tabel `registrations(kode, sekolah, status)`.
+               3. *Toleransi Status Ditolak*: Jika pendaftaran peserta sebelumnya berstatus `'ditolak'`, NISN tersebut secara otomatis diizinkan mendaftar kembali (*graceful re-registration*).
+           - **Integrasi Pendaftaran Mandiri (`src/components/FormPendaftaranMandiri.astro`)**:
+             - Validasi asinkron dijalankan sebelum transaksi pendaftaran diproses ke Supabase.
+             - Jika NISN duplikat ditemukan, pengiriman pendaftaran langsung dibatalkan, tombol submit dipulihkan, dan modal peringatan profesional `#modalNisnDuplicateNotice` muncul di layar.
+             - Modal menyajikan rincian lengkap: nomor NISN, nama peserta, asal sekolah, dan kode registrasi terdahulu, disertai tombol langsung untuk konfirmasi ke WhatsApp panitia.
+           - **Integrasi Pendaftaran Kolektif (`src/components/FormPendaftaranKolektif.astro`)**:
+             - *Deteksi Cepat Pratinjau Excel*: Begitu berkas Excel diunggah, tabel pratinjau langsung menyorot baris ber-NISN ganda dengan penanda merah (`table-danger`) dan badge `NISN Ganda di Excel`.
+             - *Pemeriksaan Komprehensif Pre-Submit*: Saat tombol submit ditekan, sistem memvalidasi seluruh NISN siswa ke database Supabase Cloud. Bila ditemukan satu atau lebih NISN yang telah terdaftar di database panitia, pendaftaran ditolak otomatis dan modal `#modalNisnDuplicateNoticeKolektif` ditampilkan dengan rincian data siswa bermasalah.
+             - Mencegah masuknya data sampah atau peserta fiktif ke database PostgreSQL dan Google Sheets panitia.
 
 ---
 
 ## 📊 Hasil Uji Build Terkini
 - Perintah: `npm run build`
 - Total Halaman Ter-generate: **46 halaman HTML statis + 1 file sitemap XML**
-- Waktu Build: **4.22 detik**
+- Waktu Build: **3.88 detik**
 - Status: **Berhasil 100% (0 Error, 0 Warning)**
-- Validasi: Konfigurasi gelombang (periode dan tarif SD/SMP/SMA), rekening Bank BRI resmi (0033-0100-3455-560 a.n. Heri Muda Setiawan), dan hotline WhatsApp panitia kini tersimpan permanen di Supabase Cloud serta terhidrasi secara realtime di seluruh portal publik (Mandiri, Kolektif, Kontak, dan Beranda).
+- Validasi: Seluruh form pendaftaran (Mandiri & Kolektif), modul pencarian sekolah admin (`/admin/sekolah`), konfirmasi pesan WhatsApp bertimestamp, dan mesin validasi keunikan NISN terintegrasi penuh secara realtime.
 
 
 

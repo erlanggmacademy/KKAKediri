@@ -1225,7 +1225,7 @@ export const SCHOOL_DATABASE: SchoolDatabase = {
   "kota-kediri": {
     "name": "Kota Kediri",
     "districts": {
-      "Kediri": {
+      "Kota": {
         "sd": [
           "MADRASAH IBTIDAIYAH MIFTAHUL FALAAH",
           "MIN 1 KOTA KEDIRI",

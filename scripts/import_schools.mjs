@@ -51,8 +51,8 @@ const KECAMATAN_CLEANUP = {
   'gondnang': 'Gondang',
   'kertosno': 'Kertosono',
   'patianworo': 'Patianrowo',
-  // Kota Kediri (Kecamatan Kota / Kediri)
-  'kota kediri': 'Kediri'
+  // Kota Kediri (Kecamatan Kota)
+  'kota kediri': 'Kota'
 };
 
 function normalizeJenjang(val) {

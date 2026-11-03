@@ -487,9 +487,71 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
   </div>
 </div>
 
+<!-- Modal Notifikasi Penolakan: NISN Duplikat / Sudah Terdaftar -->
+<div class="modal fade" id="modalNisnDuplicateNotice" tabindex="-1" aria-hidden="true" style="display: none;">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+      <!-- Modal Header -->
+      <div class="modal-header bg-danger text-white px-4 py-3 border-0">
+        <div class="d-flex align-items-center gap-2.5">
+          <div class="bg-white text-danger rounded-circle p-1.5 d-flex align-items-center justify-content-center shadow-xs" style="width: 32px; height: 32px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+          </div>
+          <div>
+            <h5 class="modal-title fw-bold fs-6 mb-0 text-white">Pendaftaran Ditolak: NISN Sudah Terdaftar</h5>
+            <span class="fs-9 text-white-50">Sistem Validasi Integritas Peserta KKA 2026</span>
+          </div>
+        </div>
+        <button type="button" class="btn-close btn-close-white" id="btnCloseNisnModalX" aria-label="Tutup"></button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body p-4">
+        <div class="text-secondary small mb-3 lh-base">
+          Sistem mendeteksi bahwa nomor NISN peserta berikut <strong>telah terdaftar sebelumnya</strong> pada pangkalan data resmi KKA Radar Kediri 2026. Sesuai regulasi kompetisi, <strong>satu siswa hanya berhak memiliki 1 nomor registrasi</strong>.
+        </div>
+
+        <!-- Container Rincian NISN Terdaftar -->
+        <div class="bg-light border border-danger-subtle rounded-3 p-3 mb-3" id="containerDuplicateNisnList">
+          <!-- Diisi secara dinamis oleh JavaScript -->
+        </div>
+
+        <!-- Alert Petunjuk -->
+        <div class="alert alert-warning py-2.5 px-3 rounded-3 small mb-0 d-flex align-items-start gap-2 border-0">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-warning shrink-0 mt-0.5">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <span class="text-dark">
+            Jika Anda merasa belum pernah mendaftar atau terjadi kesalahan penginputan nomor NISN, silakan hubungi <strong>Customer Service Panitia</strong> untuk bantuan verifikasi data.
+          </span>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer bg-light px-4 py-3 border-0 d-flex justify-content-between flex-wrap gap-2">
+        <button type="button" class="btn btn-outline-secondary px-3.5 py-2 rounded-3 fs-8 fw-semibold" id="btnCloseNisnModalBtn">
+          Periksa Kembali Formulir
+        </button>
+        <a href="https://wa.me/6281235508957?text=Halo%20Panitia%20KKA%202026%2C%20saya%20mengalami%20kendala%20NISN%20sudah%20terdaftar." target="_blank" class="btn btn-success px-3.5 py-2 rounded-3 fs-8 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs" id="btnHubungiPanitiaNisn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.364 2.76 1.057 3.96L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326z"/>
+          </svg>
+          <span>Hubungi Panitia via WA</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
   import { SCHOOL_DATABASE } from '../data/schools';
-  import { processRegistration } from '../lib/registrationService';
+  import { processRegistration, checkNisnDuplicates } from '../lib/registrationService';
   import { getActiveWave } from '../lib/pricing';
   import { supabase } from '../lib/supabase';
 
@@ -1031,6 +1093,26 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
           });
         });
 
+        // 1b. Validasi Keunikan NISN (Tolak Otomatis Jika Sudah Terdaftar)
+        btnSubmit.innerHTML = `
+          <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          Memverifikasi Keunikan NISN...
+        `;
+
+        const nisnList = studentsData.map(s => s.nisn);
+        const nisnCheck = await checkNisnDuplicates(nisnList);
+        if (!nisnCheck.valid) {
+          btnSubmit.disabled = false;
+          btnSubmit.innerHTML = originalBtnText;
+          showNisnDuplicateModal(nisnCheck);
+          return;
+        }
+
+        btnSubmit.innerHTML = `
+          <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          Menyimpan ke Database & Spreadsheet...
+        `;
+
         const totalBiayaVal = updatePricing();
         const randomCode = Math.floor(1000 + Math.random() * 9000);
         const regCode = `KKA26-M-${regionSlug.substring(0, 3).toUpperCase()}-${randomCode}`;
@@ -1072,9 +1154,22 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
           listContainer.appendChild(li);
         });
 
-        // Generate WhatsApp Link
+        // Generate WhatsApp Link with Registration Timestamp
+        const now = new Date();
+        const formattedDateTime = now.toLocaleDateString('id-ID', {
+          weekday: 'long',
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric'
+        }) + ' | ' + now.toLocaleTimeString('id-ID', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        }).replace(':', '.') + ' WIB';
+
         let waMessage = `*KONFIRMASI PENDAFTARAN MANDIRI KKA 2026*\n`;
         waMessage += `Halo Panitia KKA Radar Kediri,\nSaya mengonfirmasi pendaftaran mandiri dengan rincian berikut:\n\n`;
+        waMessage += `*Waktu Pendaftaran*: ${formattedDateTime}\n`;
         waMessage += `*Kode Registrasi*: ${regCode}\n`;
         waMessage += `*Wilayah*: ${regionName}\n`;
         waMessage += `*Kecamatan*: Kecamatan ${kec}\n`;
@@ -1166,6 +1261,81 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
       });
     });
 
+    // Modal Duplicate NISN Handler
+    function showNisnDuplicateModal(result: any) {
+      const modalEl = document.getElementById('modalNisnDuplicateNotice');
+      const listContainer = document.getElementById('containerDuplicateNisnList');
+      const btnHubungi = document.getElementById('btnHubungiPanitiaNisn') as HTMLAnchorElement | null;
+      if (!modalEl || !listContainer) return;
+
+      listContainer.innerHTML = '';
+
+      if (btnHubungi) {
+        const waNum = currentAdminWa || '6281235508957';
+        btnHubungi.href = `https://wa.me/${waNum}?text=${encodeURIComponent('Halo Panitia KKA 2026, saya mengalami kendala nomor NISN sudah terdaftar pada sistem pendaftaran.')}`;
+      }
+
+      if (result.internalDuplicates && result.internalDuplicates.length > 0) {
+        const div = document.createElement('div');
+        div.className = 'text-danger fw-bold fs-8 mb-2';
+        div.textContent = 'Duplikasi Nomor NISN di Formulir:';
+        listContainer.appendChild(div);
+
+        result.internalDuplicates.forEach((n: string) => {
+          const item = document.createElement('div');
+          item.className = 'p-2 bg-white rounded border border-danger-subtle mb-1.5 fs-8 text-dark';
+          item.innerHTML = `<span class="badge bg-danger me-1.5">GANDA</span> <strong>NISN: ${n}</strong> dimasukkan lebih dari 1 kali dalam formulir ini.`;
+          listContainer.appendChild(item);
+        });
+      }
+
+      if (result.dbDuplicates && result.dbDuplicates.length > 0) {
+        const div = document.createElement('div');
+        div.className = 'text-danger fw-bold fs-8 mb-2';
+        div.textContent = 'Rincian NISN yang Sudah Terdaftar di Database:';
+        listContainer.appendChild(div);
+
+        result.dbDuplicates.forEach((d: any) => {
+          const item = document.createElement('div');
+          item.className = 'p-2.5 bg-white rounded-3 border border-danger-subtle mb-2 text-dark fs-8 shadow-2xs';
+          item.innerHTML = `
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="font-monospace fw-bold text-danger fs-8">NISN: ${d.nisn}</span>
+              <span class="badge bg-danger-subtle text-danger border border-danger-subtle fs-9 font-monospace">${d.kode}</span>
+            </div>
+            <div class="fw-bold text-dark mb-0.5">${d.nama}</div>
+            <div class="text-secondary fs-9">${d.sekolah}</div>
+          `;
+          listContainer.appendChild(item);
+        });
+      }
+
+      modalEl.classList.add('show');
+      modalEl.style.display = 'block';
+      document.body.classList.add('modal-open');
+      let back = document.getElementById('modalCustomBackdropNisn');
+      if (!back) {
+        back = document.createElement('div');
+        back.id = 'modalCustomBackdropNisn';
+        back.className = 'modal-backdrop fade show';
+        document.body.appendChild(back);
+      }
+    }
+
+    function closeNisnDuplicateModal() {
+      const modalEl = document.getElementById('modalNisnDuplicateNotice');
+      if (modalEl) {
+        modalEl.classList.remove('show');
+        modalEl.style.display = 'none';
+        document.body.classList.remove('modal-open');
+      }
+      const back = document.getElementById('modalCustomBackdropNisn');
+      if (back) back.remove();
+    }
+
+    document.getElementById('btnCloseNisnModalX')?.addEventListener('click', closeNisnDuplicateModal);
+    document.getElementById('btnCloseNisnModalBtn')?.addEventListener('click', closeNisnDuplicateModal);
+
     // Trigger Initial State if defaultDistrictSlug is provided
     const initRegion = (document.getElementById('hiddenWilayahValue') as HTMLInputElement)?.value || selectWilayah.value;
     if (initRegion) {
@@ -1177,6 +1347,8 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
 
 <style>
   .fs-8 { font-size: 0.78rem; }
+  .fs-9 { font-size: 0.72rem; }
+  .shadow-2xs { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
   .max-w-4xl { max-width: 860px; }
   .py-2\.5 { padding-top: 0.65rem; padding-bottom: 0.65rem; }
   

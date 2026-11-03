@@ -159,3 +159,102 @@ export async function processRegistration(data: RegistrationData): Promise<{ suc
 
   return { success: true, kode: data.kode };
 }
+
+export interface DuplicateNisnInfo {
+  nisn: string;
+  nama: string;
+  sekolah: string;
+  kode: string;
+  status: string;
+}
+
+export interface NisnValidationResult {
+  valid: boolean;
+  internalDuplicates: string[];
+  dbDuplicates: DuplicateNisnInfo[];
+  message: string;
+}
+
+/**
+ * Validasi Keunikan NISN:
+ * 1. Mencegah duplikasi di dalam satu form / berkas Excel yang sama
+ * 2. Mencegah duplikasi terhadap data peserta yang sudah ada di Supabase Cloud
+ */
+export async function checkNisnDuplicates(nisnList: string[]): Promise<NisnValidationResult> {
+  const cleanList = nisnList
+    .map(n => String(n || '').trim())
+    .filter(n => n.length > 0);
+
+  // 1. Cek duplikasi internal dalam formulir / berkas yang diunggah
+  const seen = new Set<string>();
+  const internalDups = new Set<string>();
+  cleanList.forEach(n => {
+    if (seen.has(n)) {
+      internalDups.add(n);
+    } else {
+      seen.add(n);
+    }
+  });
+
+  if (internalDups.size > 0) {
+    const dupArr = Array.from(internalDups);
+    return {
+      valid: false,
+      internalDuplicates: dupArr,
+      dbDuplicates: [],
+      message: `Terdapat ${dupArr.length} nomor NISN ganda dalam pengisian formulir/berkas Anda: ${dupArr.join(', ')}. Setiap peserta hanya boleh didaftarkan 1 kali.`
+    };
+  }
+
+  if (cleanList.length === 0) {
+    return { valid: true, internalDuplicates: [], dbDuplicates: [], message: '' };
+  }
+
+  // 2. Cek ke Database Supabase Cloud (tabel participants)
+  try {
+    const chunkSize = 50;
+    const dbDuplicates: DuplicateNisnInfo[] = [];
+
+    for (let i = 0; i < cleanList.length; i += chunkSize) {
+      const chunk = cleanList.slice(i, i + chunkSize);
+      const { data, error } = await supabase
+        .from('participants')
+        .select('nisn, nama, registrations(kode, sekolah, status)')
+        .in('nisn', chunk);
+
+      if (!error && data && data.length > 0) {
+        data.forEach((row: any) => {
+          const reg = Array.isArray(row.registrations) ? row.registrations[0] : row.registrations;
+          // Abaikan jika pendaftaran sebelumnya berstatus 'ditolak'
+          if (reg && reg.status === 'ditolak') return;
+
+          dbDuplicates.push({
+            nisn: row.nisn,
+            nama: row.nama || '-',
+            sekolah: reg?.sekolah || '-',
+            kode: reg?.kode || '-',
+            status: reg?.status || 'menunggu'
+          });
+        });
+      }
+    }
+
+    if (dbDuplicates.length > 0) {
+      return {
+        valid: false,
+        internalDuplicates: [],
+        dbDuplicates,
+        message: `Ditemukan ${dbDuplicates.length} nomor NISN yang sudah terdaftar di database resmi KKA Radar Kediri 2026. Setiap siswa hanya dapat didaftarkan satu kali.`
+      };
+    }
+  } catch (err) {
+    console.warn('[Supabase] Gagal memeriksa keunikan NISN:', err);
+  }
+
+  return {
+    valid: true,
+    internalDuplicates: [],
+    dbDuplicates: [],
+    message: ''
+  };
+}

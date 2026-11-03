@@ -593,12 +593,74 @@ const kecamatanList = currentRegionSchools ? Object.keys(currentRegionSchools.di
 
 </div>
 
+<!-- Modal Notifikasi Penolakan: NISN Duplikat / Sudah Terdaftar (Kolektif) -->
+<div class="modal fade" id="modalNisnDuplicateNoticeKolektif" tabindex="-1" aria-hidden="true" style="display: none;">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+      <!-- Modal Header -->
+      <div class="modal-header bg-danger text-white px-4 py-3 border-0">
+        <div class="d-flex align-items-center gap-2.5">
+          <div class="bg-white text-danger rounded-circle p-1.5 d-flex align-items-center justify-content-center shadow-xs" style="width: 32px; height: 32px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+          </div>
+          <div>
+            <h5 class="modal-title fw-bold fs-6 mb-0 text-white">Pendaftaran Kolektif Ditolak: NISN Duplikat</h5>
+            <span class="fs-9 text-white-50">Sistem Validasi Integritas Peserta KKA 2026</span>
+          </div>
+        </div>
+        <button type="button" class="btn-close btn-close-white" id="btnCloseNisnModalXKolektif" aria-label="Tutup"></button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body p-4">
+        <div class="text-secondary small mb-3 lh-base">
+          Sistem mendeteksi bahwa nomor NISN peserta dalam berkas pendaftaran ini <strong>tercatat ganda atau telah terdaftar sebelumnya</strong> pada pangkalan data resmi KKA Radar Kediri 2026. Sesuai regulasi kompetisi, <strong>satu siswa hanya berhak memiliki 1 nomor registrasi</strong>.
+        </div>
+
+        <!-- Container Rincian NISN Terdaftar -->
+        <div class="bg-light border border-danger-subtle rounded-3 p-3 mb-3" id="containerDuplicateNisnListKolektif" style="max-height: 280px; overflow-y: auto;">
+          <!-- Diisi secara dinamis oleh JavaScript -->
+        </div>
+
+        <!-- Alert Petunjuk -->
+        <div class="alert alert-warning py-2.5 px-3 rounded-3 small mb-0 d-flex align-items-start gap-2 border-0">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-warning shrink-0 mt-0.5">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <span class="text-dark">
+            Silakan perbaiki nomor NISN pada berkas Excel Anda lalu unggah ulang, atau hubungi <strong>Customer Service Panitia</strong> jika membutuhkan bantuan konfirmasi data.
+          </span>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer bg-light px-4 py-3 border-0 d-flex justify-content-between flex-wrap gap-2">
+        <button type="button" class="btn btn-outline-secondary px-3.5 py-2 rounded-3 fs-8 fw-semibold" id="btnCloseNisnModalBtnKolektif">
+          Perbaiki Berkas Excel
+        </button>
+        <a href="https://wa.me/6281235508957?text=Halo%20Panitia%20KKA%202026%2C%20sekolah%20kami%20mengalami%20kendala%20NISN%20sudah%20terdaftar%20pada%20pendaftaran%20kolektif." target="_blank" class="btn btn-success px-3.5 py-2 rounded-3 fs-8 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs" id="btnHubungiPanitiaNisnKolektif">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.364 2.76 1.057 3.96L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326z"/>
+          </svg>
+          <span>Hubungi Panitia via WA</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Client-side SheetJS Script for Real-time Excel Parsing -->
 <script is:inline src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
 <script>
   import { SCHOOL_DATABASE } from '../data/schools';
-  import { processRegistration } from '../lib/registrationService';
+  import { processRegistration, checkNisnDuplicates } from '../lib/registrationService';
   import { getActiveWave } from '../lib/pricing';
   import { supabase } from '../lib/supabase';
 
@@ -913,11 +975,16 @@ const kecamatanList = currentRegionSchools ? Object.keys(currentRegionSchools.di
         const jenjangSlug = jenjangVal === 'SMP-MTs' ? 'SMP-MTS' : jenjangVal;
 
         // Build list of candidate file names (supporting SMP-MTS / SMP-MTs and Kota Kediri alias)
+        const isKotaKediriKec = (kecVal === 'Kota' || kecVal === 'Kediri');
         const candidateFiles = [
           `KKA Kolektif ${jenjangVal} Kecamatan ${kecVal}.xlsx`,
           `KKA Kolektif ${jenjangSlug} Kecamatan ${kecVal}.xlsx`,
-          kecVal === 'Kediri' ? `KKA Kolektif ${jenjangVal} Kecamatan Kota Kediri.xlsx` : null,
-          kecVal === 'Kediri' ? `KKA Kolektif ${jenjangSlug} Kecamatan Kota Kediri.xlsx` : null
+          isKotaKediriKec ? `KKA Kolektif ${jenjangVal} Kecamatan Kota Kediri.xlsx` : null,
+          isKotaKediriKec ? `KKA Kolektif ${jenjangSlug} Kecamatan Kota Kediri.xlsx` : null,
+          isKotaKediriKec ? `KKA Kolektif ${jenjangVal} Kecamatan Kota.xlsx` : null,
+          isKotaKediriKec ? `KKA Kolektif ${jenjangSlug} Kecamatan Kota.xlsx` : null,
+          isKotaKediriKec ? `KKA Kolektif ${jenjangVal} Kecamatan Kediri.xlsx` : null,
+          isKotaKediriKec ? `KKA Kolektif ${jenjangSlug} Kecamatan Kediri.xlsx` : null
         ].filter(Boolean) as string[];
 
         // Candidate subfolder names
@@ -1305,15 +1372,30 @@ const kecamatanList = currentRegionSchools ? Object.keys(currentRegionSchools.di
       if (displayJenjang) displayJenjang.textContent = schoolMeta.jenjang;
       if (displayCountSiswa) displayCountSiswa.textContent = String(parsedStudents.length);
 
+      // Check for duplicate NISN inside the file
+      const nisnCounts: Record<string, number> = {};
+      parsedStudents.forEach(s => {
+        const cleanN = s.nisn.replace(/[^0-9]/g, '');
+        if (cleanN) {
+          nisnCounts[cleanN] = (nisnCounts[cleanN] || 0) + 1;
+        }
+      });
+
       // Populate Table Body
       if (displayTableBody) {
         displayTableBody.innerHTML = '';
         parsedStudents.forEach(s => {
+          const cleanN = s.nisn.replace(/[^0-9]/g, '');
+          const isDup = cleanN && (nisnCounts[cleanN] > 1);
           const tr = document.createElement('tr');
+          if (isDup) tr.className = 'table-danger';
           tr.innerHTML = `
             <td class="ps-3 text-center text-muted fw-semibold">${s.no}</td>
-            <td class="fw-bold text-dark">${s.nama}</td>
-            <td class="font-monospace">${s.nisn}</td>
+            <td class="fw-bold text-dark">
+              ${s.nama}
+              ${isDup ? '<span class="badge bg-danger ms-1.5 fs-9">NISN Ganda di Excel</span>' : ''}
+            </td>
+            <td class="font-monospace ${isDup ? 'text-danger fw-bold' : ''}">${s.nisn}</td>
             <td>${s.gender}</td>
             <td>${s.kelas}</td>
           `;
@@ -1404,12 +1486,28 @@ const kecamatanList = currentRegionSchools ? Object.keys(currentRegionSchools.di
         const btnSubmit = document.getElementById('btnSubmitKolektif') as HTMLButtonElement;
         const originalBtnText = btnSubmit.innerHTML;
         btnSubmit.disabled = true;
-        btnSubmit.innerHTML = `
-          <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-          Menyimpan ke Database & Spreadsheet...
-        `;
 
         try {
+          // 1b. Validasi Keunikan NISN Seluruh Peserta (Tolak Otomatis Jika Sudah Terdaftar)
+          btnSubmit.innerHTML = `
+            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            Memverifikasi Keunikan NISN Peserta...
+          `;
+
+          const nisnList = parsedStudents.map(s => s.nisn);
+          const nisnCheck = await checkNisnDuplicates(nisnList);
+          if (!nisnCheck.valid) {
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = originalBtnText;
+            showNisnDuplicateModalKolektif(nisnCheck);
+            return;
+          }
+
+          btnSubmit.innerHTML = `
+            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            Menyimpan ke Database & Spreadsheet...
+          `;
+
           const randomCode = Math.floor(1000 + Math.random() * 9000);
           const distCode = activeDistrictSlug.includes('kota') ? 'KDR' : (activeDistrictSlug.includes('nganjuk') ? 'NGJ' : 'KAB');
           const regCode = `KKA26-K-${distCode}-${randomCode}`;
@@ -1454,15 +1552,28 @@ const kecamatanList = currentRegionSchools ? Object.keys(currentRegionSchools.di
           const summaryTotalBayar = document.getElementById('summaryTotalBayar');
           if (summaryTotalBayar && rincianTotalBayar) summaryTotalBayar.textContent = rincianTotalBayar.textContent;
 
-          // Prepare WhatsApp message
+          // Prepare WhatsApp message with Registration Timestamp
+          const now = new Date();
+          const formattedDateTime = now.toLocaleDateString('id-ID', {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+          }) + ' | ' + now.toLocaleTimeString('id-ID', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+          }).replace(':', '.') + ' WIB';
+
           let msg = `*KONFIRMASI PENDAFTARAN KOLEKTIF KKA 2026*\n`;
           msg += `Halo Panitia KKA Radar Kediri,\nSaya mengonfirmasi pendaftaran kolektif sekolah via berkas Excel:\n\n`;
+          msg += `*Waktu Pendaftaran*: ${formattedDateTime}\n`;
           msg += `*Kode Pendaftaran*: ${regCode}\n`;
           msg += `*Nama Sekolah*: ${schoolMeta.namaSekolah}\n`;
           msg += `*Guru Pembina / PIC*: ${schoolMeta.picName} (${schoolMeta.picJabatan})\n`;
           msg += `*WhatsApp PIC*: ${schoolMeta.waPic}\n`;
           msg += `*Wilayah*: ${schoolMeta.wilayah}\n`;
-          msg += `*Kecamatan*: ${schoolMeta.kecamatan || '-'}\n`;
+          msg += `*Kecamatan*: ${schoolMeta.kecamatan ? (schoolMeta.kecamatan.startsWith('Kecamatan') ? schoolMeta.kecamatan : `Kecamatan ${schoolMeta.kecamatan}`) : '-'}\n`;
           msg += `*Jenjang*: ${schoolMeta.jenjang}\n`;
           msg += `*Jumlah Peserta*: ${parsedStudents.length} Siswa\n`;
           msg += `*Total Pembayaran*: ${rincianTotalBayar ? rincianTotalBayar.textContent : '-'}\n\n`;
@@ -1549,11 +1660,88 @@ const kecamatanList = currentRegionSchools ? Object.keys(currentRegionSchools.di
       });
     }
 
+    // Modal Duplicate NISN Handler (Kolektif)
+    function showNisnDuplicateModalKolektif(result: any) {
+      const modalEl = document.getElementById('modalNisnDuplicateNoticeKolektif');
+      const listContainer = document.getElementById('containerDuplicateNisnListKolektif');
+      const btnHubungi = document.getElementById('btnHubungiPanitiaNisnKolektif') as HTMLAnchorElement | null;
+      if (!modalEl || !listContainer) return;
+
+      listContainer.innerHTML = '';
+
+      if (btnHubungi) {
+        const waNum = currentAdminWa || '6281235508957';
+        btnHubungi.href = `https://wa.me/${waNum}?text=${encodeURIComponent('Halo Panitia KKA 2026, sekolah kami mengalami kendala nomor NISN peserta sudah terdaftar pada pendaftaran kolektif.')}`;
+      }
+
+      if (result.internalDuplicates && result.internalDuplicates.length > 0) {
+        const div = document.createElement('div');
+        div.className = 'text-danger fw-bold fs-8 mb-2';
+        div.textContent = 'Duplikasi Nomor NISN di Dalam File Excel:';
+        listContainer.appendChild(div);
+
+        result.internalDuplicates.forEach((n: string) => {
+          const item = document.createElement('div');
+          item.className = 'p-2 bg-white rounded border border-danger-subtle mb-1.5 fs-8 text-dark';
+          item.innerHTML = `<span class="badge bg-danger me-1.5">GANDA</span> <strong>NISN: ${n}</strong> terdata ganda di dalam baris Excel yang diunggah.`;
+          listContainer.appendChild(item);
+        });
+      }
+
+      if (result.dbDuplicates && result.dbDuplicates.length > 0) {
+        const div = document.createElement('div');
+        div.className = 'text-danger fw-bold fs-8 mb-2 mt-2';
+        div.textContent = 'Rincian NISN yang Sudah Terdaftar di Database Panitia:';
+        listContainer.appendChild(div);
+
+        result.dbDuplicates.forEach((d: any) => {
+          const item = document.createElement('div');
+          item.className = 'p-2.5 bg-white rounded-3 border border-danger-subtle mb-2 text-dark fs-8 shadow-2xs';
+          item.innerHTML = `
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="font-monospace fw-bold text-danger fs-8">NISN: ${d.nisn}</span>
+              <span class="badge bg-danger-subtle text-danger border border-danger-subtle fs-9 font-monospace">${d.kode}</span>
+            </div>
+            <div class="fw-bold text-dark mb-0.5">${d.nama}</div>
+            <div class="text-secondary fs-9">${d.sekolah}</div>
+          `;
+          listContainer.appendChild(item);
+        });
+      }
+
+      modalEl.classList.add('show');
+      modalEl.style.display = 'block';
+      document.body.classList.add('modal-open');
+      let back = document.getElementById('modalCustomBackdropNisnKolektif');
+      if (!back) {
+        back = document.createElement('div');
+        back.id = 'modalCustomBackdropNisnKolektif';
+        back.className = 'modal-backdrop fade show';
+        document.body.appendChild(back);
+      }
+    }
+
+    function closeNisnDuplicateModalKolektif() {
+      const modalEl = document.getElementById('modalNisnDuplicateNoticeKolektif');
+      if (modalEl) {
+        modalEl.classList.remove('show');
+        modalEl.style.display = 'none';
+        document.body.classList.remove('modal-open');
+      }
+      const back = document.getElementById('modalCustomBackdropNisnKolektif');
+      if (back) back.remove();
+    }
+
+    document.getElementById('btnCloseNisnModalXKolektif')?.addEventListener('click', closeNisnDuplicateModalKolektif);
+    document.getElementById('btnCloseNisnModalBtnKolektif')?.addEventListener('click', closeNisnDuplicateModalKolektif);
+
   });
 </script>
 
 <style>
   .fs-8 { font-size: 0.78rem; }
+  .fs-9 { font-size: 0.72rem; }
+  .shadow-2xs { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
   .max-w-4xl { max-width: 860px; }
 
   .bank-account-card {
