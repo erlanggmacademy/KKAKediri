@@ -122,12 +122,25 @@ const currentWave = WAVES.find((w) => w.isActive) || WAVES[0];
               <li class="d-flex gap-2.5 align-items-start">
                 <span class="p-1.5 rounded-2 bg-light border text-primary mt-0.5">
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                  </svg>
+                </span>
+                <div>
+                  <strong>Metode Seleksi Penyisihan:</strong><br />
+                  <span class="fw-semibold text-dark">CBT Daring (Smartphone/PC)</span>
+                </div>
+              </li>
+              <li class="d-flex gap-2.5 align-items-start">
+                <span class="p-1.5 rounded-2 bg-light border text-primary mt-0.5">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                     <circle cx="12" cy="10" r="3"></circle>
                   </svg>
                 </span>
                 <div>
-                  <strong>Lokasi Venue CBT:</strong><br />
+                  <strong>Venue Grand Final & Sekretariat:</strong><br />
                   <span id="publicVenueName" class="fw-semibold text-dark">Memuat venue...</span>
                 </div>
               </li>
@@ -141,7 +154,7 @@ const currentWave = WAVES.find((w) => w.isActive) || WAVES[0];
                   </svg>
                 </span>
                 <div>
-                  <strong>Kapasitas Kuota CBT:</strong><br />
+                  <strong>Kapasitas Kuota Peserta:</strong><br />
                   <span id="publicQuotaInfo" class="fw-semibold text-primary font-monospace">1.000 Peserta</span>
                 </div>
               </li>

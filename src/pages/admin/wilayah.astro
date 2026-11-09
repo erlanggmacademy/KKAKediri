@@ -9,9 +9,9 @@ import { DISTRICTS, REGIONS } from '../../data/competition';
     <div class="dashboard-hero mb-4">
       <div class="dashboard-hero-copy">
         <span class="dashboard-eyebrow">PENGATURAN REGIONAL &bull; KKA 2026</span>
-        <h1>Kelola Wilayah & Kuota CBT</h1>
+        <h1>Kelola Wilayah & Kuota Peserta</h1>
         <p>
-          Atur informasi 7 wilayah se-Karesidenan Kediri, lokasi venue ujian CBT Neutron, batas kuota peserta, kontak PIC panitia lokal, dan status pendaftaran publik.
+          Atur informasi 7 wilayah se-Karesidenan Kediri, venue Grand Final & sekretariat, batas kuota peserta, kontak PIC panitia lokal, dan status pendaftaran publik.
         </p>
       </div>
 
@@ -38,7 +38,7 @@ import { DISTRICTS, REGIONS } from '../../data/competition';
             </div>
             <div class="dashboard-panel-body p-3">
               <h3 class="h6 fw-bold text-dark mb-1">{reg.description}</h3>
-              <p class="fs-9 text-muted mb-0">Cakupan kompetisi & babak penyisihan CBT terpadu.</p>
+              <p class="fs-9 text-muted mb-0">Cakupan kompetisi, CBT daring & Grand Final.</p>
             </div>
           </div>
         </div>
@@ -64,7 +64,7 @@ import { DISTRICTS, REGIONS } from '../../data/competition';
             <tr>
               <th class="ps-4 py-3 text-nowrap" style="width: 50px;">No</th>
               <th class="py-3 text-nowrap">Wilayah & Region</th>
-              <th class="py-3 text-nowrap">Lokasi Venue Tes CBT</th>
+              <th class="py-3 text-nowrap">Venue Grand Final & Sekretariat</th>
               <th class="py-3 text-nowrap">Kuota Maksimal</th>
               <th class="py-3 text-nowrap">Kontak PIC / Hotline</th>
               <th class="py-3 text-nowrap">Status Pendaftaran</th>
@@ -136,9 +136,9 @@ import { DISTRICTS, REGIONS } from '../../data/competition';
                 </div>
               </div>
 
-              <!-- Lokasi Venue CBT -->
+              <!-- Venue Grand Final & Sekretariat -->
               <div class="col-md-6">
-                <label class="form-label fw-bold fs-8 text-dark">Lokasi Venue CBT <span class="text-danger">*</span></label>
+                <label class="form-label fw-bold fs-8 text-dark">Venue Grand Final & Sekretariat <span class="text-danger">*</span></label>
                 <div class="input-group input-group-sm">
                   <span class="input-group-text bg-light text-muted"><i class="bi bi-building"></i></span>
                   <input type="text" class="form-control fs-8 py-2" id="editVenueName" placeholder="Contoh: Gedung Hall Bagawanta Bari" required />
@@ -386,7 +386,7 @@ import { DISTRICTS, REGIONS } from '../../data/competition';
           </td>
           <td>
             <div class="fw-semibold text-dark text-truncate fs-8" style="max-width: 240px;">${custom.venue}</div>
-            <div class="fs-9 text-muted">Standar CBT Neutron</div>
+            <div class="fs-9 text-muted">Venue Grand Final & Sekretariat</div>
           </td>
           <td class="text-nowrap font-monospace fw-bold text-primary fs-8">
             ${custom.quota} Peserta
