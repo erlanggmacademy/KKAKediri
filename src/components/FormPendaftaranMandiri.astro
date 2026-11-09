@@ -58,18 +58,18 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
         <h3 class="h5 fw-bold text-dark mb-3">1. Data Sekolah & Penanggung Jawab</h3>
         
         <div class="row g-3">
-          <!-- Wilayah Sekolah -->
+          <!-- Kota/Kabupaten Sekolah -->
           <div class="col-md-6">
             <div class="d-flex align-items-center justify-content-between mb-1">
               <label for="selectWilayah" class="form-label small fw-semibold text-dark mb-0">
-                Wilayah Sekolah <span class="text-danger">*</span>
+                Kota/Kabupaten <span class="text-danger">*</span>
               </label>
               {defaultDistrictSlug && (
-                <a href="/daftar/mandiri" class="text-decoration-none small text-primary fw-semibold d-inline-flex align-items-center gap-1" title="Pilih wilayah kabupaten/kota lain">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <a href="/daftar/mandiri" class="text-decoration-none small text-primary fw-semibold d-inline-flex align-items-center gap-1" title="Pilih kota/kabupaten lain">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M7 16l-4-4m0 0l4-4m-4 4h18m-7 4l4-4m0 0l-4-4"/>
                   </svg>
-                  Ganti Wilayah
+                  Ganti Kota/Kabupaten
                 </a>
               )}
             </div>
@@ -79,7 +79,7 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
               disabled={Boolean(defaultDistrictSlug)}
               required
             >
-              <option value="">-- Pilih Wilayah / Kabupaten / Kota --</option>
+              <option value="">-- Pilih Kota / Kabupaten --</option>
               {regionsList.map(r => (
                 <option value={r.slug} selected={r.slug === defaultDistrictSlug}>
                   {r.name}
@@ -93,10 +93,10 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                   <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                 </svg>
-                <span>Terkunci sesuai wilayah pendaftaran terpilih.</span>
+                <span>Terkunci sesuai kota/kabupaten pendaftaran terpilih.</span>
               </div>
             )}
-            <div class="invalid-feedback">Silakan pilih wilayah sekolah.</div>
+            <div class="invalid-feedback">Silakan pilih kota/kabupaten sekolah.</div>
           </div>
 
           <!-- Kecamatan Sekolah -->
@@ -168,8 +168,11 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
 
       <!-- 2. Data Peserta -->
       <div class="form-section mb-4 pb-2">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <h3 class="h5 fw-bold text-dark mb-0">2. Data Peserta</h3>
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+          <div>
+            <h3 class="h5 fw-bold text-dark mb-0">2. Data Peserta</h3>
+            <span class="text-muted small">Maksimal 5 siswa per formulir mandiri (Kolektif untuk &gt; 5 siswa).</span>
+          </div>
           <button 
             type="button" 
             id="btnAddStudent" 
@@ -180,8 +183,20 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
               <line x1="12" y1="8" x2="12" y2="16"/>
               <line x1="8" y1="12" x2="16" y2="12"/>
             </svg>
-            Tambah Siswa
+            <span id="btnAddStudentText">Tambah Siswa</span>
           </button>
+        </div>
+
+        <!-- Alert Batas Maksimal 5 Siswa -->
+        <div id="mandiriMaxNotice" class="alert alert-info border-info-subtle py-2 px-3 small rounded-3 d-none mb-3 d-flex align-items-center gap-2">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-info flex-shrink-0">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          <div>
+            <strong>Batas Maksimal 5 Peserta:</strong> Jika ingin mendaftarkan lebih dari 5 siswa, pihak sekolah disarankan menggunakan <a href="/daftar/kolektif" class="fw-bold alert-link">Pendaftaran Kolektif (Unggah Berkas Excel)</a>.
+          </div>
         </div>
 
         <!-- Student Cards Container -->
@@ -917,9 +932,13 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
       }
     });
 
+    const MAX_STUDENTS_MANDIRI = 5;
+
     // 8. Re-index Student Cards
     function reindexStudents() {
       const cards = studentsContainer.querySelectorAll('.student-item-card');
+      const count = cards.length;
+
       cards.forEach((card, idx) => {
         const index = idx + 1;
         card.setAttribute('data-index', String(index));
@@ -935,12 +954,32 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
           }
         }
       });
+
+      // Kontrol Batas Maksimal 5 Peserta
+      const maxNotice = document.getElementById('mandiriMaxNotice');
+      if (btnAddStudent) {
+        if (count >= MAX_STUDENTS_MANDIRI) {
+          btnAddStudent.disabled = true;
+          btnAddStudent.classList.add('disabled', 'opacity-50');
+          btnAddStudent.setAttribute('title', `Maksimal ${MAX_STUDENTS_MANDIRI} peserta per pendaftaran mandiri.`);
+          if (maxNotice) maxNotice.classList.remove('d-none');
+        } else {
+          btnAddStudent.disabled = false;
+          btnAddStudent.classList.remove('disabled', 'opacity-50');
+          btnAddStudent.removeAttribute('title');
+          if (maxNotice) maxNotice.classList.add('d-none');
+        }
+      }
+
       updatePricing();
     }
 
     // 9. Add Student Card
     btnAddStudent.addEventListener('click', () => {
       const currentCards = studentsContainer.querySelectorAll('.student-item-card');
+      if (currentCards.length >= MAX_STUDENTS_MANDIRI) {
+        return;
+      }
       const newIndex = currentCards.length + 1;
       const jenjang = selectJenjang.value;
 
@@ -1092,6 +1131,13 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
             sClass
           });
         });
+
+        if (studentsData.length > MAX_STUDENTS_MANDIRI) {
+          alert(`Maksimal ${MAX_STUDENTS_MANDIRI} peserta untuk pendaftaran mandiri. Silakan gunakan pendaftaran kolektif.`);
+          btnSubmit.disabled = false;
+          btnSubmit.innerHTML = originalBtnText;
+          return;
+        }
 
         // 1b. Validasi Keunikan NISN (Tolak Otomatis Jika Sudah Terdaftar)
         btnSubmit.innerHTML = `

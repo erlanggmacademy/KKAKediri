@@ -911,15 +911,18 @@ Panduan ini disusun terstruktur untuk kebutuhan rekaman video presentasi (*scree
              - *Deteksi Cepat Pratinjau Excel*: Begitu berkas Excel diunggah, tabel pratinjau langsung menyorot baris ber-NISN ganda dengan penanda merah (`table-danger`) dan badge `NISN Ganda di Excel`.
              - *Pemeriksaan Komprehensif Pre-Submit*: Saat tombol submit ditekan, sistem memvalidasi seluruh NISN siswa ke database Supabase Cloud. Bila ditemukan satu atau lebih NISN yang telah terdaftar di database panitia, pendaftaran ditolak otomatis dan modal `#modalNisnDuplicateNoticeKolektif` ditampilkan dengan rincian data siswa bermasalah.
              - Mencegah masuknya data sampah atau peserta fiktif ke database PostgreSQL dan Google Sheets panitia.
+        11. **Pembaruan Label Nomenklatur Wilayah Administrasi (`Kota/Kabupaten`)**:
+            - Menyelaraskan label formulir dari yang semula `'Wilayah Sekolah *'` menjadi `'Kota/Kabupaten *'` pada komponen `FormPendaftaranMandiri.astro` (termasuk tombol tautan `'Ganti Kota/Kabupaten'`, opsi dropdown, serta pesan validasi).
+            - Menyelaraskan teks rangkuman data sekolah pada `FormPendaftaranKolektif.astro` menjadi `'Kota/Kabupaten'` agar lebih baku, presisi, dan intuitif bagi para pendaftar.
 
 ---
 
 ## 📊 Hasil Uji Build Terkini
 - Perintah: `npm run build`
 - Total Halaman Ter-generate: **46 halaman HTML statis + 1 file sitemap XML**
-- Waktu Build: **3.88 detik**
+- Waktu Build: **6.29 detik**
 - Status: **Berhasil 100% (0 Error, 0 Warning)**
-- Validasi: Seluruh form pendaftaran (Mandiri & Kolektif), modul pencarian sekolah admin (`/admin/sekolah`), konfirmasi pesan WhatsApp bertimestamp, dan mesin validasi keunikan NISN terintegrasi penuh secara realtime.
+- Validasi: Seluruh form pendaftaran (Mandiri & Kolektif) telah menggunakan label baku `'Kota/Kabupaten'`, konfirmasi pesan WhatsApp bertimestamp, dan mesin validasi keunikan NISN berjalan optimal.
 
 
 
