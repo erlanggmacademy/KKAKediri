@@ -411,9 +411,35 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
         <p class="text-secondary small mb-3">
           Terima kasih telah mendaftar di Kompetisi Kompetensi Akademik (KKA) 2026 Jawa Pos Radar Kediri.
         </p>
-        <div class="p-3 bg-light rounded-3 border d-inline-block px-4">
-          <span class="fs-8 text-muted text-uppercase fw-semibold d-block">Kode Registrasi Pendaftaran</span>
-          <span id="resultRegCode" class="h4 fw-black text-primary font-monospace mb-0">-</span>
+        <div class="p-3 bg-light rounded-3 border d-inline-block px-4 my-2 text-center shadow-2xs">
+          <span class="fs-8 text-muted text-uppercase fw-semibold d-block mb-1">Kode Registrasi Pendaftaran</span>
+          <div class="d-flex align-items-center justify-content-center gap-2 flex-wrap">
+            <span id="resultRegCode" class="h4 fw-black text-primary font-monospace mb-0 user-select-all">-</span>
+            <button 
+              type="button" 
+              id="btnCopyRegCode" 
+              class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 d-inline-flex align-items-center gap-1.5 fw-semibold shadow-2xs"
+              title="Salin Kode Registrasi"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+              <span id="lblCopyRegCode">Salin Kode</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Peringatan Simpan Kode Registrasi untuk Cek Status -->
+        <div class="alert alert-warning border-warning-subtle d-flex align-items-start gap-2.5 max-w-lg mx-auto text-start py-2.5 px-3 mt-2 mb-0 rounded-3 shadow-2xs">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="text-warning-emphasis shrink-0 mt-0.5">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <div class="small text-dark lh-sm">
+            <strong>Peringatan Penting:</strong> Simpan dan salin nomor registrasi di atas! Kode unik ini wajib digunakan untuk <strong>mengecek status verifikasi pendaftaran dan pembayaran</strong> Anda di kemudian hari.
+          </div>
         </div>
       </div>
 
@@ -1100,7 +1126,7 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
       btnSubmit.disabled = true;
       btnSubmit.innerHTML = `
         <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-        Menyimpan ke Database & Spreadsheet...
+        Memproses Pendaftaran...
       `;
 
       try {
@@ -1142,7 +1168,7 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
         // 1b. Validasi Keunikan NISN (Tolak Otomatis Jika Sudah Terdaftar)
         btnSubmit.innerHTML = `
           <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-          Memverifikasi Keunikan NISN...
+          Memvalidasi Data Peserta...
         `;
 
         const nisnList = studentsData.map(s => s.nisn);
@@ -1156,7 +1182,7 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
 
         btnSubmit.innerHTML = `
           <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-          Menyimpan ke Database & Spreadsheet...
+          Sedang Mengirim Pendaftaran...
         `;
 
         const totalBiayaVal = updatePricing();
@@ -1181,23 +1207,6 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
             kelas: s.sClass
           })),
           proofFile: fileInput.files.length > 0 ? fileInput.files[0] : null
-        });
-
-        // Populate Success Card
-        document.getElementById('resultRegCode').textContent = regCode;
-        document.getElementById('resultWilayahKec').textContent = `${regionName} (Kec. ${kec})`;
-        document.getElementById('resultSekolah').textContent = schoolName;
-        document.getElementById('resultJenjang').textContent = jenjangText;
-        document.getElementById('resultWa').textContent = waPJ;
-        document.getElementById('resultTotalBiaya').textContent = `${formatRp(totalBiayaVal)} (${studentsData.length} Siswa)`;
-
-        const listContainer = document.getElementById('resultStudentsList');
-        listContainer.innerHTML = '';
-        studentsData.forEach(s => {
-          const li = document.createElement('li');
-          li.className = 'mb-1';
-          li.textContent = `${s.name} (NISN: ${s.nisn}, ${s.sClass}, ${s.gender})`;
-          listContainer.appendChild(li);
         });
 
         // Generate WhatsApp Link with Registration Timestamp
@@ -1232,19 +1241,37 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
 
         const waTarget = currentAdminWa || '6281235508957';
         const waUrl = `https://wa.me/${waTarget}?text=${encodeURIComponent(waMessage)}`;
-        document.getElementById('btnWaPanitiaDirect').href = waUrl;
-        const btnCheckStatus = document.getElementById('btnCheckStatusDirectMandiri');
-        if (btnCheckStatus) {
-          btnCheckStatus.href = `/daftar/status?kode=${encodeURIComponent(regCode)}`;
-        }
-        const btnCetakDoc = document.getElementById('btnCetakBuktiDirectMandiri');
-        if (btnCetakDoc) {
-          btnCetakDoc.href = `/daftar/cetak?kode=${encodeURIComponent(regCode)}`;
+
+        const successData = {
+          regCode,
+          wilayahKec: `${regionName} (Kec. ${kec})`,
+          sekolah: schoolName,
+          jenjang: jenjangText,
+          wa: waPJ,
+          totalBiayaText: `${formatRp(totalBiayaVal)} (${studentsData.length} Siswa)`,
+          students: studentsData.map(s => ({
+            name: s.name,
+            nisn: s.nisn,
+            sClass: s.sClass,
+            gender: s.gender
+          })),
+          waUrl
+        };
+
+        // Simpan sesi pendaftaran sukses agar tahan refresh browser
+        try {
+          sessionStorage.setItem('kka_mandiri_success_' + regCode, JSON.stringify(successData));
+        } catch (e) {
+          console.warn('Session save warning:', e);
         }
 
-        // Switch to Success View
-        form.classList.add('d-none');
-        successCard.classList.remove('d-none');
+        // Perbarui URL browser tanpa reload (misal: ?sukses=KKA26-M-KOT-1234)
+        const newUrl = new URL(window.location.href);
+        newUrl.searchParams.set('sukses', regCode);
+        window.history.replaceState({ kkaSukses: regCode }, '', newUrl.toString());
+
+        // Tampilkan Tampilan Sukses
+        renderSuccessState(successData);
         window.scrollTo({ top: successCard.offsetTop - 80, behavior: 'smooth' });
       } catch (submitErr) {
         console.error('Submit error:', submitErr);
@@ -1254,8 +1281,109 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
       }
     });
 
+    // Helper Fungsi Render Tampilan Sukses Mandiri
+    function renderSuccessState(data: any) {
+      if (!data) return;
+      const elRegCode = document.getElementById('resultRegCode');
+      const elWilayahKec = document.getElementById('resultWilayahKec');
+      const elSekolah = document.getElementById('resultSekolah');
+      const elJenjang = document.getElementById('resultJenjang');
+      const elWa = document.getElementById('resultWa');
+      const elTotalBiaya = document.getElementById('resultTotalBiaya');
+      const listContainer = document.getElementById('resultStudentsList');
+      const btnWa = document.getElementById('btnWaPanitiaDirect') as HTMLAnchorElement | null;
+      const btnCheckStatus = document.getElementById('btnCheckStatusDirectMandiri') as HTMLAnchorElement | null;
+      const btnCetakDoc = document.getElementById('btnCetakBuktiDirectMandiri') as HTMLAnchorElement | null;
+
+      if (elRegCode) elRegCode.textContent = data.regCode;
+      if (elWilayahKec) elWilayahKec.textContent = data.wilayahKec;
+      if (elSekolah) elSekolah.textContent = data.sekolah;
+      if (elJenjang) elJenjang.textContent = data.jenjang;
+      if (elWa) elWa.textContent = data.wa;
+      if (elTotalBiaya) elTotalBiaya.textContent = data.totalBiayaText;
+
+      if (listContainer && Array.isArray(data.students)) {
+        listContainer.innerHTML = '';
+        data.students.forEach((s: any) => {
+          const li = document.createElement('li');
+          li.className = 'mb-1';
+          li.textContent = `${s.name} (NISN: ${s.nisn}, ${s.sClass || '-'}, ${s.gender || '-'})`;
+          listContainer.appendChild(li);
+        });
+      }
+
+      if (btnWa && data.waUrl) {
+        btnWa.href = data.waUrl;
+      }
+      if (btnCheckStatus) {
+        btnCheckStatus.href = `/daftar/status?kode=${encodeURIComponent(data.regCode)}`;
+      }
+      if (btnCetakDoc) {
+        btnCetakDoc.href = `/daftar/cetak?kode=${encodeURIComponent(data.regCode)}`;
+      }
+
+      form.classList.add('d-none');
+      successCard.classList.remove('d-none');
+    }
+
+    // Auto-Restore Tampilan Sukses saat Browser Di-refresh jika terdapat parameter ?sukses=...
+    const urlParams = new URLSearchParams(window.location.search);
+    const suksesCode = urlParams.get('sukses');
+    if (suksesCode) {
+      let saved = null;
+      try {
+        const raw = sessionStorage.getItem('kka_mandiri_success_' + suksesCode);
+        if (raw) saved = JSON.parse(raw);
+      } catch (err) {
+        console.warn('Session parse error:', err);
+      }
+
+      if (saved) {
+        renderSuccessState(saved);
+      } else {
+        // Fallback: Ambil data dari Supabase jika dibuka via tautan langsung/tab baru
+        (async () => {
+          try {
+            const { data: pendaftar } = await supabase
+              .from('pendaftar')
+              .select('*, peserta_mandiri(*)')
+              .eq('kode_invoice', suksesCode)
+              .maybeSingle();
+
+            if (pendaftar) {
+              const students = (pendaftar.peserta_mandiri || []).map((s: any) => ({
+                name: s.nama,
+                nisn: s.nisn,
+                sClass: s.kelas || '-',
+                gender: s.jenis_kelamin || '-'
+              }));
+
+              const restoredData = {
+                regCode: pendaftar.kode_invoice,
+                wilayahKec: `${pendaftar.wilayah || '-'} (Kec. ${pendaftar.kecamatan || '-'})`,
+                sekolah: pendaftar.sekolah || '-',
+                jenjang: pendaftar.jenjang || '-',
+                wa: pendaftar.hp_kontak || '-',
+                totalBiayaText: `${formatRp(pendaftar.total_biaya || 0)} (${students.length} Siswa)`,
+                students,
+                waUrl: `https://wa.me/${currentAdminWa || '6281235508957'}?text=${encodeURIComponent('Halo Panitia KKA, saya mengonfirmasi pendaftaran mandiri dengan kode ' + pendaftar.kode_invoice)}`
+              };
+              renderSuccessState(restoredData);
+            }
+          } catch (e) {
+            console.error('Failed to restore success state:', e);
+          }
+        })();
+      }
+    }
+
     // Reset Form
     btnResetForm.addEventListener('click', () => {
+      // Bersihkan parameter ?sukses dari URL
+      const cleanUrl = new URL(window.location.href);
+      cleanUrl.searchParams.delete('sukses');
+      window.history.replaceState({}, '', cleanUrl.pathname + (cleanUrl.search ? cleanUrl.search : ''));
+
       form.reset();
       form.classList.remove('was-validated');
       selectKecamatan.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
@@ -1306,6 +1434,35 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
         }
       });
     });
+
+    // Copy Registration Code Handler
+    const btnCopyRegCode = document.getElementById('btnCopyRegCode');
+    const lblCopyRegCode = document.getElementById('lblCopyRegCode');
+    const resultRegCodeEl = document.getElementById('resultRegCode');
+    if (btnCopyRegCode && resultRegCodeEl) {
+      btnCopyRegCode.addEventListener('click', async () => {
+        const code = resultRegCodeEl.textContent?.trim();
+        if (!code || code === '-') return;
+        try {
+          await navigator.clipboard.writeText(code);
+        } catch {
+          const ta = document.createElement('textarea');
+          ta.value = code;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+        }
+        btnCopyRegCode.classList.remove('btn-outline-primary');
+        btnCopyRegCode.classList.add('btn-success');
+        if (lblCopyRegCode) lblCopyRegCode.textContent = 'Tersalin!';
+        setTimeout(() => {
+          btnCopyRegCode.classList.remove('btn-success');
+          btnCopyRegCode.classList.add('btn-outline-primary');
+          if (lblCopyRegCode) lblCopyRegCode.textContent = 'Salin Kode';
+        }, 2000);
+      });
+    }
 
     // Modal Duplicate NISN Handler
     function showNisnDuplicateModal(result: any) {

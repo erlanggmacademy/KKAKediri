@@ -500,9 +500,35 @@ const kecamatanList = currentRegionSchools ? Object.keys(currentRegionSchools.di
         <p class="text-secondary small mb-3">
           Berkas Excel dan data rombongan sekolah Anda telah diterima oleh sistem KKA 2026.
         </p>
-        <div class="p-3 bg-light rounded-3 border d-inline-block px-4">
-          <span class="fs-8 text-muted text-uppercase fw-semibold d-block">Kode Registrasi Kolektif</span>
-          <span id="resultKodeKolektif" class="h4 fw-black text-primary font-monospace mb-0">-</span>
+        <div class="p-3 bg-light rounded-3 border d-inline-block px-4 my-2 text-center shadow-2xs">
+          <span class="fs-8 text-muted text-uppercase fw-semibold d-block mb-1">Kode Registrasi Kolektif</span>
+          <div class="d-flex align-items-center justify-content-center gap-2 flex-wrap">
+            <span id="resultKodeKolektif" class="h4 fw-black text-primary font-monospace mb-0 user-select-all">-</span>
+            <button 
+              type="button" 
+              id="btnCopyKodeKolektif" 
+              class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 d-inline-flex align-items-center gap-1.5 fw-semibold shadow-2xs"
+              title="Salin Kode Registrasi Kolektif"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+              <span id="lblCopyKodeKolektif">Salin Kode</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Peringatan Simpan Kode Registrasi untuk Cek Status -->
+        <div class="alert alert-warning border-warning-subtle d-flex align-items-start gap-2.5 max-w-lg mx-auto text-start py-2.5 px-3 mt-2 mb-0 rounded-3 shadow-2xs">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="text-warning-emphasis shrink-0 mt-0.5">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <div class="small text-dark lh-sm">
+            <strong>Peringatan Penting:</strong> Simpan dan salin nomor registrasi kolektif di atas! Kode unik ini wajib digunakan oleh sekolah untuk <strong>mengecek status verifikasi pendaftaran dan pembayaran</strong> rombongan peserta.
+          </div>
         </div>
       </div>
 
@@ -1491,7 +1517,7 @@ const kecamatanList = currentRegionSchools ? Object.keys(currentRegionSchools.di
           // 1b. Validasi Keunikan NISN Seluruh Peserta (Tolak Otomatis Jika Sudah Terdaftar)
           btnSubmit.innerHTML = `
             <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-            Memverifikasi Keunikan NISN Peserta...
+            Memvalidasi Data Peserta...
           `;
 
           const nisnList = parsedStudents.map(s => s.nisn);
@@ -1505,7 +1531,7 @@ const kecamatanList = currentRegionSchools ? Object.keys(currentRegionSchools.di
 
           btnSubmit.innerHTML = `
             <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-            Menyimpan ke Database & Spreadsheet...
+            Sedang Mengirim Pendaftaran...
           `;
 
           const randomCode = Math.floor(1000 + Math.random() * 9000);
@@ -1533,24 +1559,6 @@ const kecamatanList = currentRegionSchools ? Object.keys(currentRegionSchools.di
             })),
             proofFile: proofInput.files.length > 0 ? proofInput.files[0] : null
           });
-
-          // Populate Success Card
-          const resultKodeKolektif = document.getElementById('resultKodeKolektif');
-          if (resultKodeKolektif) resultKodeKolektif.textContent = regCode;
-          const summarySekolah = document.getElementById('summarySekolah');
-          if (summarySekolah) summarySekolah.textContent = schoolMeta.namaSekolah;
-          const summaryPicName = document.getElementById('summaryPicName');
-          if (summaryPicName) summaryPicName.textContent = `${schoolMeta.picName} (${schoolMeta.picJabatan})`;
-          const summaryWilayah = document.getElementById('summaryWilayah');
-          if (summaryWilayah) summaryWilayah.textContent = `${schoolMeta.wilayah}${schoolMeta.kecamatan ? ` (Kec. ${schoolMeta.kecamatan})` : ''}`;
-          const summaryJenjang = document.getElementById('summaryJenjang');
-          if (summaryJenjang) summaryJenjang.textContent = schoolMeta.jenjang;
-          const summaryWaPic = document.getElementById('summaryWaPic');
-          if (summaryWaPic) summaryWaPic.textContent = schoolMeta.waPic;
-          const summaryCountSiswa = document.getElementById('summaryCountSiswa');
-          if (summaryCountSiswa) summaryCountSiswa.textContent = `${parsedStudents.length} Siswa Terdaftar`;
-          const summaryTotalBayar = document.getElementById('summaryTotalBayar');
-          if (summaryTotalBayar && rincianTotalBayar) summaryTotalBayar.textContent = rincianTotalBayar.textContent;
 
           // Prepare WhatsApp message with Registration Timestamp
           const now = new Date();
@@ -1586,24 +1594,36 @@ const kecamatanList = currentRegionSchools ? Object.keys(currentRegionSchools.di
           }
           msg += `\nBerkas Excel dan bukti transfer telah diunggah. Mohon verifikasi pendaftaran sekolah kami. Terima kasih.`;
 
-          const btnWa = document.getElementById('btnWaKolektifDirect') as HTMLAnchorElement;
-          if (btnWa) {
-            const waTarget = currentAdminWa || '6281235508957';
-            btnWa.href = `https://wa.me/${waTarget}?text=${encodeURIComponent(msg)}`;
-          }
-          const btnCheckStatus = document.getElementById('btnCheckStatusDirectKolektif') as HTMLAnchorElement;
-          if (btnCheckStatus) {
-            btnCheckStatus.href = `/daftar/status?kode=${encodeURIComponent(regCode)}`;
-          }
-          const btnCetakDoc = document.getElementById('btnCetakBuktiDirectKolektif') as HTMLAnchorElement;
-          if (btnCetakDoc) {
-            btnCetakDoc.href = `/daftar/cetak?kode=${encodeURIComponent(regCode)}`;
+          const waTarget = currentAdminWa || '6281235508957';
+          const waUrl = `https://wa.me/${waTarget}?text=${encodeURIComponent(msg)}`;
+
+          const successDataKolektif = {
+            regCode,
+            sekolah: schoolMeta.namaSekolah,
+            picName: `${schoolMeta.picName} (${schoolMeta.picJabatan})`,
+            wilayah: `${schoolMeta.wilayah}${schoolMeta.kecamatan ? ` (Kec. ${schoolMeta.kecamatan})` : ''}`,
+            jenjang: schoolMeta.jenjang,
+            waPic: schoolMeta.waPic,
+            countSiswa: `${parsedStudents.length} Siswa Terdaftar`,
+            totalBayar: rincianTotalBayar ? rincianTotalBayar.textContent : '-',
+            waUrl
+          };
+
+          // Simpan sesi pendaftaran kolektif sukses agar tahan refresh browser
+          try {
+            sessionStorage.setItem('kka_kolektif_success_' + regCode, JSON.stringify(successDataKolektif));
+          } catch (e) {
+            console.warn('Session save warning:', e);
           }
 
-          // Switch to Success State
-          formEl.classList.add('d-none');
+          // Perbarui URL browser tanpa reload (misal: ?sukses=KKA26-K-KDR-1234)
+          const newUrl = new URL(window.location.href);
+          newUrl.searchParams.set('sukses', regCode);
+          window.history.replaceState({ kkaSukses: regCode }, '', newUrl.toString());
+
+          // Tampilkan Tampilan Sukses Kolektif
+          renderSuccessStateKolektif(successDataKolektif);
           if (kolektifSuccessCard) {
-            kolektifSuccessCard.classList.remove('d-none');
             window.scrollTo({ top: kolektifSuccessCard.offsetTop - 80, behavior: 'smooth' });
           }
         } catch (submitErr) {
@@ -1614,6 +1634,89 @@ const kecamatanList = currentRegionSchools ? Object.keys(currentRegionSchools.di
           btnSubmit.innerHTML = originalBtnText;
         }
       });
+    }
+
+    // Helper Fungsi Render Tampilan Sukses Kolektif
+    function renderSuccessStateKolektif(data: any) {
+      if (!data) return;
+      const resultKodeKolektif = document.getElementById('resultKodeKolektif');
+      if (resultKodeKolektif) resultKodeKolektif.textContent = data.regCode;
+      const summarySekolah = document.getElementById('summarySekolah');
+      if (summarySekolah) summarySekolah.textContent = data.sekolah;
+      const summaryPicName = document.getElementById('summaryPicName');
+      if (summaryPicName) summaryPicName.textContent = data.picName;
+      const summaryWilayah = document.getElementById('summaryWilayah');
+      if (summaryWilayah) summaryWilayah.textContent = data.wilayah;
+      const summaryJenjang = document.getElementById('summaryJenjang');
+      if (summaryJenjang) summaryJenjang.textContent = data.jenjang;
+      const summaryWaPic = document.getElementById('summaryWaPic');
+      if (summaryWaPic) summaryWaPic.textContent = data.waPic;
+      const summaryCountSiswa = document.getElementById('summaryCountSiswa');
+      if (summaryCountSiswa) summaryCountSiswa.textContent = data.countSiswa;
+      const summaryTotalBayar = document.getElementById('summaryTotalBayar');
+      if (summaryTotalBayar) summaryTotalBayar.textContent = data.totalBayar;
+
+      const btnWa = document.getElementById('btnWaKolektifDirect') as HTMLAnchorElement;
+      if (btnWa && data.waUrl) {
+        btnWa.href = data.waUrl;
+      }
+      const btnCheckStatus = document.getElementById('btnCheckStatusDirectKolektif') as HTMLAnchorElement;
+      if (btnCheckStatus) {
+        btnCheckStatus.href = `/daftar/status?kode=${encodeURIComponent(data.regCode)}`;
+      }
+      const btnCetakDoc = document.getElementById('btnCetakBuktiDirectKolektif') as HTMLAnchorElement;
+      if (btnCetakDoc) {
+        btnCetakDoc.href = `/daftar/cetak?kode=${encodeURIComponent(data.regCode)}`;
+      }
+
+      formEl.classList.add('d-none');
+      if (kolektifSuccessCard) {
+        kolektifSuccessCard.classList.remove('d-none');
+      }
+    }
+
+    // Auto-Restore Tampilan Sukses Kolektif saat Browser Di-refresh jika ada ?sukses=...
+    const urlParamsKolektif = new URLSearchParams(window.location.search);
+    const suksesCodeKolektif = urlParamsKolektif.get('sukses');
+    if (suksesCodeKolektif) {
+      let savedKolektif = null;
+      try {
+        const raw = sessionStorage.getItem('kka_kolektif_success_' + suksesCodeKolektif);
+        if (raw) savedKolektif = JSON.parse(raw);
+      } catch (err) {
+        console.warn('Session parse error:', err);
+      }
+
+      if (savedKolektif) {
+        renderSuccessStateKolektif(savedKolektif);
+      } else {
+        (async () => {
+          try {
+            const { data: pendaftar } = await supabase
+              .from('pendaftar')
+              .select('*')
+              .eq('kode_invoice', suksesCodeKolektif)
+              .maybeSingle();
+
+            if (pendaftar) {
+              const restoredKolektif = {
+                regCode: pendaftar.kode_invoice,
+                sekolah: pendaftar.sekolah || '-',
+                picName: pendaftar.nama_kontak || '-',
+                wilayah: `${pendaftar.wilayah || '-'}${pendaftar.kecamatan ? ` (Kec. ${pendaftar.kecamatan})` : ''}`,
+                jenjang: pendaftar.jenjang || '-',
+                waPic: pendaftar.hp_kontak || '-',
+                countSiswa: `${pendaftar.jumlah_peserta || '-'} Siswa Terdaftar`,
+                totalBayar: formatRp(pendaftar.total_biaya || 0),
+                waUrl: `https://wa.me/${currentAdminWa || '6281235508957'}?text=${encodeURIComponent('Halo Panitia KKA, saya mengonfirmasi pendaftaran kolektif dengan kode ' + pendaftar.kode_invoice)}`
+              };
+              renderSuccessStateKolektif(restoredKolektif);
+            }
+          } catch (e) {
+            console.error('Failed to restore kolektif state:', e);
+          }
+        })();
+      }
     }
 
     // Copy account number handler
@@ -1639,8 +1742,42 @@ const kecamatanList = currentRegionSchools ? Object.keys(currentRegionSchools.di
       });
     });
 
+    // Copy Registration Code Handler (Kolektif)
+    const btnCopyKodeKolektif = document.getElementById('btnCopyKodeKolektif');
+    const lblCopyKodeKolektif = document.getElementById('lblCopyKodeKolektif');
+    const resultKodeKolektifEl = document.getElementById('resultKodeKolektif');
+    if (btnCopyKodeKolektif && resultKodeKolektifEl) {
+      btnCopyKodeKolektif.addEventListener('click', async () => {
+        const code = resultKodeKolektifEl.textContent?.trim();
+        if (!code || code === '-') return;
+        try {
+          await navigator.clipboard.writeText(code);
+        } catch {
+          const ta = document.createElement('textarea');
+          ta.value = code;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+        }
+        btnCopyKodeKolektif.classList.remove('btn-outline-primary');
+        btnCopyKodeKolektif.classList.add('btn-success');
+        if (lblCopyKodeKolektif) lblCopyKodeKolektif.textContent = 'Tersalin!';
+        setTimeout(() => {
+          btnCopyKodeKolektif.classList.remove('btn-success');
+          btnCopyKodeKolektif.classList.add('btn-outline-primary');
+          if (lblCopyKodeKolektif) lblCopyKodeKolektif.textContent = 'Salin Kode';
+        }, 2000);
+      });
+    }
+
     if (btnResetKolektif) {
       btnResetKolektif.addEventListener('click', () => {
+        // Bersihkan parameter ?sukses dari URL
+        const cleanUrl = new URL(window.location.href);
+        cleanUrl.searchParams.delete('sukses');
+        window.history.replaceState({}, '', cleanUrl.pathname + (cleanUrl.search ? cleanUrl.search : ''));
+
         formEl.reset();
         formEl.classList.remove('was-validated');
         resetToState1();

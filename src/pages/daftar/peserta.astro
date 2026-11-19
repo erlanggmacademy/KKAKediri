@@ -1,0 +1,569 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import { DISTRICTS } from '../../data/competition';
+---
+
+<BaseLayout 
+  title="Daftar Siswa Terverifikasi - KKA Radar Kediri 2026"
+  description="Penelusuran data siswa dan asal sekolah yang telah resmi terdaftar dalam Kompetisi Kompetensi Akademik (KKA) 2026 Jawa Pos Radar Kediri."
+>
+  <!-- Header Banner -->
+  <section class="bg-gradient-navy text-white py-5">
+    <div class="container py-3 text-center">
+      <span class="badge bg-warning text-dark fw-bold rounded-pill px-3 py-1 mb-2">DAFTAR PESERTA RESMI</span>
+      <h1 class="display-5 fw-bold mb-3 text-white">Daftar Siswa Terverifikasi KKA 2026</h1>
+      <p class="lead text-white-50 max-w-2xl mx-auto mb-1">
+        Penelusuran data siswa dan asal sekolah yang telah resmi terdaftar dalam KKA 2026 se-Karesidenan Kediri.
+      </p>
+      <Breadcrumb items={[
+        { label: 'Pendaftaran', href: '/daftar' },
+        { label: 'Daftar Siswa Terverifikasi', active: true }
+      ]} />
+    </div>
+  </section>
+
+  <!-- Main Directory Section -->
+  <section class="py-5 bg-light min-vh-60">
+    <div class="container py-2">
+
+      <!-- Filter & Search Toolbar -->
+      <div class="card border rounded-4 shadow-sm p-4 mb-4 bg-white">
+        
+        <!-- Filter Jenjang Cepat (Pill Buttons) -->
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-3 pb-3 border-bottom">
+          <span class="small fw-bold text-dark me-1">Filter Jenjang:</span>
+          <div class="d-inline-flex flex-wrap gap-1.5" id="jenjangPillContainer">
+            <button 
+              type="button" 
+              class="btn btn-sm rounded-pill fw-semibold px-3 py-1.5 btn-jenjang-filter btn-primary shadow-2xs" 
+              data-jenjang=""
+            >
+              Semua Jenjang
+            </button>
+            <button 
+              type="button" 
+              class="btn btn-sm rounded-pill fw-semibold px-3 py-1.5 btn-jenjang-filter btn-light border text-secondary" 
+              data-jenjang="sd"
+            >
+              SD / MI
+            </button>
+            <button 
+              type="button" 
+              class="btn btn-sm rounded-pill fw-semibold px-3 py-1.5 btn-jenjang-filter btn-light border text-secondary" 
+              data-jenjang="smp"
+            >
+              SMP / MTs
+            </button>
+            <button 
+              type="button" 
+              class="btn btn-sm rounded-pill fw-semibold px-3 py-1.5 btn-jenjang-filter btn-light border text-secondary" 
+              data-jenjang="sma"
+            >
+              SMA / SMK / MA
+            </button>
+          </div>
+        </div>
+
+        <div class="row g-3 align-items-end">
+          
+          <!-- Search Input -->
+          <div class="col-lg-6 col-md-6">
+            <label for="searchQuery" class="form-label small fw-bold text-dark mb-1">
+              Pencarian Cepat
+            </label>
+            <div class="input-group">
+              <span class="input-group-text bg-light text-muted border-end-0 py-2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <circle cx="11" cy="11" r="8"/>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+              </span>
+              <input 
+                type="text" 
+                id="searchQuery" 
+                class="form-control border-start-0 py-2 small" 
+                placeholder="Cari nama siswa atau asal sekolah..."
+                autocomplete="off"
+              />
+            </div>
+          </div>
+
+          <!-- Filter Kota / Kabupaten (7 Kabupaten/Kota Asli Karesidenan Kediri) -->
+          <div class="col-lg-4 col-md-6">
+            <label for="filterWilayah" class="form-label small fw-bold text-dark mb-1">
+              Kota / Kabupaten
+            </label>
+            <select id="filterWilayah" class="form-select py-2 small">
+              <option value="">-- Semua Kota/Kabupaten --</option>
+              {DISTRICTS.map(d => (
+                <option value={d.name}>{d.name}</option>
+              ))}
+            </select>
+          </div>
+
+          <!-- Reset Button -->
+          <div class="col-lg-2 col-md-12">
+            <label class="form-label small fw-bold text-transparent mb-1 d-none d-lg-block select-none" aria-hidden="true">&nbsp;</label>
+            <button 
+              type="button" 
+              id="btnResetFilter" 
+              class="btn btn-outline-secondary w-100 py-2 small fw-semibold d-inline-flex align-items-center justify-content-center gap-1.5 rounded-3"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                <path d="M3 3v5h5"/>
+              </svg>
+              <span>Reset</span>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Meta Count Indicator -->
+        <div class="d-flex justify-content-end mt-3 pt-2 border-top small text-muted">
+          <div class="text-secondary small">
+            Menampilkan <span id="labelShowingCount" class="fw-bold text-dark">0</span> siswa
+          </div>
+        </div>
+      </div>
+
+      <!-- Table Container -->
+      <div class="card border rounded-4 shadow-sm overflow-hidden bg-white mb-4">
+        
+        <!-- Loading State -->
+        <div id="stateLoading" class="text-center py-5">
+          <div class="spinner-border text-primary mb-3" style="width: 2.5rem; height: 2.5rem;" role="status">
+            <span class="visually-hidden">Memuat data...</span>
+          </div>
+          <h5 class="fw-bold text-dark mb-1">Mengambil Data Direktori Peserta...</h5>
+          <p class="text-muted small mb-0">Menghubungkan ke database Cloud Supabase Jawa Pos Radar Kediri</p>
+        </div>
+
+        <!-- Empty State -->
+        <div id="stateEmpty" class="text-center py-5 d-none px-3">
+          <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center p-3 mb-3 text-muted">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              <line x1="8" y1="11" x2="14" y2="11"/>
+            </svg>
+          </div>
+          <h5 class="fw-bold text-dark mb-1">Tidak Ditemukan Siswa Terdaftar</h5>
+          <p class="text-muted small max-w-md mx-auto mb-3" id="emptyNoticeDesc">
+            Tidak ada data peserta yang cocok dengan kata kunci atau filter yang Anda pilih.
+          </p>
+          <button type="button" id="btnEmptyReset" class="btn btn-sm btn-outline-primary px-3 py-1.5 rounded-pill fw-semibold">
+            Reset Filter Pencarian
+          </button>
+        </div>
+
+        <!-- Table View -->
+        <div class="table-responsive d-none" id="tableWrapper">
+          <table class="table table-hover align-middle mb-0" id="tablePeserta">
+            <thead class="table-light border-bottom text-uppercase fs-9 text-secondary tracking-wider">
+              <tr>
+                <th class="ps-4 py-3 text-center" style="width: 65px;">No.</th>
+                <th class="py-3" style="min-width: 240px;">Nama Lengkap Siswa</th>
+                <th class="py-3" style="min-width: 250px;">Asal Sekolah</th>
+                <th class="py-3 text-center" style="width: 140px;">Jenjang</th>
+                <th class="pe-4 py-3" style="min-width: 180px;">Kota/Kabupaten</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyPeserta">
+              <!-- Rendered via JavaScript -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination Footer -->
+        <div class="card-footer bg-white border-top px-4 py-3 d-flex flex-wrap align-items-center justify-content-between gap-3 d-none" id="paginationWrapper">
+          <div class="small text-muted" id="paginationInfo">
+            Halaman 1 dari 1
+          </div>
+          <div class="d-flex align-items-center gap-1" id="paginationButtons">
+            <!-- Buttons dynamically generated -->
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { supabase } from '../../lib/supabase';
+
+  interface StudentRow {
+    id: string;
+    nama: string;
+    kelas?: string;
+    sekolah: string;
+    jenjang: string;
+    wilayah: string;
+    created_at: string;
+  }
+
+  // State Management
+  let allStudents: StudentRow[] = [];
+  let filteredStudents: StudentRow[] = [];
+  let currentJenjangFilter = '';
+  let currentPage = 1;
+  const itemsPerPage = 25;
+
+  // DOM Elements
+  const stateLoading = document.getElementById('stateLoading');
+  const stateEmpty = document.getElementById('stateEmpty');
+  const tableWrapper = document.getElementById('tableWrapper');
+  const tbodyPeserta = document.getElementById('tbodyPeserta');
+  const searchQuery = document.getElementById('searchQuery') as HTMLInputElement;
+  const filterWilayah = document.getElementById('filterWilayah') as HTMLSelectElement;
+  const btnResetFilter = document.getElementById('btnResetFilter');
+  const btnEmptyReset = document.getElementById('btnEmptyReset');
+  const labelShowingCount = document.getElementById('labelShowingCount');
+  const paginationWrapper = document.getElementById('paginationWrapper');
+  const paginationInfo = document.getElementById('paginationInfo');
+  const paginationButtons = document.getElementById('paginationButtons');
+  const jenjangPillContainer = document.getElementById('jenjangPillContainer');
+
+  // Normalize Jenjang for Badge
+  function getJenjangBadge(jenjangRaw: string): { label: string; badgeClass: string } {
+    const j = String(jenjangRaw || '').toLowerCase();
+    if (j.includes('sd') || j.includes('mi')) {
+      return { label: 'SD / MI', badgeClass: 'bg-success-subtle text-success border border-success-subtle' };
+    }
+    if (j.includes('smp') || j.includes('mts')) {
+      return { label: 'SMP / MTs', badgeClass: 'bg-primary-subtle text-primary border border-primary-subtle' };
+    }
+    if (j.includes('sma') || j.includes('smk') || j.includes('ma')) {
+      return { label: 'SMA / SMK / MA', badgeClass: 'bg-dark-subtle text-dark border border-dark-subtle' };
+    }
+    return { label: jenjangRaw || 'Umum', badgeClass: 'bg-light text-secondary border' };
+  }
+
+  // Fetch verified participants from Supabase
+  async function loadVerifiedParticipants() {
+    try {
+      if (stateLoading) stateLoading.classList.remove('d-none');
+      if (stateEmpty) stateEmpty.classList.add('d-none');
+      if (tableWrapper) tableWrapper.classList.add('d-none');
+      if (paginationWrapper) paginationWrapper.classList.add('d-none');
+
+      const { data, error } = await supabase
+        .from('participants')
+        .select(`
+          id,
+          nama,
+          kelas,
+          created_at,
+          registrations!inner (
+            sekolah,
+            jenjang,
+            wilayah,
+            status
+          )
+        `)
+        .eq('registrations.status', 'lunas')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.warn('[Supabase] Gagal mengambil peserta terverifikasi:', error.message);
+        showEmpty('Terjadi kendala saat membaca data dari server. Silakan muat ulang halaman.');
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        allStudents = [];
+        filteredStudents = [];
+        showEmpty('Belum ada data peserta yang terverifikasi (lunas). Pendaftaran yang baru masuk sedang dalam proses verifikasi oleh panitia.');
+        return;
+      }
+
+      // Map Supabase rows into flattened objects (without exposing sensitive registration code)
+      allStudents = data.map((item: any) => {
+        const reg = Array.isArray(item.registrations) ? item.registrations[0] : item.registrations;
+        return {
+          id: item.id,
+          nama: item.nama || '-',
+          kelas: item.kelas || '-',
+          sekolah: reg?.sekolah || '-',
+          jenjang: reg?.jenjang || '-',
+          wilayah: reg?.wilayah || '-',
+          created_at: item.created_at || ''
+        };
+      });
+
+      applyFilters();
+    } catch (err) {
+      console.warn('[Exception] Load participants:', err);
+      showEmpty('Gagal memuat direktori peserta. Pastikan koneksi internet Anda aktif.');
+    } finally {
+      if (stateLoading) stateLoading.classList.add('d-none');
+    }
+  }
+
+  // Filter & Search Logic
+  function applyFilters() {
+    const q = (searchQuery?.value || '').trim().toLowerCase();
+    const wil = (filterWilayah?.value || '').trim();
+    const jen = currentJenjangFilter;
+
+    filteredStudents = allStudents.filter(item => {
+      // 1. Text Search (Nama Siswa, Sekolah)
+      const matchQuery = !q || 
+        item.nama.toLowerCase().includes(q) ||
+        item.sekolah.toLowerCase().includes(q);
+
+      // 2. Filter Wilayah (Kota / Kabupaten)
+      const matchWilayah = !wil || item.wilayah.toLowerCase() === wil.toLowerCase();
+
+      // 3. Filter Jenjang
+      let matchJenjang = true;
+      if (jen) {
+        const itemJ = item.jenjang.toLowerCase();
+        if (jen === 'sd') matchJenjang = itemJ.includes('sd') || itemJ.includes('mi');
+        else if (jen === 'smp') matchJenjang = itemJ.includes('smp') || itemJ.includes('mts');
+        else if (jen === 'sma') matchJenjang = itemJ.includes('sma') || itemJ.includes('smk') || itemJ.includes('ma');
+      }
+
+      return matchQuery && matchWilayah && matchJenjang;
+    });
+
+    currentPage = 1;
+    renderTable();
+  }
+
+  // Update Jenjang Pill Active State
+  function updateJenjangPillUI() {
+    const pills = jenjangPillContainer?.querySelectorAll('.btn-jenjang-filter');
+    pills?.forEach(pill => {
+      const val = pill.getAttribute('data-jenjang') || '';
+      if (val === currentJenjangFilter) {
+        pill.className = 'btn btn-sm rounded-pill fw-semibold px-3 py-1.5 btn-jenjang-filter btn-primary shadow-2xs';
+      } else {
+        pill.className = 'btn btn-sm rounded-pill fw-semibold px-3 py-1.5 btn-jenjang-filter btn-light border text-secondary';
+      }
+    });
+  }
+
+  // Render Table & Pagination
+  function renderTable() {
+    if (!tbodyPeserta || !tableWrapper) return;
+
+    if (labelShowingCount) {
+      labelShowingCount.textContent = filteredStudents.length.toLocaleString('id-ID');
+    }
+
+    if (filteredStudents.length === 0) {
+      tableWrapper.classList.add('d-none');
+      if (paginationWrapper) paginationWrapper.classList.add('d-none');
+      showEmpty('Tidak ada siswa yang cocok dengan filter atau kata kunci pencarian Anda.');
+      return;
+    }
+
+    if (stateEmpty) stateEmpty.classList.add('d-none');
+    tableWrapper.classList.remove('d-none');
+
+    // Slice pagination
+    const totalPages = Math.ceil(filteredStudents.length / itemsPerPage) || 1;
+    if (currentPage > totalPages) currentPage = totalPages;
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = Math.min(startIndex + itemsPerPage, filteredStudents.length);
+    const pageItems = filteredStudents.slice(startIndex, endIndex);
+
+    // Build Rows HTML without sensitive registration code
+    tbodyPeserta.innerHTML = pageItems.map((item, idx) => {
+      const rowNumber = startIndex + idx + 1;
+      const jBadge = getJenjangBadge(item.jenjang);
+
+      return `
+        <tr>
+          <!-- 1. No. -->
+          <td class="ps-4 py-3 text-center text-muted fw-semibold small">
+            ${rowNumber}
+          </td>
+
+          <!-- 2. Nama Lengkap Siswa -->
+          <td class="py-3">
+            <span class="fw-bold text-dark fs-8 d-block text-truncate" style="max-width: 280px;" title="${item.nama}">
+              ${item.nama}
+            </span>
+            ${item.kelas && item.kelas !== '-' ? `<span class="text-muted fs-9">Kelas: ${item.kelas}</span>` : ''}
+          </td>
+
+          <!-- 3. Asal Sekolah -->
+          <td class="py-3">
+            <span class="text-secondary small fw-medium d-block text-truncate" style="max-width: 280px;" title="${item.sekolah}">
+              ${item.sekolah}
+            </span>
+          </td>
+
+          <!-- 4. Jenjang -->
+          <td class="py-3 text-center">
+            <span class="badge ${jBadge.badgeClass} rounded-pill px-2.5 py-1 fs-9 fw-semibold text-nowrap">
+              ${jBadge.label}
+            </span>
+          </td>
+
+          <!-- 5. Kota/Kabupaten -->
+          <td class="pe-4 py-3">
+            <span class="fw-semibold text-dark fs-8 text-nowrap">
+              ${item.wilayah}
+            </span>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    renderPagination(totalPages);
+  }
+
+  // Render Pagination Buttons
+  function renderPagination(totalPages: number) {
+    if (!paginationWrapper || !paginationButtons || !paginationInfo) return;
+
+    if (totalPages <= 1) {
+      paginationWrapper.classList.add('d-none');
+      return;
+    }
+
+    paginationWrapper.classList.remove('d-none');
+    paginationInfo.textContent = `Menampilkan halaman ${currentPage} dari ${totalPages} (${filteredStudents.length} total peserta)`;
+
+    let btnsHtml = `
+      <button 
+        type="button" 
+        class="btn btn-sm btn-light border px-2.5 py-1 rounded-2 ${currentPage === 1 ? 'disabled' : ''}" 
+        id="btnPagePrev"
+        title="Halaman Sebelumnya"
+      >
+        &lsaquo;
+      </button>
+    `;
+
+    // Max 5 page numbers displayed
+    const startP = Math.max(1, currentPage - 2);
+    const endP = Math.min(totalPages, startP + 4);
+
+    for (let p = startP; p <= endP; p++) {
+      btnsHtml += `
+        <button 
+          type="button" 
+          class="btn btn-sm px-3 py-1 rounded-2 btn-page-num ${p === currentPage ? 'btn-primary fw-bold' : 'btn-light border'}" 
+          data-page="${p}"
+        >
+          ${p}
+        </button>
+      `;
+    }
+
+    btnsHtml += `
+      <button 
+        type="button" 
+        class="btn btn-sm btn-light border px-2.5 py-1 rounded-2 ${currentPage === totalPages ? 'disabled' : ''}" 
+        id="btnPageNext"
+        title="Halaman Selanjutnya"
+      >
+        &rsaquo;
+      </button>
+    `;
+
+    paginationButtons.innerHTML = btnsHtml;
+
+    // Attach listeners
+    document.getElementById('btnPagePrev')?.addEventListener('click', () => {
+      if (currentPage > 1) {
+        currentPage--;
+        renderTable();
+        tableWrapper?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+
+    document.getElementById('btnPageNext')?.addEventListener('click', () => {
+      if (currentPage < totalPages) {
+        currentPage++;
+        renderTable();
+        tableWrapper?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+
+    paginationButtons.querySelectorAll('.btn-page-num').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const targetPage = parseInt((e.currentTarget as HTMLElement).getAttribute('data-page') || '1', 10);
+        if (targetPage !== currentPage) {
+          currentPage = targetPage;
+          renderTable();
+          tableWrapper?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  }
+
+  // Show Empty State helper
+  function showEmpty(msg?: string) {
+    if (stateEmpty) {
+      stateEmpty.classList.remove('d-none');
+      const descEl = document.getElementById('emptyNoticeDesc');
+      if (descEl && msg) descEl.textContent = msg;
+    }
+    if (tableWrapper) tableWrapper.classList.add('d-none');
+    if (paginationWrapper) paginationWrapper.classList.add('d-none');
+  }
+
+  // Reset Filters
+  function resetAllFilters() {
+    if (searchQuery) searchQuery.value = '';
+    if (filterWilayah) filterWilayah.value = '';
+    currentJenjangFilter = '';
+    updateJenjangPillUI();
+    applyFilters();
+  }
+
+  // Event Listeners
+  searchQuery?.addEventListener('input', applyFilters);
+  filterWilayah?.addEventListener('change', applyFilters);
+  btnResetFilter?.addEventListener('click', resetAllFilters);
+  btnEmptyReset?.addEventListener('click', resetAllFilters);
+
+  // Jenjang Filter Pills Event
+  jenjangPillContainer?.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest('.btn-jenjang-filter');
+    if (btn) {
+      currentJenjangFilter = btn.getAttribute('data-jenjang') || '';
+      updateJenjangPillUI();
+      applyFilters();
+    }
+  });
+
+  // Initialize
+  document.addEventListener('DOMContentLoaded', loadVerifiedParticipants);
+  loadVerifiedParticipants();
+</script>
+
+<style>
+  .fs-8 {
+    font-size: 0.825rem;
+  }
+  .fs-9 {
+    font-size: 0.75rem;
+  }
+  .max-w-2xl {
+    max-width: 680px;
+  }
+  .max-w-md {
+    max-width: 460px;
+  }
+  .min-vh-60 {
+    min-height: 60vh;
+  }
+  .tracking-wider {
+    letter-spacing: 0.05em;
+  }
+  #tablePeserta tbody tr {
+    transition: background-color 0.15s ease;
+  }
+  #tablePeserta tbody tr:hover {
+    background-color: rgba(248, 250, 252, 0.9);
+  }
+</style>
