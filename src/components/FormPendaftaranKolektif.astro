@@ -354,109 +354,27 @@ const kecamatanList = currentRegionSchools ? Object.keys(currentRegionSchools.di
         </div>
       </div>
 
-      <!-- 3. Pembayaran & Konfirmasi -->
+      <!-- 3. Rincian Estimasi Biaya Kolektif -->
       <div class="form-section mb-4">
         <div class="d-flex align-items-center gap-2 mb-2">
           <span class="section-indicator-bar bg-primary rounded-pill"></span>
-          <h3 class="h5 fw-bold text-dark mb-0">3. Pembayaran & Konfirmasi</h3>
+          <h3 class="h5 fw-bold text-dark mb-0">3. Rincian Estimasi Biaya</h3>
         </div>
 
-        <!-- Rekening Pembayaran Resmi -->
-        <div class="payment-accounts-wrapper mb-4">
-          <div class="d-flex align-items-center gap-2 mb-2">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1d72f2" stroke-width="2.5" class="flex-shrink-0">
-              <circle cx="12" cy="12" r="10"/>
-              <line x1="12" y1="16" x2="12" y2="12"/>
-              <line x1="12" y1="8" x2="12.01" y2="8"/>
-            </svg>
-            <span class="small fw-bold text-dark">
-              Rekening Resmi Pembayaran Panitia:
-            </span>
-          </div>
-
-          <div class="bank-account-card p-3.5 p-md-4 rounded-4 border bg-white shadow-2xs">
-            <!-- Header Kartu: Logo & Nama Bank -->
-            <div class="d-flex align-items-center mb-3 pb-2.5 border-bottom">
-              <div class="d-flex align-items-center gap-3">
-                <img 
-                  src="/images/bri.webp" 
-                  alt="Logo Bank BRI" 
-                  width="36" 
-                  height="36" 
-                  style="object-fit: contain;"
-                  loading="lazy"
-                />
-                <span class="fs-5 fw-bold text-dark mb-0" id="kolektifBankName">Bank BRI Cabang Kediri</span>
-              </div>
-            </div>
-
-            <!-- Bagian Nomor Rekening Panjang & Tombol Salin -->
-            <div class="p-3 bg-light rounded-3 border mb-2.5">
-              <span class="text-muted small d-block mb-1" style="font-size: 0.78rem;" id="kolektifBankNumberLabel">Nomor Rekening BRI:</span>
-              <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2.5">
-                <div class="account-number font-monospace fw-bold text-primary fs-3 text-nowrap" id="kolektifBankNumber" style="letter-spacing: 1px;">
-                  0033-0100-3455-560
-                </div>
-                <div>
-                  <button 
-                    type="button" 
-                    class="btn btn-primary btn-sm px-3.5 py-1.5 rounded-pill fw-semibold btn-copy-account d-inline-flex align-items-center gap-1.5 shadow-2xs hover-scale" 
-                    id="kolektifBtnCopyAccount"
-                    data-copy="003301003455560" 
-                    title="Salin nomor rekening BRI"
-                  >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-                    </svg>
-                    <span>Salin No. Rekening</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Footer: Pemilik Rekening -->
-            <div class="d-flex align-items-center justify-content-between text-muted small px-1 flex-wrap gap-1" style="font-size: 0.82rem;">
-              <span>Atas Nama (Penerima):</span>
-              <strong class="text-dark fs-6" id="kolektifBankHolder">Heri Muda Setiawan</strong>
-            </div>
-          </div>
-        </div>
-
-        <!-- Bukti Transfer Upload -->
-        <div class="mb-4">
-          <label class="form-label small fw-semibold text-dark">
-            Bukti Transfer (Format Gambar) <span class="text-danger">*</span>
-          </label>
-          <div class="upload-wrapper border rounded-3 p-3 bg-light">
-            <input 
-              type="file" 
-              id="transferProofKolektif" 
-              class="form-control" 
-              accept="image/png, image/jpeg, image/jpg, image/webp, application/pdf" 
-              required 
-            />
-            <div class="form-text fs-8 text-muted mt-1.5">
-              Lampirkan struk transfer / bukti mutasi pembayaran panitia. Maks. 2MB.
-            </div>
-            <div class="invalid-feedback">Bukti transfer pembayaran wajib dilampirkan.</div>
-          </div>
-        </div>
-
-        <!-- STATE 2: Rincian Biaya (Hidden by default in State 1) -->
-        <div id="rincianBiayaBox" class="d-none border rounded-3 p-4 bg-white mb-4 shadow-2xs">
+        <!-- Rincian Biaya Box (Muncul setelah Excel diunggah) -->
+        <div id="rincianBiayaBox" class="border rounded-3 p-4 bg-white mb-4 shadow-2xs">
           <div class="d-flex align-items-center gap-1.5 fw-bold text-dark small mb-3">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="3" y="3" width="18" height="18" rx="2"/>
               <line x1="3" y1="9" x2="21" y2="9"/>
               <line x1="9" y1="21" x2="9" y2="9"/>
             </svg>
-            <span>Rincian Biaya</span>
+            <span>Rincian Biaya Pendaftaran</span>
           </div>
 
           <div class="d-flex justify-content-between text-secondary small mb-1.5">
             <span>Jumlah Peserta:</span>
-            <strong class="text-dark" id="rincianJumlahPeserta">-</strong>
+            <strong class="text-dark" id="rincianJumlahPeserta">0 Siswa</strong>
           </div>
 
           <div class="d-flex justify-content-between text-secondary small mb-3">
@@ -470,23 +388,206 @@ const kecamatanList = currentRegionSchools ? Object.keys(currentRegionSchools.di
           </div>
         </div>
 
-        <!-- Tombol Kirim Pendaftaran Kolektif -->
+        <div class="alert alert-info border-info-subtle d-flex align-items-center gap-2.5 py-2.5 px-3 mb-4 rounded-3 small">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-info shrink-0">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+          <div class="text-dark">
+            Pastikan seluruh data sekolah dan berkas Excel peserta di atas sudah lengkap. Nomor rekening transfer panitia dan formulir unggah bukti bayar akan ditampilkan pada <strong>Halaman Pembayaran (Langkah 2)</strong>.
+          </div>
+        </div>
+
+        <!-- Tombol Daftar Kolektif (Langkah 1) -->
         <button 
           type="submit" 
           id="btnSubmitKolektif" 
           class="btn btn-primary btn-lg w-100 fw-bold py-3 rounded-3 shadow-sm d-flex align-items-center justify-content-center gap-2 hover-scale"
         >
+          <span>Daftar & Lanjut ke Pembayaran</span>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
-            <polyline points="12 13 12 7 9 10"/>
-            <polyline points="12 7 15 10"/>
+            <path d="M5 12h14m-7-7 7 7-7 7"/>
           </svg>
-          Kirim Pendaftaran Kolektif
         </button>
 
       </div>
 
     </form>
+
+    <!-- =================================================================== -->
+    <!-- 2. Halaman / Kartu Pembayaran Kolektif (Langkah 2) -->
+    <!-- =================================================================== -->
+    <div id="stepPembayaranCardKolektif" class="d-none">
+      
+      <!-- Header Langkah 2 -->
+      <div class="payment-step-header text-center pb-4 mb-4 border-bottom">
+        <span class="badge bg-warning text-dark fw-bold rounded-pill px-3 py-1 mb-2">
+          LANGKAH 2 DARI 2
+        </span>
+        <h3 class="fw-bold text-dark mb-1">Selesaikan Pembayaran Kolektif</h3>
+        <p class="text-secondary small max-w-xl mx-auto mb-3">
+          Data pendaftaran sekolah dan berkas rombongan peserta telah berhasil dicatat. Silakan transfer sesuai total tagihan di bawah ini dan unggah bukti transfer.
+        </p>
+
+        <!-- Box Kode Registrasi Kolektif -->
+        <div class="p-3 bg-light rounded-3 border d-inline-block px-4 my-2 text-center shadow-2xs">
+          <span class="fs-8 text-muted text-uppercase fw-semibold d-block mb-1">Kode Registrasi Kolektif</span>
+          <div class="d-flex align-items-center justify-content-center gap-2 flex-wrap">
+            <span id="paymentStepRegCodeKolektif" class="h4 fw-black text-primary font-monospace mb-0 user-select-all">-</span>
+            <button 
+              type="button" 
+              id="btnCopyPaymentRegCodeKolektif" 
+              class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 d-inline-flex align-items-center gap-1.5 fw-semibold shadow-2xs"
+              title="Salin Kode Registrasi Kolektif"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+              <span id="lblCopyPaymentRegCodeKolektif">Salin Kode</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detail Rincian Tagihan Kolektif -->
+      <div class="card border rounded-3 p-3.5 mb-4 bg-light shadow-2xs">
+        <h5 class="fw-bold text-dark fs-6 mb-3">Rincian Tagihan Rombongan Sekolah:</h5>
+        <div class="row g-2 small mb-3">
+          <div class="col-sm-4 text-muted">Nama Sekolah:</div>
+          <div class="col-sm-8 fw-semibold text-dark" id="paySummarySchoolKolektif">-</div>
+
+          <div class="col-sm-4 text-muted">Jenjang & Wilayah:</div>
+          <div class="col-sm-8 fw-semibold text-dark" id="paySummaryJenjangKolektif">-</div>
+
+          <div class="col-sm-4 text-muted">Guru Pembina / PIC:</div>
+          <div class="col-sm-8 fw-semibold text-dark" id="paySummaryPicKolektif">-</div>
+
+          <div class="col-sm-4 text-muted">Jumlah Peserta:</div>
+          <div class="col-sm-8 fw-semibold text-dark" id="paySummaryCountKolektif">-</div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center pt-2.5 border-top">
+          <div>
+            <span class="text-secondary small fw-medium d-block">Total Pembayaran Wajib Ditransfer:</span>
+            <span class="fs-8 text-muted" id="paySummaryTarifPerSiswaKolektif">Tarif: -</span>
+          </div>
+          <div class="text-end">
+            <div class="h3 fw-bolder text-primary mb-0" id="paySummaryTotalKolektif">Rp 0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rekening Resmi Pembayaran Panitia -->
+      <div class="payment-accounts-wrapper mb-4">
+        <div class="d-flex align-items-center gap-2 mb-2">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1d72f2" stroke-width="2.5" class="flex-shrink-0">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+          <span class="small fw-bold text-dark">
+            Rekening Resmi Pembayaran Panitia:
+          </span>
+        </div>
+
+        <div class="bank-account-card p-3.5 p-md-4 rounded-4 border bg-white shadow-2xs">
+          <!-- Header Kartu: Logo & Nama Bank -->
+          <div class="d-flex align-items-center mb-3 pb-2.5 border-bottom">
+            <div class="d-flex align-items-center gap-3">
+              <img 
+                src="/images/bri.webp" 
+                alt="Logo Bank BRI" 
+                width="36" 
+                height="36" 
+                style="object-fit: contain;"
+                loading="lazy"
+              />
+              <span class="fs-5 fw-bold text-dark mb-0" id="kolektifBankName">Bank BRI Cabang Kediri</span>
+            </div>
+          </div>
+
+          <!-- Bagian Nomor Rekening Panjang & Tombol Salin -->
+          <div class="p-3 bg-light rounded-3 border mb-2.5">
+            <span class="text-muted small d-block mb-1" style="font-size: 0.78rem;" id="kolektifBankNumberLabel">Nomor Rekening BRI:</span>
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2.5">
+              <div class="account-number font-monospace fw-bold text-primary fs-3 text-nowrap" id="kolektifBankNumber" style="letter-spacing: 1px;">
+                0033-0100-3455-560
+              </div>
+              <div>
+                <button 
+                  type="button" 
+                  class="btn btn-primary btn-sm px-3.5 py-1.5 rounded-pill fw-semibold btn-copy-account d-inline-flex align-items-center gap-1.5 shadow-2xs hover-scale" 
+                  id="kolektifBtnCopyAccount"
+                  data-copy="003301003455560" 
+                  title="Salin nomor rekening BRI"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                  </svg>
+                  <span>Salin No. Rekening</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer: Pemilik Rekening -->
+          <div class="d-flex align-items-center justify-content-between text-muted small px-1 flex-wrap gap-1" style="font-size: 0.82rem;">
+            <span>Atas Nama (Penerima):</span>
+            <strong class="text-dark fs-6" id="kolektifBankHolder">Heri Muda Setiawan</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bukti Transfer Upload -->
+      <div class="mb-4">
+        <label class="form-label small fw-semibold text-dark">
+          Upload Bukti Transfer Pembayaran <span class="text-danger">*</span>
+        </label>
+        <div class="upload-wrapper border rounded-3 p-3 bg-light">
+          <input 
+            type="file" 
+            id="transferProofKolektif" 
+            class="form-control" 
+            accept="image/png, image/jpeg, image/jpg, image/webp, application/pdf" 
+          />
+          <div class="form-text fs-8 text-muted mt-1.5">
+            Lampirkan struk transfer / bukti mutasi pembayaran panitia. Maks. 2MB.
+          </div>
+          <div id="transferProofErrorKolektif" class="text-danger small mt-1 d-none fw-semibold">
+            Silakan pilih file bukti transfer terlebih dahulu sebelum mengirim.
+          </div>
+        </div>
+      </div>
+
+      <!-- Tombol Aksi Pembayaran Kolektif -->
+      <div class="d-flex flex-column gap-2">
+        <button 
+          type="button" 
+          id="btnSubmitBuktiBayarKolektif" 
+          class="btn btn-success btn-lg w-100 fw-bold py-3 rounded-3 shadow-sm d-flex align-items-center justify-content-center gap-2 hover-scale"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          <span>Kirim Bukti Pembayaran Kolektif</span>
+        </button>
+
+        <button 
+          type="button" 
+          id="btnKembaliKeFormKolektif" 
+          class="btn btn-outline-secondary w-100 py-2.5 rounded-3 fw-semibold d-flex align-items-center justify-content-center gap-2"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 12H5m7 7-7-7 7-7"/>
+          </svg>
+          <span>Kembali / Ubah Berkas & Data Sekolah</span>
+        </button>
+      </div>
+
+    </div>
 
     <!-- Success Confirmation Receipt Card (Hidden by default) -->
     <div id="kolektifSuccessCard" class="d-none">
@@ -1460,7 +1561,10 @@ const kecamatanList = currentRegionSchools ? Object.keys(currentRegionSchools.di
       });
     }
 
-    // Form Submit Handler
+    // State Pendaftaran Aktif Kolektif (Langkah 1 -> Langkah 2)
+    let activeKolektifData: any = null;
+
+    // Form Submit Handler (Langkah 1: Validasi Berkas & Data Sekolah -> Pindah ke Pembayaran)
     if (formEl) {
       formEl.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -1496,13 +1600,6 @@ const kecamatanList = currentRegionSchools ? Object.keys(currentRegionSchools.di
           return;
         }
 
-        const proofInput = document.getElementById('transferProofKolektif') as HTMLInputElement;
-        if (!proofInput || !proofInput.files || proofInput.files.length === 0) {
-          formEl.classList.add('was-validated');
-          if (proofInput) proofInput.focus();
-          return;
-        }
-
         schoolMeta.namaSekolah = namaSekolahVal;
         schoolMeta.picName = picNameVal;
         schoolMeta.picJabatan = picJabatanVal;
@@ -1529,38 +1626,172 @@ const kecamatanList = currentRegionSchools ? Object.keys(currentRegionSchools.di
             return;
           }
 
-          btnSubmit.innerHTML = `
-            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-            Sedang Mengirim Pendaftaran...
-          `;
-
           const randomCode = Math.floor(1000 + Math.random() * 9000);
           const distCode = activeDistrictSlug.includes('kota') ? 'KDR' : (activeDistrictSlug.includes('nganjuk') ? 'NGJ' : 'KAB');
           const regCode = `KKA26-K-${distCode}-${randomCode}`;
-
-          // Send to Supabase & Google Apps Script
           const totalBayarNumber = parseInt(rincianTotalBayar?.textContent?.replace(/[^0-9]/g, '') || '0', 10) || 0;
+          const totalBayarText = rincianTotalBayar ? rincianTotalBayar.textContent : formatRp(totalBayarNumber);
+          const tarifPerSiswaText = rincianBiayaPerSiswa ? rincianBiayaPerSiswa.textContent : '-';
 
-          await processRegistration({
-            kode: regCode,
-            tipe: 'kolektif',
-            wilayah: schoolMeta.wilayah,
-            kecamatan: schoolMeta.kecamatan,
-            sekolah: schoolMeta.namaSekolah,
-            jenjang: schoolMeta.jenjang,
-            namaKontak: `${schoolMeta.picName} (${schoolMeta.picJabatan})`,
-            hpKontak: schoolMeta.waPic,
-            totalBiaya: totalBayarNumber,
+          // Simpan data ke state aktif kolektif
+          activeKolektifData = {
+            regCode,
+            schoolMeta: {
+              namaSekolah: namaSekolahVal,
+              picName: picNameVal,
+              picJabatan: picJabatanVal,
+              waPic: picWaVal,
+              wilayah: schoolMeta.wilayah,
+              kecamatan: schoolMeta.kecamatan,
+              jenjang: schoolMeta.jenjang
+            },
+            totalBayarNumber,
+            totalBayarText,
+            tarifPerSiswaText,
             students: parsedStudents.map(s => ({
               nama: s.nama,
               nisn: s.nisn,
               gender: s.gender,
               kelas: s.kelas
-            })),
-            proofFile: proofInput.files.length > 0 ? proofInput.files[0] : null
+            }))
+          };
+
+          // Isi data ke Halaman Pembayaran Kolektif (Langkah 2)
+          const payRegCodeEl = document.getElementById('paymentStepRegCodeKolektif');
+          if (payRegCodeEl) payRegCodeEl.textContent = regCode;
+
+          const paySummarySchoolKolektif = document.getElementById('paySummarySchoolKolektif');
+          if (paySummarySchoolKolektif) paySummarySchoolKolektif.textContent = namaSekolahVal;
+
+          const paySummaryJenjangKolektif = document.getElementById('paySummaryJenjangKolektif');
+          if (paySummaryJenjangKolektif) {
+            paySummaryJenjangKolektif.textContent = `${schoolMeta.jenjang} • ${schoolMeta.wilayah}${schoolMeta.kecamatan ? ` (Kec. ${schoolMeta.kecamatan})` : ''}`;
+          }
+
+          const paySummaryPicKolektif = document.getElementById('paySummaryPicKolektif');
+          if (paySummaryPicKolektif) {
+            paySummaryPicKolektif.textContent = `${picNameVal} (${picJabatanVal}) - ${picWaVal}`;
+          }
+
+          const paySummaryCountKolektif = document.getElementById('paySummaryCountKolektif');
+          if (paySummaryCountKolektif) {
+            paySummaryCountKolektif.textContent = `${parsedStudents.length} Siswa Terdaftar`;
+          }
+
+          const paySummaryTotalKolektif = document.getElementById('paySummaryTotalKolektif');
+          if (paySummaryTotalKolektif) {
+            paySummaryTotalKolektif.textContent = totalBayarText;
+          }
+
+          const paySummaryTarifPerSiswaKolektif = document.getElementById('paySummaryTarifPerSiswaKolektif');
+          if (paySummaryTarifPerSiswaKolektif) {
+            paySummaryTarifPerSiswaKolektif.textContent = `Tarif: ${tarifPerSiswaText} / siswa`;
+          }
+
+          // Pindah ke Langkah 2: Sembunyikan Form Pengisian, Tampilkan Kartu Pembayaran
+          formEl.classList.add('d-none');
+          const stepPembayaranCardKolektif = document.getElementById('stepPembayaranCardKolektif');
+          if (stepPembayaranCardKolektif) {
+            stepPembayaranCardKolektif.classList.remove('d-none');
+            window.scrollTo({ top: stepPembayaranCardKolektif.offsetTop - 80, behavior: 'smooth' });
+          }
+        } catch (submitErr) {
+          console.error('Submit Kolektif Step 1 error:', submitErr);
+          alert('Terjadi kendala saat memvalidasi pendaftaran. Silakan periksa koneksi internet Anda atau coba lagi.');
+        } finally {
+          btnSubmit.disabled = false;
+          btnSubmit.innerHTML = originalBtnText;
+        }
+      });
+    }
+
+    // Tombol Kembali ke Form Data Kolektif (Langkah 1)
+    const btnKembaliKeFormKolektif = document.getElementById('btnKembaliKeFormKolektif');
+    if (btnKembaliKeFormKolektif) {
+      btnKembaliKeFormKolektif.addEventListener('click', () => {
+        const stepPembayaranCardKolektif = document.getElementById('stepPembayaranCardKolektif');
+        if (stepPembayaranCardKolektif) stepPembayaranCardKolektif.classList.add('d-none');
+        formEl.classList.remove('d-none');
+        window.scrollTo({ top: formEl.offsetTop - 80, behavior: 'smooth' });
+      });
+    }
+
+    // Tombol Salin Kode Registrasi di Halaman Pembayaran Kolektif (Langkah 2)
+    const btnCopyPaymentRegCodeKolektif = document.getElementById('btnCopyPaymentRegCodeKolektif');
+    const lblCopyPaymentRegCodeKolektif = document.getElementById('lblCopyPaymentRegCodeKolektif');
+    const paymentStepRegCodeKolektifEl = document.getElementById('paymentStepRegCodeKolektif');
+    if (btnCopyPaymentRegCodeKolektif && paymentStepRegCodeKolektifEl) {
+      btnCopyPaymentRegCodeKolektif.addEventListener('click', async () => {
+        const code = paymentStepRegCodeKolektifEl.textContent?.trim();
+        if (!code || code === '-') return;
+        try {
+          await navigator.clipboard.writeText(code);
+        } catch {
+          const ta = document.createElement('textarea');
+          ta.value = code;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+        }
+        btnCopyPaymentRegCodeKolektif.classList.remove('btn-outline-primary');
+        btnCopyPaymentRegCodeKolektif.classList.add('btn-success');
+        if (lblCopyPaymentRegCodeKolektif) lblCopyPaymentRegCodeKolektif.textContent = 'Tersalin!';
+        setTimeout(() => {
+          btnCopyPaymentRegCodeKolektif.classList.remove('btn-success');
+          btnCopyPaymentRegCodeKolektif.classList.add('btn-outline-primary');
+          if (lblCopyPaymentRegCodeKolektif) lblCopyPaymentRegCodeKolektif.textContent = 'Salin Kode';
+        }, 2000);
+      });
+    }
+
+    // Tombol Kirim Bukti Pembayaran Kolektif (Langkah 2 Selesai -> Sukses)
+    const btnSubmitBuktiBayarKolektif = document.getElementById('btnSubmitBuktiBayarKolektif');
+    if (btnSubmitBuktiBayarKolektif) {
+      btnSubmitBuktiBayarKolektif.addEventListener('click', async () => {
+        if (!activeKolektifData) {
+          alert('Data pendaftaran rombongan sekolah belum siap. Silakan lengkapi formulir pendaftaran terlebih dahulu.');
+          const stepPembayaranCardKolektif = document.getElementById('stepPembayaranCardKolektif');
+          if (stepPembayaranCardKolektif) stepPembayaranCardKolektif.classList.add('d-none');
+          formEl.classList.remove('d-none');
+          return;
+        }
+
+        const proofInput = document.getElementById('transferProofKolektif') as HTMLInputElement;
+        const proofError = document.getElementById('transferProofErrorKolektif');
+        if (!proofInput || !proofInput.files || proofInput.files.length === 0) {
+          if (proofError) proofError.classList.remove('d-none');
+          if (proofInput) proofInput.focus();
+          return;
+        }
+        if (proofError) proofError.classList.add('d-none');
+
+        const originalBtnText = btnSubmitBuktiBayarKolektif.innerHTML;
+        btnSubmitBuktiBayarKolektif.disabled = true;
+        btnSubmitBuktiBayarKolektif.innerHTML = `
+          <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          Sedang Mengirim Pendaftaran...
+        `;
+
+        try {
+          const { regCode, schoolMeta: sMeta, totalBayarNumber, totalBayarText, students } = activeKolektifData;
+
+          // Kirim pendaftaran kolektif ke Supabase & Google Apps Script
+          await processRegistration({
+            kode: regCode,
+            tipe: 'kolektif',
+            wilayah: sMeta.wilayah,
+            kecamatan: sMeta.kecamatan,
+            sekolah: sMeta.namaSekolah,
+            jenjang: sMeta.jenjang,
+            namaKontak: `${sMeta.picName} (${sMeta.picJabatan})`,
+            hpKontak: sMeta.waPic,
+            totalBiaya: totalBayarNumber,
+            students: students,
+            proofFile: proofInput.files[0]
           });
 
-          // Prepare WhatsApp message with Registration Timestamp
+          // Siapkan pesan WhatsApp konfirmasi
           const now = new Date();
           const formattedDateTime = now.toLocaleDateString('id-ID', {
             weekday: 'long',
@@ -1577,20 +1808,20 @@ const kecamatanList = currentRegionSchools ? Object.keys(currentRegionSchools.di
           msg += `Halo Panitia KKA Radar Kediri,\nSaya mengonfirmasi pendaftaran kolektif sekolah via berkas Excel:\n\n`;
           msg += `*Waktu Pendaftaran*: ${formattedDateTime}\n`;
           msg += `*Kode Pendaftaran*: ${regCode}\n`;
-          msg += `*Nama Sekolah*: ${schoolMeta.namaSekolah}\n`;
-          msg += `*Guru Pembina / PIC*: ${schoolMeta.picName} (${schoolMeta.picJabatan})\n`;
-          msg += `*WhatsApp PIC*: ${schoolMeta.waPic}\n`;
-          msg += `*Wilayah*: ${schoolMeta.wilayah}\n`;
-          msg += `*Kecamatan*: ${schoolMeta.kecamatan ? (schoolMeta.kecamatan.startsWith('Kecamatan') ? schoolMeta.kecamatan : `Kecamatan ${schoolMeta.kecamatan}`) : '-'}\n`;
-          msg += `*Jenjang*: ${schoolMeta.jenjang}\n`;
-          msg += `*Jumlah Peserta*: ${parsedStudents.length} Siswa\n`;
-          msg += `*Total Pembayaran*: ${rincianTotalBayar ? rincianTotalBayar.textContent : '-'}\n\n`;
+          msg += `*Nama Sekolah*: ${sMeta.namaSekolah}\n`;
+          msg += `*Guru Pembina / PIC*: ${sMeta.picName} (${sMeta.picJabatan})\n`;
+          msg += `*WhatsApp PIC*: ${sMeta.waPic}\n`;
+          msg += `*Wilayah*: ${sMeta.wilayah}\n`;
+          msg += `*Kecamatan*: ${sMeta.kecamatan ? (sMeta.kecamatan.startsWith('Kecamatan') ? sMeta.kecamatan : `Kecamatan ${sMeta.kecamatan}`) : '-'}\n`;
+          msg += `*Jenjang*: ${sMeta.jenjang}\n`;
+          msg += `*Jumlah Peserta*: ${students.length} Siswa\n`;
+          msg += `*Total Pembayaran*: ${totalBayarText}\n\n`;
           msg += `*Daftar Siswa (Sampel)*:\n`;
-          parsedStudents.slice(0, 5).forEach(s => {
-            msg += `${s.no}. ${s.nama} | NISN: ${s.nisn} | ${s.kelas} (${s.gender})\n`;
+          students.slice(0, 5).forEach((s: any, idx: number) => {
+            msg += `${idx + 1}. ${s.nama} | NISN: ${s.nisn} | ${s.kelas} (${s.gender})\n`;
           });
-          if (parsedStudents.length > 5) {
-            msg += `... dan ${parsedStudents.length - 5} siswa lainnya terlampir di file Excel.\n`;
+          if (students.length > 5) {
+            msg += `... dan ${students.length - 5} siswa lainnya terlampir di file Excel.\n`;
           }
           msg += `\nBerkas Excel dan bukti transfer telah diunggah. Mohon verifikasi pendaftaran sekolah kami. Terima kasih.`;
 
@@ -1599,13 +1830,13 @@ const kecamatanList = currentRegionSchools ? Object.keys(currentRegionSchools.di
 
           const successDataKolektif = {
             regCode,
-            sekolah: schoolMeta.namaSekolah,
-            picName: `${schoolMeta.picName} (${schoolMeta.picJabatan})`,
-            wilayah: `${schoolMeta.wilayah}${schoolMeta.kecamatan ? ` (Kec. ${schoolMeta.kecamatan})` : ''}`,
-            jenjang: schoolMeta.jenjang,
-            waPic: schoolMeta.waPic,
-            countSiswa: `${parsedStudents.length} Siswa Terdaftar`,
-            totalBayar: rincianTotalBayar ? rincianTotalBayar.textContent : '-',
+            sekolah: sMeta.namaSekolah,
+            picName: `${sMeta.picName} (${sMeta.picJabatan})`,
+            wilayah: `${sMeta.wilayah}${sMeta.kecamatan ? ` (Kec. ${sMeta.kecamatan})` : ''}`,
+            jenjang: sMeta.jenjang,
+            waPic: sMeta.waPic,
+            countSiswa: `${students.length} Siswa Terdaftar`,
+            totalBayar: totalBayarText,
             waUrl
           };
 
@@ -1621,17 +1852,20 @@ const kecamatanList = currentRegionSchools ? Object.keys(currentRegionSchools.di
           newUrl.searchParams.set('sukses', regCode);
           window.history.replaceState({ kkaSukses: regCode }, '', newUrl.toString());
 
-          // Tampilkan Tampilan Sukses Kolektif
+          // Sembunyikan Kartu Pembayaran & Tampilkan Kartu Sukses Kolektif
+          const stepPembayaranCardKolektif = document.getElementById('stepPembayaranCardKolektif');
+          if (stepPembayaranCardKolektif) stepPembayaranCardKolektif.classList.add('d-none');
+
           renderSuccessStateKolektif(successDataKolektif);
           if (kolektifSuccessCard) {
             window.scrollTo({ top: kolektifSuccessCard.offsetTop - 80, behavior: 'smooth' });
           }
         } catch (submitErr) {
-          console.error('Submit error:', submitErr);
+          console.error('Submit Kolektif Step 2 error:', submitErr);
           alert('Terjadi kendala saat mengirim pendaftaran. Silakan periksa koneksi internet Anda atau coba lagi.');
         } finally {
-          btnSubmit.disabled = false;
-          btnSubmit.innerHTML = originalBtnText;
+          btnSubmitBuktiBayarKolektif.disabled = false;
+          btnSubmitBuktiBayarKolektif.innerHTML = originalBtnText;
         }
       });
     }
@@ -1781,6 +2015,17 @@ const kecamatanList = currentRegionSchools ? Object.keys(currentRegionSchools.di
         formEl.reset();
         formEl.classList.remove('was-validated');
         resetToState1();
+        activeKolektifData = null;
+
+        const stepPembayaranCardKolektif = document.getElementById('stepPembayaranCardKolektif');
+        if (stepPembayaranCardKolektif) stepPembayaranCardKolektif.classList.add('d-none');
+
+        const proofKolektif = document.getElementById('transferProofKolektif') as HTMLInputElement | null;
+        if (proofKolektif) proofKolektif.value = '';
+
+        const proofErrorKolektif = document.getElementById('transferProofErrorKolektif');
+        if (proofErrorKolektif) proofErrorKolektif.classList.add('d-none');
+
         if (templateJenjangSelect) templateJenjangSelect.value = '';
         if (templateKecamatanSelect) templateKecamatanSelect.value = '';
         if (templateDownloadBox) templateDownloadBox.style.display = 'none';

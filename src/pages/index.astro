@@ -28,18 +28,25 @@ const eventSchema = {
   "@type": "Event",
   name: "Kompetisi Kompetensi Akademik (KKA) 2026",
   description:
-    "Kompetisi akademik terbesar se-Karesidenan Kediri jenjang SD, SMP, SMA diselenggarakan oleh Jawa Pos Radar Kediri dan Neutron Yogyakarta.",
-  startDate: "2026-06-02",
-  endDate: "2026-07-25",
+    "Kompetisi akademik terbesar se-Karesidenan Kediri jenjang SD/MI, SMP/MTs, dan SMA/MA/SMK diselenggarakan oleh Jawa Pos Radar Kediri bekerjasama dengan Bimbel Neutron Yogyakarta.",
+  image: [
+    "https://kkaradarkediri.com/images/og-kka-2026.jpg",
+    "https://kkaradarkediri.com/images/hero.webp",
+    "https://kkaradarkediri.com/images/logo-kka.webp"
+  ],
+  startDate: "2026-06-02T08:00:00+07:00",
+  endDate: "2026-07-25T17:00:00+07:00",
   eventAttendanceMode: "https://schema.org/MixedEventAttendanceMode",
   eventStatus: "https://schema.org/EventScheduled",
   location: {
     "@type": "Place",
-    name: "Wilayah Karesidenan Kediri & Sekitarnya (Online & Grand Final Offline)",
+    name: "Wilayah Karesidenan Kediri & Sekitarnya (Babak Penyisihan Online & Grand Final Offline)",
     address: {
       "@type": "PostalAddress",
+      streetAddress: "Jl. Brawijaya No. 27 D, Pocanan",
       addressLocality: "Kediri",
       addressRegion: "Jawa Timur",
+      postalCode: "64129",
       addressCountry: "ID",
     },
   },
@@ -47,7 +54,50 @@ const eventSchema = {
     "@type": "Organization",
     name: "Jawa Pos Radar Kediri",
     url: "https://kkaradarkediri.com",
+    logo: "https://kkaradarkediri.com/images/logo-kka.webp"
   },
+  performer: [
+    {
+      "@type": "Organization",
+      name: "Jawa Pos Radar Kediri",
+      url: "https://radarkediri.jawapos.com"
+    },
+    {
+      "@type": "Organization",
+      name: "Bimbel Neutron Yogyakarta",
+      url: "https://neutron.co.id"
+    }
+  ],
+  offers: {
+    "@type": "AggregateOffer",
+    priceCurrency: "IDR",
+    lowPrice: "40000",
+    highPrice: "45000",
+    offerCount: "2",
+    availability: "https://schema.org/InStock",
+    url: "https://kkaradarkediri.com/daftar",
+    validFrom: "2026-06-02",
+    offers: [
+      {
+        "@type": "Offer",
+        name: "Pendaftaran Mandiri / Kolektif Gelombang 1",
+        price: "40000",
+        priceCurrency: "IDR",
+        availability: "https://schema.org/InStock",
+        url: "https://kkaradarkediri.com/daftar",
+        validFrom: "2026-06-02"
+      },
+      {
+        "@type": "Offer",
+        name: "Pendaftaran Gelombang 2",
+        price: "45000",
+        priceCurrency: "IDR",
+        availability: "https://schema.org/InStock",
+        url: "https://kkaradarkediri.com/daftar",
+        validFrom: "2026-06-25"
+      }
+    ]
+  }
 };
 
 const TESTIMONIALS = [
@@ -142,9 +192,52 @@ const faqSchema = {
   })),
 };
 
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "EducationalOrganization",
+  name: "Kompetisi Kompetensi Akademik (KKA) Jawa Pos Radar Kediri",
+  alternateName: ["KKA Radar Kediri", "KKA 2026", "Kompetisi Kompetensi Akademik 2026"],
+  url: "https://kkaradarkediri.com",
+  logo: "https://kkaradarkediri.com/images/logo-kka.webp",
+  description: "Kompetisi akademik terbesar se-Karesidenan Kediri jenjang SD/MI, SMP/MTs, dan SMA/MA/SMK berstandar TKA bekerjasama dengan Bimbel Neutron Yogyakarta.",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "Jl. Brawijaya No. 27 D, Pocanan, Kota Kediri",
+    addressLocality: "Kediri",
+    addressRegion: "Jawa Timur",
+    postalCode: "64129",
+    addressCountry: "ID"
+  },
+  contactPoint: {
+    "@type": "ContactPoint",
+    telephone: "+62-812-3550-8957",
+    contactType: "customer service",
+    areaServed: "ID",
+    availableLanguage: "Indonesian"
+  },
+  sameAs: [
+    "https://radarkediri.jawapos.com",
+    "https://www.instagram.com/radarkediri/"
+  ]
+};
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Kompetisi Kompetensi Akademik (KKA) 2026",
+  alternateName: "KKA Radar Kediri",
+  url: "https://kkaradarkediri.com",
+  inLanguage: "id-ID",
+  potentialAction: {
+    "@type": "SearchAction",
+    target: "https://kkaradarkediri.com/daftar/peserta?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+};
+
 const combinedSchema = {
   "@context": "https://schema.org",
-  "@graph": [eventSchema, faqSchema],
+  "@graph": [eventSchema, faqSchema, organizationSchema, websiteSchema],
 };
 ---
 

@@ -271,71 +271,9 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
         </div>
       </div>
 
-      <!-- 3. Pembayaran -->
+      <!-- 3. Estimasi Biaya Pendaftaran -->
       <div class="form-section mb-4">
-        <h3 class="h5 fw-bold text-dark mb-3">3. Pembayaran</h3>
-
-        <!-- Rekening Pembayaran Resmi -->
-        <div class="payment-accounts-wrapper mb-4">
-          <div class="d-flex align-items-center gap-2 mb-2">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1d72f2" stroke-width="2.5" class="flex-shrink-0">
-              <circle cx="12" cy="12" r="10"/>
-              <line x1="12" y1="16" x2="12" y2="12"/>
-              <line x1="12" y1="8" x2="12.01" y2="8"/>
-            </svg>
-            <span class="small fw-bold text-dark">
-              Rekening Resmi Pembayaran Panitia:
-            </span>
-          </div>
-
-          <div class="bank-account-card p-3.5 p-md-4 rounded-4 border bg-white shadow-2xs">
-            <!-- Header Kartu: Logo & Nama Bank -->
-            <div class="d-flex align-items-center mb-3 pb-2.5 border-bottom">
-              <div class="d-flex align-items-center gap-3">
-                <img 
-                  src="/images/bri.webp" 
-                  alt="Logo Bank BRI" 
-                  width="36" 
-                  height="36" 
-                  style="object-fit: contain;"
-                  loading="lazy"
-                />
-                <span class="fs-5 fw-bold text-dark mb-0" id="mandiriBankName">Bank BRI Cabang Kediri</span>
-              </div>
-            </div>
-
-            <!-- Bagian Nomor Rekening Panjang & Tombol Salin -->
-            <div class="p-3 bg-light rounded-3 border mb-2.5">
-              <span class="text-muted small d-block mb-1" style="font-size: 0.78rem;" id="mandiriBankNumberLabel">Nomor Rekening BRI:</span>
-              <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2.5">
-                <div class="account-number font-monospace fw-bold text-primary fs-3 text-nowrap" id="mandiriBankNumber" style="letter-spacing: 1px;">
-                  0033-0100-3455-560
-                </div>
-                <div>
-                  <button 
-                    type="button" 
-                    class="btn btn-primary btn-sm px-3.5 py-1.5 rounded-pill fw-semibold btn-copy-account d-inline-flex align-items-center gap-1.5 shadow-2xs hover-scale" 
-                    id="mandiriBtnCopyAccount"
-                    data-copy="003301003455560" 
-                    title="Salin nomor rekening BRI"
-                  >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-                    </svg>
-                    <span>Salin No. Rekening</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Footer: Pemilik Rekening -->
-            <div class="d-flex align-items-center justify-content-between text-muted small px-1 flex-wrap gap-1" style="font-size: 0.82rem;">
-              <span>Atas Nama (Penerima):</span>
-              <strong class="text-dark fs-6" id="mandiriBankHolder">Heri Muda Setiawan</strong>
-            </div>
-          </div>
-        </div>
+        <h3 class="h5 fw-bold text-dark mb-3">3. Estimasi Biaya Pendaftaran</h3>
 
         <!-- Biaya & Rincian Tagihan Card -->
         <div class="pricing-summary-card rounded-4 border mb-4">
@@ -363,41 +301,203 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
           </div>
         </div>
 
-        <!-- Upload Bukti Transfer -->
-        <div class="mb-4">
-          <label class="form-label small fw-semibold text-dark">
-            Bukti Transfer (Format Gambar, max 2MB) <span class="text-danger">*</span>
-          </label>
-          <div class="upload-box-wrapper border rounded-3 p-3 bg-light">
-            <input 
-              type="file" 
-              id="transferProof" 
-              class="form-control" 
-              accept="image/png, image/jpeg, image/jpg, image/webp, application/pdf" 
-              required 
-            />
-            <div class="form-text fs-8 text-muted mt-1.5">
-              Lampirkan struk ATM / mutasi m-banking / bukti setor tunai. Maks. 2MB.
-            </div>
-            <div class="invalid-feedback">Bukti transfer pembayaran wajib dilampirkan.</div>
+        <div class="alert alert-info border-info-subtle d-flex align-items-center gap-2.5 py-2.5 px-3 mb-4 rounded-3 small">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-info shrink-0">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+          <div class="text-dark">
+            Pastikan seluruh data sekolah dan siswa di atas sudah benar. Nomor rekening pembayaran panitia dan form unggah bukti transfer akan ditampilkan pada <strong>Halaman Pembayaran (Langkah 2)</strong> setelah Anda menekan tombol di bawah.
           </div>
         </div>
 
-        <!-- Tombol Daftar -->
+        <!-- Tombol Daftar Sekarang (Langkah 1) -->
         <button 
           type="submit" 
           id="btnSubmitDaftar" 
           class="btn btn-primary btn-lg w-100 fw-bold py-3 rounded-3 shadow-sm d-flex align-items-center justify-content-center gap-2 hover-scale"
         >
+          <span>Daftar & Lanjut ke Pembayaran</span>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <polyline points="20 6 9 17 4 12"/>
+            <path d="M5 12h14m-7-7 7 7-7 7"/>
           </svg>
-          Daftar
         </button>
 
       </div>
 
     </form>
+
+    <!-- =================================================================== -->
+    <!-- 2. Halaman / Kartu Pembayaran (Muncul Setelah Form Data Divalidasi) -->
+    <!-- =================================================================== -->
+    <div id="stepPembayaranCard" class="d-none">
+      
+      <!-- Header Langkah 2 -->
+      <div class="payment-step-header text-center pb-4 mb-4 border-bottom">
+        <span class="badge bg-warning text-dark fw-bold rounded-pill px-3 py-1 mb-2">
+          LANGKAH 2 DARI 2
+        </span>
+        <h3 class="fw-bold text-dark mb-1">Selesaikan Pembayaran Pendaftaran</h3>
+        <p class="text-secondary small max-w-xl mx-auto mb-3">
+          Data pendaftaran telah berhasil dicatat. Silakan lakukan transfer pembayaran ke rekening resmi panitia di bawah ini, lalu unggah bukti transfer untuk verifikasi.
+        </p>
+
+        <!-- Box Kode Registrasi -->
+        <div class="p-3 bg-light rounded-3 border d-inline-block px-4 my-2 text-center shadow-2xs">
+          <span class="fs-8 text-muted text-uppercase fw-semibold d-block mb-1">Kode Registrasi Pendaftaran</span>
+          <div class="d-flex align-items-center justify-content-center gap-2 flex-wrap">
+            <span id="paymentStepRegCode" class="h4 fw-black text-primary font-monospace mb-0 user-select-all">-</span>
+            <button 
+              type="button" 
+              id="btnCopyPaymentRegCode" 
+              class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 d-inline-flex align-items-center gap-1.5 fw-semibold shadow-2xs"
+              title="Salin Kode Registrasi"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+              <span id="lblCopyPaymentRegCode">Salin Kode</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detail Rincian Tagihan yang Harus Dibayar -->
+      <div class="card border rounded-3 p-3.5 mb-4 bg-light shadow-2xs">
+        <h5 class="fw-bold text-dark fs-6 mb-3">Rincian Tagihan Pendaftaran:</h5>
+        <div class="row g-2 small mb-3">
+          <div class="col-sm-4 text-muted">Asal Sekolah:</div>
+          <div class="col-sm-8 fw-semibold text-dark" id="paySummarySchool">-</div>
+
+          <div class="col-sm-4 text-muted">Jenjang & Wilayah:</div>
+          <div class="col-sm-8 fw-semibold text-dark" id="paySummaryJenjang">-</div>
+
+          <div class="col-sm-4 text-muted">Jumlah Peserta:</div>
+          <div class="col-sm-8 fw-semibold text-dark" id="paySummaryCount">-</div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center pt-2.5 border-top">
+          <div>
+            <span class="text-secondary small fw-medium d-block">Total yang Wajib Ditransfer:</span>
+            <span class="fs-8 text-muted" id="paySummaryTarifPerSiswa">Tarif: -</span>
+          </div>
+          <div class="text-end">
+            <div class="h3 fw-bolder text-primary mb-0" id="paySummaryTotal">Rp 0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rekening Resmi Pembayaran Panitia -->
+      <div class="payment-accounts-wrapper mb-4">
+        <div class="d-flex align-items-center gap-2 mb-2">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1d72f2" stroke-width="2.5" class="flex-shrink-0">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+          <span class="small fw-bold text-dark">
+            Rekening Resmi Pembayaran Panitia:
+          </span>
+        </div>
+
+        <div class="bank-account-card p-3.5 p-md-4 rounded-4 border bg-white shadow-2xs">
+          <!-- Header Kartu: Logo & Nama Bank -->
+          <div class="d-flex align-items-center mb-3 pb-2.5 border-bottom">
+            <div class="d-flex align-items-center gap-3">
+              <img 
+                src="/images/bri.webp" 
+                alt="Logo Bank BRI" 
+                width="36" 
+                height="36" 
+                style="object-fit: contain;"
+                loading="lazy"
+              />
+              <span class="fs-5 fw-bold text-dark mb-0" id="mandiriBankName">Bank BRI Cabang Kediri</span>
+            </div>
+          </div>
+
+          <!-- Bagian Nomor Rekening & Tombol Salin -->
+          <div class="p-3 bg-light rounded-3 border mb-2.5">
+            <span class="text-muted small d-block mb-1" style="font-size: 0.78rem;" id="mandiriBankNumberLabel">Nomor Rekening BRI:</span>
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2.5">
+              <div class="account-number font-monospace fw-bold text-primary fs-3 text-nowrap" id="mandiriBankNumber" style="letter-spacing: 1px;">
+                0033-0100-3455-560
+              </div>
+              <div>
+                <button 
+                  type="button" 
+                  class="btn btn-primary btn-sm px-3.5 py-1.5 rounded-pill fw-semibold btn-copy-account d-inline-flex align-items-center gap-1.5 shadow-2xs hover-scale" 
+                  id="mandiriBtnCopyAccount"
+                  data-copy="003301003455560" 
+                  title="Salin nomor rekening BRI"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                  </svg>
+                  <span>Salin No. Rekening</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer: Pemilik Rekening -->
+          <div class="d-flex align-items-center justify-content-between text-muted small px-1 flex-wrap gap-1" style="font-size: 0.82rem;">
+            <span>Atas Nama (Penerima):</span>
+            <strong class="text-dark fs-6" id="mandiriBankHolder">Heri Muda Setiawan</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upload Bukti Transfer -->
+      <div class="mb-4">
+        <label class="form-label small fw-semibold text-dark">
+          Upload Bukti Transfer Pembayaran <span class="text-danger">*</span>
+        </label>
+        <div class="upload-box-wrapper border rounded-3 p-3 bg-light">
+          <input 
+            type="file" 
+            id="transferProof" 
+            class="form-control" 
+            accept="image/png, image/jpeg, image/jpg, image/webp, application/pdf" 
+          />
+          <div class="form-text fs-8 text-muted mt-1.5">
+            Lampirkan struk ATM / mutasi m-banking / bukti setor tunai. Maks. 2MB.
+          </div>
+          <div id="transferProofError" class="text-danger small mt-1 d-none fw-semibold">
+            Silakan pilih file bukti transfer terlebih dahulu sebelum mengirim.
+          </div>
+        </div>
+      </div>
+
+      <!-- Tombol Aksi Pembayaran -->
+      <div class="d-flex flex-column gap-2">
+        <button 
+          type="button" 
+          id="btnSubmitBuktiBayar" 
+          class="btn btn-success btn-lg w-100 fw-bold py-3 rounded-3 shadow-sm d-flex align-items-center justify-content-center gap-2 hover-scale"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          <span>Kirim Bukti Pembayaran</span>
+        </button>
+
+        <button 
+          type="button" 
+          id="btnKembaliKeForm" 
+          class="btn btn-outline-secondary w-100 py-2.5 rounded-3 fw-semibold d-flex align-items-center justify-content-center gap-2"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 12H5m7 7-7-7 7-7"/>
+          </svg>
+          <span>Kembali / Ubah Data Pendaftaran</span>
+        </button>
+      </div>
+
+    </div>
 
     <!-- Success Confirmation Receipt Card (Hidden by default) -->
     <div id="successConfirmationCard" class="d-none">
@@ -1120,13 +1220,13 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
         }
       }
 
-      // Show Loading Spinner on Submit Button
+      // Step 1: Validasi Data Pendaftaran & Keunikan NISN
       const btnSubmit = document.getElementById('btnSubmitDaftar');
       const originalBtnText = btnSubmit.innerHTML;
       btnSubmit.disabled = true;
       btnSubmit.innerHTML = `
         <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-        Memproses Pendaftaran...
+        Memverifikasi Data Peserta...
       `;
 
       try {
@@ -1166,11 +1266,6 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
         }
 
         // 1b. Validasi Keunikan NISN (Tolak Otomatis Jika Sudah Terdaftar)
-        btnSubmit.innerHTML = `
-          <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-          Memvalidasi Data Peserta...
-        `;
-
         const nisnList = studentsData.map(s => s.nisn);
         const nisnCheck = await checkNisnDuplicates(nisnList);
         if (!nisnCheck.valid) {
@@ -1180,106 +1275,233 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
           return;
         }
 
-        btnSubmit.innerHTML = `
-          <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-          Sedang Mengirim Pendaftaran...
-        `;
-
         const totalBiayaVal = updatePricing();
         const randomCode = Math.floor(1000 + Math.random() * 9000);
         const regCode = `KKA26-M-${regionSlug.substring(0, 3).toUpperCase()}-${randomCode}`;
 
-        // Send to Supabase & Google Apps Script
-        await processRegistration({
-          kode: regCode,
-          tipe: 'mandiri',
-          wilayah: regionName,
-          kecamatan: kec,
-          sekolah: schoolName,
-          jenjang: jenjangText,
-          namaKontak: studentsData[0]?.name || schoolName,
-          hpKontak: waPJ,
-          totalBiaya: totalBiayaVal,
-          students: studentsData.map(s => ({
-            nama: s.name,
-            nisn: s.nisn,
-            gender: s.gender,
-            kelas: s.sClass
-          })),
-          proofFile: fileInput.files.length > 0 ? fileInput.files[0] : null
-        });
-
-        // Generate WhatsApp Link with Registration Timestamp
-        const now = new Date();
-        const formattedDateTime = now.toLocaleDateString('id-ID', {
-          weekday: 'long',
-          day: 'numeric',
-          month: 'long',
-          year: 'numeric'
-        }) + ' | ' + now.toLocaleTimeString('id-ID', {
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: false
-        }).replace(':', '.') + ' WIB';
-
-        let waMessage = `*KONFIRMASI PENDAFTARAN MANDIRI KKA 2026*\n`;
-        waMessage += `Halo Panitia KKA Radar Kediri,\nSaya mengonfirmasi pendaftaran mandiri dengan rincian berikut:\n\n`;
-        waMessage += `*Waktu Pendaftaran*: ${formattedDateTime}\n`;
-        waMessage += `*Kode Registrasi*: ${regCode}\n`;
-        waMessage += `*Wilayah*: ${regionName}\n`;
-        waMessage += `*Kecamatan*: Kecamatan ${kec}\n`;
-        waMessage += `*Jenjang*: ${jenjangText}\n`;
-        waMessage += `*Asal Sekolah*: ${schoolName}\n`;
-        waMessage += `*WhatsApp PJ*: ${waPJ}\n\n`;
-        waMessage += `*Daftar Siswa Peserta (${studentsData.length} Orang)*:\n`;
-        studentsData.forEach(s => {
-          waMessage += `${s.no}. ${s.name} | NISN: ${s.nisn} | ${s.sClass} (${s.gender})\n`;
-        });
-        waMessage += `\n*Total Biaya*: ${formatRp(totalBiayaVal)}\n`;
-        waMessage += `*Bukti Transfer*: Telah dilampirkan via web.\n\n`;
-        waMessage += `Mohon segera diverifikasi untuk pendaftaran kami. Terima kasih.`;
-
-        const waTarget = currentAdminWa || '6281235508957';
-        const waUrl = `https://wa.me/${waTarget}?text=${encodeURIComponent(waMessage)}`;
-
-        const successData = {
+        // Simpan state pendaftaran aktif untuk langkah 2 (Pembayaran)
+        activeMandiriData = {
           regCode,
-          wilayahKec: `${regionName} (Kec. ${kec})`,
-          sekolah: schoolName,
-          jenjang: jenjangText,
-          wa: waPJ,
-          totalBiayaText: `${formatRp(totalBiayaVal)} (${studentsData.length} Siswa)`,
-          students: studentsData.map(s => ({
-            name: s.name,
-            nisn: s.nisn,
-            sClass: s.sClass,
-            gender: s.gender
-          })),
-          waUrl
+          regionSlug,
+          regionName,
+          kec,
+          jenjangVal,
+          jenjangText,
+          schoolName,
+          waPJ,
+          totalBiayaVal,
+          studentsData
         };
 
-        // Simpan sesi pendaftaran sukses agar tahan refresh browser
-        try {
-          sessionStorage.setItem('kka_mandiri_success_' + regCode, JSON.stringify(successData));
-        } catch (e) {
-          console.warn('Session save warning:', e);
+        // Isi data ke Halaman Pembayaran (Langkah 2)
+        const paymentStepRegCode = document.getElementById('paymentStepRegCode');
+        if (paymentStepRegCode) paymentStepRegCode.textContent = regCode;
+
+        const paySummarySchool = document.getElementById('paySummarySchool');
+        if (paySummarySchool) paySummarySchool.textContent = schoolName;
+
+        const paySummaryJenjang = document.getElementById('paySummaryJenjang');
+        if (paySummaryJenjang) paySummaryJenjang.textContent = `${jenjangText} • ${regionName} (Kec. ${kec})`;
+
+        const paySummaryCount = document.getElementById('paySummaryCount');
+        if (paySummaryCount) paySummaryCount.textContent = `${studentsData.length} Siswa`;
+
+        const paySummaryTotal = document.getElementById('paySummaryTotal');
+        if (paySummaryTotal) paySummaryTotal.textContent = formatRp(totalBiayaVal);
+
+        const paySummaryTarifPerSiswa = document.getElementById('paySummaryTarifPerSiswa');
+        if (paySummaryTarifPerSiswa) {
+          paySummaryTarifPerSiswa.textContent = `Tarif: ${formatRp(totalBiayaVal / studentsData.length)} / siswa`;
         }
 
-        // Perbarui URL browser tanpa reload (misal: ?sukses=KKA26-M-KOT-1234)
-        const newUrl = new URL(window.location.href);
-        newUrl.searchParams.set('sukses', regCode);
-        window.history.replaceState({ kkaSukses: regCode }, '', newUrl.toString());
+        // Pindah ke Langkah 2: Sembunyikan Form Pengisian Data, Tampilkan Kartu Pembayaran
+        form.classList.add('d-none');
+        const stepPembayaranCard = document.getElementById('stepPembayaranCard');
+        if (stepPembayaranCard) {
+          stepPembayaranCard.classList.remove('d-none');
+          window.scrollTo({ top: stepPembayaranCard.offsetTop - 80, behavior: 'smooth' });
+        }
 
-        // Tampilkan Tampilan Sukses
-        renderSuccessState(successData);
-        window.scrollTo({ top: successCard.offsetTop - 80, behavior: 'smooth' });
       } catch (submitErr) {
-        console.error('Submit error:', submitErr);
+        console.error('Submit Step 1 error:', submitErr);
+        alert('Terjadi kendala saat memverifikasi data. Silakan coba lagi.');
       } finally {
         btnSubmit.disabled = false;
         btnSubmit.innerHTML = originalBtnText;
       }
     });
+
+    // Variabel Penampung State Pendaftaran Antar-Langkah
+    let activeMandiriData: any = null;
+
+    // Tombol Kembali ke Form Data (Langkah 1)
+    const btnKembaliKeForm = document.getElementById('btnKembaliKeForm');
+    if (btnKembaliKeForm) {
+      btnKembaliKeForm.addEventListener('click', () => {
+        const stepPembayaranCard = document.getElementById('stepPembayaranCard');
+        if (stepPembayaranCard) stepPembayaranCard.classList.add('d-none');
+        form.classList.remove('d-none');
+        window.scrollTo({ top: form.offsetTop - 80, behavior: 'smooth' });
+      });
+    }
+
+    // Tombol Salin Kode Registrasi di Halaman Pembayaran (Langkah 2)
+    const btnCopyPaymentRegCode = document.getElementById('btnCopyPaymentRegCode');
+    const lblCopyPaymentRegCode = document.getElementById('lblCopyPaymentRegCode');
+    const paymentStepRegCodeEl = document.getElementById('paymentStepRegCode');
+    if (btnCopyPaymentRegCode && paymentStepRegCodeEl) {
+      btnCopyPaymentRegCode.addEventListener('click', async () => {
+        const code = paymentStepRegCodeEl.textContent?.trim();
+        if (!code || code === '-') return;
+        try {
+          await navigator.clipboard.writeText(code);
+        } catch {
+          const ta = document.createElement('textarea');
+          ta.value = code;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+        }
+        btnCopyPaymentRegCode.classList.remove('btn-outline-primary');
+        btnCopyPaymentRegCode.classList.add('btn-success');
+        if (lblCopyPaymentRegCode) lblCopyPaymentRegCode.textContent = 'Tersalin!';
+        setTimeout(() => {
+          btnCopyPaymentRegCode.classList.remove('btn-success');
+          btnCopyPaymentRegCode.classList.add('btn-outline-primary');
+          if (lblCopyPaymentRegCode) lblCopyPaymentRegCode.textContent = 'Salin Kode';
+        }, 2000);
+      });
+    }
+
+    // Tombol Kirim Bukti Pembayaran (Langkah 2 Selesai -> Sukses)
+    const btnSubmitBuktiBayar = document.getElementById('btnSubmitBuktiBayar');
+    if (btnSubmitBuktiBayar) {
+      btnSubmitBuktiBayar.addEventListener('click', async () => {
+        if (!activeMandiriData) {
+          alert('Data pendaftaran belum siap. Silakan lengkapi formulir pendaftaran terlebih dahulu.');
+          const stepPembayaranCard = document.getElementById('stepPembayaranCard');
+          if (stepPembayaranCard) stepPembayaranCard.classList.add('d-none');
+          form.classList.remove('d-none');
+          return;
+        }
+
+        const proofInput = document.getElementById('transferProof') as HTMLInputElement;
+        const proofError = document.getElementById('transferProofError');
+        if (!proofInput || !proofInput.files || proofInput.files.length === 0) {
+          if (proofError) proofError.classList.remove('d-none');
+          if (proofInput) proofInput.focus();
+          return;
+        }
+        if (proofError) proofError.classList.add('d-none');
+
+        const originalBtnText = btnSubmitBuktiBayar.innerHTML;
+        btnSubmitBuktiBayar.disabled = true;
+        btnSubmitBuktiBayar.innerHTML = `
+          <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          Sedang Mengirim Bukti Pembayaran...
+        `;
+
+        try {
+          const { regCode, regionName, kec, schoolName, jenjangText, waPJ, totalBiayaVal, studentsData } = activeMandiriData;
+
+          // Kirim pendaftaran lengkap beserta bukti transfer ke Supabase & Google Apps Script
+          await processRegistration({
+            kode: regCode,
+            tipe: 'mandiri',
+            wilayah: regionName,
+            kecamatan: kec,
+            sekolah: schoolName,
+            jenjang: jenjangText,
+            namaKontak: studentsData[0]?.name || schoolName,
+            hpKontak: waPJ,
+            totalBiaya: totalBiayaVal,
+            students: studentsData.map((s: any) => ({
+              nama: s.name,
+              nisn: s.nisn,
+              gender: s.gender,
+              kelas: s.sClass
+            })),
+            proofFile: proofInput.files[0]
+          });
+
+          // Siapkan pesan WhatsApp konfirmasi
+          const now = new Date();
+          const formattedDateTime = now.toLocaleDateString('id-ID', {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+          }) + ' | ' + now.toLocaleTimeString('id-ID', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+          }).replace(':', '.') + ' WIB';
+
+          let waMessage = `*KONFIRMASI PENDAFTARAN MANDIRI KKA 2026*\n`;
+          waMessage += `Halo Panitia KKA Radar Kediri,\nSaya mengonfirmasi pendaftaran mandiri dengan rincian berikut:\n\n`;
+          waMessage += `*Waktu Pendaftaran*: ${formattedDateTime}\n`;
+          waMessage += `*Kode Registrasi*: ${regCode}\n`;
+          waMessage += `*Wilayah*: ${regionName}\n`;
+          waMessage += `*Kecamatan*: Kecamatan ${kec}\n`;
+          waMessage += `*Jenjang*: ${jenjangText}\n`;
+          waMessage += `*Asal Sekolah*: ${schoolName}\n`;
+          waMessage += `*WhatsApp PJ*: ${waPJ}\n\n`;
+          waMessage += `*Daftar Siswa Peserta (${studentsData.length} Orang)*:\n`;
+          studentsData.forEach((s: any) => {
+            waMessage += `${s.no}. ${s.name} | NISN: ${s.nisn} | ${s.sClass} (${s.gender})\n`;
+          });
+          waMessage += `\n*Total Biaya*: ${formatRp(totalBiayaVal)}\n`;
+          waMessage += `*Bukti Transfer*: Telah dilampirkan via web.\n\n`;
+          waMessage += `Mohon segera diverifikasi untuk pendaftaran kami. Terima kasih.`;
+
+          const waTarget = currentAdminWa || '6281235508957';
+          const waUrl = `https://wa.me/${waTarget}?text=${encodeURIComponent(waMessage)}`;
+
+          const successData = {
+            regCode,
+            wilayahKec: `${regionName} (Kec. ${kec})`,
+            sekolah: schoolName,
+            jenjang: jenjangText,
+            wa: waPJ,
+            totalBiayaText: `${formatRp(totalBiayaVal)} (${studentsData.length} Siswa)`,
+            students: studentsData.map((s: any) => ({
+              name: s.name,
+              nisn: s.nisn,
+              sClass: s.sClass,
+              gender: s.gender
+            })),
+            waUrl
+          };
+
+          // Simpan sesi pendaftaran sukses agar tahan refresh browser
+          try {
+            sessionStorage.setItem('kka_mandiri_success_' + regCode, JSON.stringify(successData));
+          } catch (e) {
+            console.warn('Session save warning:', e);
+          }
+
+          // Perbarui URL browser tanpa reload (?sukses=...)
+          const newUrl = new URL(window.location.href);
+          newUrl.searchParams.set('sukses', regCode);
+          window.history.replaceState({ kkaSukses: regCode }, '', newUrl.toString());
+
+          // Sembunyikan Halaman Pembayaran, Tampilkan Bukti Sukses Final
+          const stepPembayaranCard = document.getElementById('stepPembayaranCard');
+          if (stepPembayaranCard) stepPembayaranCard.classList.add('d-none');
+
+          renderSuccessState(successData);
+          window.scrollTo({ top: successCard.offsetTop - 80, behavior: 'smooth' });
+
+        } catch (submitErr) {
+          console.error('Submit payment proof error:', submitErr);
+          alert('Terjadi kendala saat mengirim bukti pembayaran. Silakan periksa koneksi Anda dan coba lagi.');
+        } finally {
+          btnSubmitBuktiBayar.disabled = false;
+          btnSubmitBuktiBayar.innerHTML = originalBtnText;
+        }
+      });
+    }
 
     // Helper Fungsi Render Tampilan Sukses Mandiri
     function renderSuccessState(data: any) {
@@ -1383,6 +1605,12 @@ const regionsList = Object.keys(SCHOOL_DATABASE).map(slug => ({
       const cleanUrl = new URL(window.location.href);
       cleanUrl.searchParams.delete('sukses');
       window.history.replaceState({}, '', cleanUrl.pathname + (cleanUrl.search ? cleanUrl.search : ''));
+
+      activeMandiriData = null;
+      const stepPembayaranCard = document.getElementById('stepPembayaranCard');
+      if (stepPembayaranCard) stepPembayaranCard.classList.add('d-none');
+      const proofInput = document.getElementById('transferProof') as HTMLInputElement;
+      if (proofInput) proofInput.value = '';
 
       form.reset();
       form.classList.remove('was-validated');

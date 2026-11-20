@@ -1,6 +1,58 @@
+# Robots.txt for Kompetisi Kompetensi Akademik (KKA) Jawa Pos Radar Kediri
+# https://kkaradarkediri.com
+
 User-agent: *
 Allow: /
+Disallow: /admin/
 Disallow: /admin
+
+# Search Engine Crawlers
+User-agent: Googlebot
+Allow: /
 Disallow: /admin/
 
+User-agent: Bingbot
+Allow: /
+Disallow: /admin/
+
+# AI Search & Large Language Model Crawlers (Generative Engine Optimization)
+User-agent: GPTBot
+Allow: /
+Disallow: /admin/
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /admin/
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /admin/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /admin/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /admin/
+
+User-agent: anthropic-ai
+Allow: /
+Disallow: /admin/
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /admin/
+
+User-agent: Applebot-Extended
+Allow: /
+Disallow: /admin/
+
+User-agent: CCBot
+Allow: /
+Disallow: /admin/
+
+# Sitemap & LLM Knowledge Files
 Sitemap: https://kkaradarkediri.com/sitemap-index.xml
+Sitemap: https://kkaradarkediri.com/sitemap-0.xml
+

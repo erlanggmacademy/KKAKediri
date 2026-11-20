@@ -21,12 +21,44 @@ const {
 
 const canonicalURL = canonical || new URL(Astro.url.pathname, Astro.site || 'https://kkaradarkediri.com').href;
 const fullOgImage = new URL(ogImage, Astro.site || 'https://kkaradarkediri.com').href;
+
+// Default WebPage Schema for subpages without a custom schema
+const defaultWebPageSchema = !schema && !noindex ? {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": title,
+  "description": description,
+  "url": canonicalURL,
+  "inLanguage": "id-ID",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "Kompetisi Kompetensi Akademik (KKA) 2026",
+    "url": "https://kkaradarkediri.com"
+  },
+  "publisher": {
+    "@type": "EducationalOrganization",
+    "name": "Jawa Pos Radar Kediri",
+    "url": "https://kkaradarkediri.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://kkaradarkediri.com/images/logo-kka.webp"
+    }
+  }
+} : null;
 ---
 
 <title>{title}</title>
 <meta name="description" content={description} />
 <link rel="canonical" href={canonicalURL} />
 {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+<!-- SEO & Geographical Meta Tags -->
+<meta name="author" content="Jawa Pos Radar Kediri" />
+<meta name="keywords" content="KKA 2026, Kompetisi Kompetensi Akademik, Radar Kediri, Lomba Akademik Kediri, Olimpiade SD Kediri, Lomba SMP Nganjuk, TKA SMA Blitar, Bimbel Neutron Yogyakarta, Simulasi TKA Karesidenan Kediri" />
+<meta name="geo.region" content="ID-JI" />
+<meta name="geo.placename" content="Kediri, Jawa Timur" />
+<meta name="geo.position" content="-7.8166;112.0167" />
+<meta name="ICBM" content="-7.8166, 112.0167" />
 
 <!-- Open Graph / Facebook / WhatsApp -->
 <meta property="og:type" content={type} />
@@ -38,7 +70,7 @@ const fullOgImage = new URL(ogImage, Astro.site || 'https://kkaradarkediri.com')
 <meta property="og:image:type" content="image/jpeg" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="675" />
-<meta property="og:image:alt" content="Kompetisi Kompetensi Akademik (KKA) 2026 - Jawa Pos Radar Kediri" />
+<meta property="og:image:alt" content={title} />
 <meta property="og:locale" content="id_ID" />
 <meta property="og:site_name" content="KKA Jawa Pos Radar Kediri" />
 <link rel="image_src" href={fullOgImage} />
@@ -51,7 +83,11 @@ const fullOgImage = new URL(ogImage, Astro.site || 'https://kkaradarkediri.com')
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={fullOgImage} />
 
-<!-- JSON-LD Structured Data if provided -->
-{schema && (
+<!-- JSON-LD Structured Data -->
+{schema ? (
   <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+) : (
+  defaultWebPageSchema && (
+    <script type="application/ld+json" set:html={JSON.stringify(defaultWebPageSchema)} />
+  )
 )}
